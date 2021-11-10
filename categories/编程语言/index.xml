@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>编程语言 on 西门吹风</title>
-    <link>https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</link>
-    <description>Recent content in 编程语言 on 西门吹风</description>
+    <title>编程语言 on Hugo Bootstrap</title>
+    <link>/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</link>
+    <description>Recent content in 编程语言 on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Thu, 23 May 2019 08:00:24 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
+    <lastBuildDate>Thu, 23 May 2019 08:00:24 +0000</lastBuildDate><atom:link href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>正则表达式符号表</title>
-      <link>https://helixs.github.io/posts/2019-05-23-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%A6%E5%8F%B7%E8%A1%A8/</link>
+      <link>/posts/2019-05-23-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%A6%E5%8F%B7%E8%A1%A8/</link>
       <pubDate>Thu, 23 May 2019 08:00:24 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-05-23-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%A6%E5%8F%B7%E8%A1%A8/</guid>
-      <description>表达式全集 &amp;lt;th width=&amp;quot;90%&amp;quot;&amp;gt; 描述 &amp;lt;/th&amp;gt;  &amp;lt;td&amp;gt; 将下一个字符标记为一个特殊字符、或一个原义字符、或一个向后引用、或一个八进制转义符。例如，“&amp;lt;code&amp;gt;n&amp;lt;/code&amp;gt;”匹配字符“&amp;lt;code&amp;gt;n&amp;lt;/code&amp;gt;”。“&amp;lt;code&amp;gt;\n&amp;lt;/code&amp;gt;”匹配一个换行符。串行“&amp;lt;code&amp;gt;\\&amp;lt;/code&amp;gt;”匹配“&amp;lt;code&amp;gt;\&amp;lt;/code&amp;gt;”而“&amp;lt;code&amp;gt;\(&amp;lt;/code&amp;gt;”则匹配“&amp;lt;code&amp;gt;(&amp;lt;/code&amp;gt;”。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配输入字符串的开始位置。如果设置了RegExp对象的Multiline属性，^也匹配“&amp;lt;code&amp;gt;\n&amp;lt;/code&amp;gt;”或“&amp;lt;code&amp;gt;\r&amp;lt;/code&amp;gt;”之后的位置。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配输入字符串的结束位置。如果设置了RegExp对象的Multiline属性，$也匹配“&amp;lt;code&amp;gt;\n&amp;lt;/code&amp;gt;”或“&amp;lt;code&amp;gt;\r&amp;lt;/code&amp;gt;”之前的位置。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配前面的子表达式零次或多次。例如，zo*能匹配“&amp;lt;code&amp;gt;z&amp;lt;/code&amp;gt;”以及“&amp;lt;code&amp;gt;zoo&amp;lt;/code&amp;gt;”。*等价于{0,}。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配前面的子表达式一次或多次。例如，“&amp;lt;code&amp;gt;zo+&amp;lt;/code&amp;gt;”能匹配“&amp;lt;code&amp;gt;zo&amp;lt;/code&amp;gt;”以及“&amp;lt;code&amp;gt;zoo&amp;lt;/code&amp;gt;”，但不能匹配“&amp;lt;code&amp;gt;z&amp;lt;/code&amp;gt;”。+等价于{1,}。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配前面的子表达式零次或一次。例如，“&amp;lt;code&amp;gt;do(es)?&amp;lt;/code&amp;gt;”可以匹配“&amp;lt;code&amp;gt;does&amp;lt;/code&amp;gt;”或“&amp;lt;code&amp;gt;does&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;do&amp;lt;/code&amp;gt;”。?等价于{0,1}。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; n是一个非负整数。匹配确定的n次。例如，“&amp;lt;code&amp;gt;o{2}&amp;lt;/code&amp;gt;”不能匹配“&amp;lt;code&amp;gt;Bob&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;o&amp;lt;/code&amp;gt;”，但是能匹配“&amp;lt;code&amp;gt;food&amp;lt;/code&amp;gt;”中的两个o。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; n是一个非负整数。至少匹配n次。例如，“&amp;lt;code&amp;gt;o{2,}&amp;lt;/code&amp;gt;”不能匹配“&amp;lt;code&amp;gt;Bob&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;o&amp;lt;/code&amp;gt;”，但能匹配“&amp;lt;code&amp;gt;foooood&amp;lt;/code&amp;gt;”中的所有o。“&amp;lt;code&amp;gt;o{1,}&amp;lt;/code&amp;gt;”等价于“&amp;lt;code&amp;gt;o+&amp;lt;/code&amp;gt;”。“&amp;lt;code&amp;gt;o{0,}&amp;lt;/code&amp;gt;”则等价于“&amp;lt;code&amp;gt;o*&amp;lt;/code&amp;gt;”。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; m和n均为非负整数，其中n&amp;lt;=m。最少匹配n次且最多匹配m次。例如，“&amp;lt;code&amp;gt;o{1,3}&amp;lt;/code&amp;gt;”将匹配“&amp;lt;code&amp;gt;fooooood&amp;lt;/code&amp;gt;”中的前三个o。“&amp;lt;code&amp;gt;o{0,1}&amp;lt;/code&amp;gt;”等价于“&amp;lt;code&amp;gt;o?&amp;lt;/code&amp;gt;”。请注意在逗号和两个数之间不能有空格。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 当该字符紧跟在任何一个其他限制符（*,+,?，{n}，{n,}，{n,m}）后面时，匹配模式是非贪婪的。非贪婪模式尽可能少的匹配所搜索的字符串，而默认的贪婪模式则尽可能多的匹配所搜索的字符串。例如，对于字符串“&amp;lt;code&amp;gt;oooo&amp;lt;/code&amp;gt;”，“&amp;lt;code&amp;gt;o+?&amp;lt;/code&amp;gt;”将匹配单个“&amp;lt;code&amp;gt;o&amp;lt;/code&amp;gt;”，而“&amp;lt;code&amp;gt;o+&amp;lt;/code&amp;gt;”将匹配所有“&amp;lt;code&amp;gt;o&amp;lt;/code&amp;gt;”。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配除“&amp;lt;code&amp;gt;\&amp;lt;/code&amp;gt;&amp;lt;code&amp;gt;n&amp;lt;/code&amp;gt;”之外的任何单个字符。要匹配包括“&amp;lt;code&amp;gt;\&amp;lt;/code&amp;gt;&amp;lt;code&amp;gt;n&amp;lt;/code&amp;gt;”在内的任何字符，请使用像“&amp;lt;code&amp;gt;(.|\n)&amp;lt;/code&amp;gt;”的模式。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配pattern并获取这一匹配。所获取的匹配可以从产生的Matches集合得到，在VBScript中使用SubMatches集合，在JScript中则使用$0…$9属性。要匹配圆括号字符，请使用“&amp;lt;code&amp;gt;\(&amp;lt;/code&amp;gt;”或“&amp;lt;code&amp;gt;\)&amp;lt;/code&amp;gt;”。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 匹配pattern但不获取匹配结果，也就是说这是一个非获取匹配，不进行存储供以后使用。这在使用或字符“&amp;lt;code&amp;gt;(|)&amp;lt;/code&amp;gt;”来组合一个模式的各个部分是很有用。例如“&amp;lt;code&amp;gt;industr(?:y|ies)&amp;lt;/code&amp;gt;”就是一个比“&amp;lt;code&amp;gt;industry|industries&amp;lt;/code&amp;gt;”更简略的表达式。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 正向肯定预查，在任何匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，“&amp;lt;code&amp;gt;Windows(?=95|98|NT|2000)&amp;lt;/code&amp;gt;”能匹配“&amp;lt;code&amp;gt;Windows2000&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;Windows&amp;lt;/code&amp;gt;”，但不能匹配“&amp;lt;code&amp;gt;Windows3.1&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;Windows&amp;lt;/code&amp;gt;”。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 正向否定预查，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如“&amp;lt;code&amp;gt;Windows(?!95|98|NT|2000)&amp;lt;/code&amp;gt;”能匹配“&amp;lt;code&amp;gt;Windows3.1&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;Windows&amp;lt;/code&amp;gt;”，但不能匹配“&amp;lt;code&amp;gt;Windows2000&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;Windows&amp;lt;/code&amp;gt;”。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 反向肯定预查，与正向肯定预查类拟，只是方向相反。例如，“&amp;lt;code&amp;gt;(?&amp;amp;lt;=95|98|NT|2000)Windows&amp;lt;/code&amp;gt;”能匹配“&amp;lt;code&amp;gt;2000Windows&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;Windows&amp;lt;/code&amp;gt;”，但不能匹配“&amp;lt;code&amp;gt;3.1Windows&amp;lt;/code&amp;gt;”中的“&amp;lt;code&amp;gt;Windows&amp;lt;/code&amp;gt;”。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 反向否定预查，与正向否定预查类拟，只是方向相反。例如“&amp;lt;code&amp;gt;(?</description>
+      <guid>/posts/2019-05-23-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%A6%E5%8F%B7%E8%A1%A8/</guid>
+      <description>表达式全集 &amp;lt;th width=&amp;quot;90%&amp;quot;&amp;gt; 描述 &amp;lt;/th&amp;gt; &amp;lt;td&amp;gt; 将下一个字符标记为一个特殊字符、或一个原义字符、或一个向后引用、或一个八进制转义符。例如，“&amp;lt;code&amp;gt;n</description>
     </item>
     
     <item>
       <title>java和kotlin中泛型通配符（草稿）</title>
-      <link>https://helixs.github.io/posts/2019-01-28-java%E5%92%8Ckotlin%E4%B8%AD%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6%E8%8D%89%E7%A8%BF/</link>
+      <link>/posts/2019-01-28-java%E5%92%8Ckotlin%E4%B8%AD%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6%E8%8D%89%E7%A8%BF/</link>
       <pubDate>Mon, 28 Jan 2019 13:57:41 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-01-28-java%E5%92%8Ckotlin%E4%B8%AD%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6%E8%8D%89%E7%A8%BF/</guid>
-      <description>今天开始仔细研究kotlin的泛型，顺便把java的泛型也温习一下。
- =============================================
-在kotlin中亦是如此
-in：很像&amp;lt;? super T&amp;gt; out很像&amp;lt;? extends T&amp;gt; 不过他们限制的更加严格，变量类型中无法加入&amp;lt;? extends T&amp;gt;和&amp;lt;？super T&amp;gt; 在类型定义的时候已经限制好了
-参考资料
-https://www.kotlincn.net/docs/reference/generics.html https://zhuanlan.zhihu.com/p/27672091 https://www.jianshu.com/p/a41cb479b278      </description>
+      <guid>/posts/2019-01-28-java%E5%92%8Ckotlin%E4%B8%AD%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6%E8%8D%89%E7%A8%BF/</guid>
+      <description>今天开始仔细研究kotlin的泛型，顺便把java的泛型也温习一下。 ============================================= 在kotlin中亦是如此 in：很像&amp;lt;? super T&amp;gt; out很像&amp;lt;?</description>
     </item>
     
   </channel>

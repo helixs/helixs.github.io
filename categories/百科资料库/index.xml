@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>百科资料库 on 西门吹风</title>
-    <link>https://helixs.github.io/categories/%E7%99%BE%E7%A7%91%E8%B5%84%E6%96%99%E5%BA%93/</link>
-    <description>Recent content in 百科资料库 on 西门吹风</description>
+    <title>百科资料库 on Hugo Bootstrap</title>
+    <link>/categories/%E7%99%BE%E7%A7%91%E8%B5%84%E6%96%99%E5%BA%93/</link>
+    <description>Recent content in 百科资料库 on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Tue, 09 Feb 2021 05:58:37 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/%E7%99%BE%E7%A7%91%E8%B5%84%E6%96%99%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
+    <lastBuildDate>Tue, 09 Feb 2021 05:58:37 +0000</lastBuildDate><atom:link href="/categories/%E7%99%BE%E7%A7%91%E8%B5%84%E6%96%99%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>计算机中图像视频及色彩生成原理</title>
-      <link>https://helixs.github.io/posts/2021-02-09-%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E5%9B%BE%E5%83%8F%E5%8F%8A%E8%89%B2%E5%BD%A9%E7%94%9F%E6%88%90%E5%8E%9F%E7%90%86/</link>
+      <link>/posts/2021-02-09-%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E5%9B%BE%E5%83%8F%E5%8F%8A%E8%89%B2%E5%BD%A9%E7%94%9F%E6%88%90%E5%8E%9F%E7%90%86/</link>
       <pubDate>Tue, 09 Feb 2021 05:58:37 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2021-02-09-%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E5%9B%BE%E5%83%8F%E5%8F%8A%E8%89%B2%E5%BD%A9%E7%94%9F%E6%88%90%E5%8E%9F%E7%90%86/</guid>
-      <description>本人对图像和视频知识方面基本上是个小白，饶有兴致的看看资料，把觉得有用的东西记录下来，资料均为网上收集。
-视频技术的实践介绍：图像、视频、编解码器（av1、vp9、h265）等（ffmpeg编码） 有多语言翻译。https://github.com/leandromoreira/digital_video_introduction 拜耳阵列
-https://www.cnblogs.com/morikokyuro/p/13256701.html https://zh.wikipedia.org/wiki/%E6%8B%9C%E7%88%BE%E6%BF%BE%E8%89%B2%E9%8F%A1 RGB和YUV关系和区别
-https://blog.csdn.net/asahinokawa/article/details/80596655 https://www.cnblogs.com/yunlambert/p/11234971.html https://www.cnblogs.com/justkong/p/6570914.html YUV 420 444 421 422 如何理解
-https://blog.csdn.net/xueyushenzhou/article/details/40817949 视频编码中的I/P/B帧
-https://www.cnblogs.com/yongdaimi/p/10676309.html https://blog.csdn.net/abcjennifer/article/details/6577934 </description>
+      <guid>/posts/2021-02-09-%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E5%9B%BE%E5%83%8F%E5%8F%8A%E8%89%B2%E5%BD%A9%E7%94%9F%E6%88%90%E5%8E%9F%E7%90%86/</guid>
+      <description>本人对图像和视频知识方面基本上是个小白，饶有兴致的看看资料，把觉得有用的东西记录下来，资料均为网上收集。 视频技术的实践介绍：图像、视频、编解</description>
     </item>
     
   </channel>

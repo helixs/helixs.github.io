@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>java on 西门吹风</title>
-    <link>https://helixs.github.io/categories/java/</link>
-    <description>Recent content in java on 西门吹风</description>
+    <title>java on Hugo Bootstrap</title>
+    <link>/categories/java/</link>
+    <description>Recent content in java on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Fri, 27 Sep 2019 06:30:21 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
+    <lastBuildDate>Fri, 27 Sep 2019 06:30:21 +0000</lastBuildDate><atom:link href="/categories/java/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue</title>
-      <link>https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</link>
+      <link>/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</link>
       <pubDate>Fri, 27 Sep 2019 06:30:21 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</guid>
-      <description>作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯到异步操作的时候呢都是直接Thread+handler根本没考虑后果，做完事就行。面试的时候就是被按在地上一顿摩擦。
-在alibaba开发手册上，这样写到：
-【强制】新建线程时，必须通过线程池提供（AsyncTask 或者ThreadPoolExecutor或者其他形式自定义的线程池），不允许在应用中自行显式创建线程。
-_ 说明：使用线程池的好处是减少在创建和销毁线程上所花的时间以及系统资源的开销，解决资源不足的问题。如果不使用线程池，有可能造成系统创建大量同类线程而导致消耗完内存或者“过度切换”的问题。另外创建匿名线程不便于后续的资源使用分析，对性能分析等会造成困扰。_
-所以我们在进阶开发的时候特别涉及到大量数据操作的时候很有必要使用线程池来管理我们的线程任务。
-线程池创建 Android中常用的线程池都是通过对ThreadPoolExecutor进行不同配置来实现的，下面是它的构造方法
- corePoolSize线程池中核心线程的数量 maximumPoolSize 线程池中最大线程数量（其中包括了核心线程） keepAliveTime当线程数大于核心时，这是多余的空闲线程在终止之前等待新任务的最长时间，也就是非核心线程的超时时长，当系统中非核心线程闲置时间超过keepAliveTime之后，则会被回收。如果ThreadPoolExecutor的allowCoreThreadTimeOut属性设置为true，则该参数也表示核心线程的超时时长 unitkeepAliveTime 的时间单位多数情况下按照秒和毫秒来做 workQueueBlockingQueue的实现类 在执行任务之前用于保留任务的队列。该队列将仅保存由ThreadPoolExecutor.execute方法提交的 Runnable任务。这也是我们这片文章的重点内容 threadFactory线程池在创建线程的工厂类，如果不传入默认会有一个Executors.defaultThreadFactory() handler拒绝策略，当线程无法执行新任务时（一般是由于线程池中的线程数量已经达到最大数或者线程池关闭导致的），默认情况下，当线程池无法处理新线程时，会抛出一个RejectedExecutionException。  了解到了它的构造方法后我们来捋一捋，看一下ThreadPoolExecutor.execute方法
-ctl是AtomicInteger类型，(里面保存了当前线程池中有效线程数量count和当前线程池运行的状态runState，count的增减同步，保证每次get的时候数量是最新的，所谓的原子性。每次我们都只用get的值，里面是用位运算符关联两个值的。位运算我一脸懵逼反正它保存了两个值了)。如果当前运行的线程的数量小于核心线程数量(就是我们在构造方法传入的corePoolSize)，那么就正常添加并执行任务。如果没有添加成功，就继续检查当前线程池的运行状态，如果还是在运行中，那么尝试通过blockingQueue的offer方法(记住只有offer方法，后面讲的那么这个线程池没用上)把Runnable放到任务队列中（后续核心线程如果有任务完成，那么就从这个队列中使用take方法取出Runnable放入到核心线程去执行任务）。如果加入成功到队列中，检查线程池状态，如果线程池在运行，那么就删除添加的Runnable，如果一切成功就抛出RejectedExecutionException。后面都看得懂就不解释了。
-过程如下
- execute一个线程之后，如果线程池中的线程数未达到核心线程数，则会立马启用一个核心线程去执行。 execute一个线程之后，如果线程池中的线程数已经达到核心线程数，且workQueue未满，则将新线程放入workQueue中等待执行。 execute一个线程之后，如果线程池中的线程数已经达到核心线程数但未超过非核心线程数，且workQueue已满，则开启一个非核心线程来执行任务。 execute一个线程之后，如果线程池中的线程数已经超过非核心线程数，则拒绝执行该任务。   BlockingQueue 下面引入网上对BlockingQueue的主要方法的解释
-&amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;抛出异常&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;特殊值&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;阻塞&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;超时&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.csdn.net/itm_hadf/article/details/7538083&amp;quot; rel=&amp;quot;nofollow&amp;quot; data-token=&amp;quot;d84ab2ded6a50457642e83b0a8a699b4&amp;quot;&amp;gt;&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;&amp;lt;strong&amp;gt;add(e)&amp;lt;/strong&amp;gt;&amp;lt;/a&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.csdn.net/itm_hadf/article/details/7538083&amp;quot; rel=&amp;quot;nofollow&amp;quot; data-token=&amp;quot;d84ab2ded6a50457642e83b0a8a699b4&amp;quot;&amp;gt;&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;&amp;lt;strong&amp;gt;offer(e)&amp;lt;/strong&amp;gt;&amp;lt;/a&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.csdn.net/itm_hadf/article/details/7538083&amp;quot; rel=&amp;quot;nofollow&amp;quot; data-token=&amp;quot;d84ab2ded6a50457642e83b0a8a699b4&amp;quot;&amp;gt;&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;&amp;lt;strong&amp;gt;put(e)&amp;lt;/strong&amp;gt;&amp;lt;/a&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.</description>
+      <guid>/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</guid>
+      <description>作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯</description>
     </item>
     
   </channel>

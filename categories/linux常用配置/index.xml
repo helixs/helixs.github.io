@@ -1,108 +1,73 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>linux常用配置 on 西门吹风</title>
-    <link>https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/</link>
-    <description>Recent content in linux常用配置 on 西门吹风</description>
+    <title>linux常用配置 on Hugo Bootstrap</title>
+    <link>/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/</link>
+    <description>Recent content in linux常用配置 on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Sat, 29 Feb 2020 11:21:58 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
+    <lastBuildDate>Sat, 29 Feb 2020 11:21:58 +0000</lastBuildDate><atom:link href="/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ubuntu开机错误 couldn’t find an input interrupt /dev/sda1 contains a file system with errors</title>
-      <link>https://helixs.github.io/posts/2020-02-29-ubuntu%E5%BC%80%E6%9C%BA%E9%94%99%E8%AF%AF-couldnt-find-an-input-interrupt-dev-sda1-contains-a-file-system-with-errors/</link>
+      <link>/posts/2020-02-29-ubuntu%E5%BC%80%E6%9C%BA%E9%94%99%E8%AF%AF-couldnt-find-an-input-interrupt-dev-sda1-contains-a-file-system-with-errors/</link>
       <pubDate>Sat, 29 Feb 2020 11:21:58 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2020-02-29-ubuntu%E5%BC%80%E6%9C%BA%E9%94%99%E8%AF%AF-couldnt-find-an-input-interrupt-dev-sda1-contains-a-file-system-with-errors/</guid>
-      <description>更新系统软件后，非正常关机，出现了
- couldn&#39;t find an input interrupt dev/sda1 contains a file system with errors, check forced. Inodes that were part of a corrupted orphan linked list found. /dev/sda1: UNEXPECTED INCONSISTENCY: RUN fsck MANUALLY. (i.e., without -a or -p options) fsck exited with status code 4 The root filesystem on /dev/sda1 requires a manual fsck BusyBox v1.22.1 (Ubuntu 1:1.22.0-19ubuntuu2) built-in shell (ash) Enter &#39;help&#39; for a list of built-in commands. (initramfs)_  键入fsck -f /dev/sda1以检查/修复您的文件系统。</description>
+      <guid>/posts/2020-02-29-ubuntu%E5%BC%80%E6%9C%BA%E9%94%99%E8%AF%AF-couldnt-find-an-input-interrupt-dev-sda1-contains-a-file-system-with-errors/</guid>
+      <description>更新系统软件后，非正常关机，出现了 couldn&#39;t find an input interrupt dev/sda1 contains a file system with errors, check forced. Inodes that were part of a corrupted orphan linked list found. /dev/sda1: UNEXPECTED INCONSISTENCY: RUN fsck MANUALLY. (i.e., without -a or -p options) fsck exited with status code 4 The root filesystem on /dev/sda1 requires a manual fsck BusyBox</description>
     </item>
     
     <item>
       <title>通过openssl获取证书摘要信息</title>
-      <link>https://helixs.github.io/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</link>
+      <link>/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</link>
       <pubDate>Tue, 23 Jul 2019 07:42:30 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</guid>
-      <description> 转载请注明出处https://xmcf.me/?p=314 我们做app开发的时候，往往需要对应用信息安全做考虑。通过charles fiddler抓取http包是很随意的事情，https中间人也是很容易。所以做一个信任所有证书的商业应用来说是很low。
-拿android开发为例，如果考虑安全，必须进行证书锁定。如，通过network_security_config文件进行锁定。通过digest摘要来验证证书，而不用将证书放入到apk中，具体的不多说。
-下面是X509公钥证书的格式标准，另外还有中间机构和根证书就不说明了
-公钥证书的信息大概就是这些，在window的chrome我们可以随时到处证书就像这样
-两个格式的主要区别：
-虽然他们保存文件的的后缀都是cer区别就是der是保存的二进制文件，看不到里面的内容。
-而base64编码实际上是pem格式的证书。开头—–BEGIN CERTIFICATE—– 结尾 —–END CERTIFICATE—–
-他们最终包含的信息都是一样的，注意的是base64可以用文本编辑内容，不过不要随意修改多一个少一个空格也是不好的。
-保存完后我们就要通过openssl进行获取证书公钥的摘要了
-openssl登场
-因为我用的win10系统装了个linux内核还是蛮舒服的
-其大概过程是，1、让openssl安装x509公钥的标准读取证书信息 ，-pubkey 读取公钥 2、通过pkey -pukey 读取密钥信息通过-outform 按照der格式保存密钥信息 3、dgst按照sha256 进行hash计算得到了2进制数据 4、将二进制信息通过base64编码。最终就是我们所需要的信息了，我们得到的信息是通过hash计算不可逆的，所以保证了一定的安全性。
-android项目通过
- </description>
+      <guid>/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</guid>
+      <description>转载请注明出处https://xmcf.me/?p=314 我们做app开发的时候，往往需要对应用信息安全做考虑。通过charles fiddl</description>
     </item>
     
     <item>
       <title>bash shell 数据流重导向与管道的简单认识</title>
-      <link>https://helixs.github.io/posts/2019-06-12-bash-shell-%E6%95%B0%E6%8D%AE%E6%B5%81%E9%87%8D%E5%AF%BC%E5%90%91%E4%B8%8E%E7%AE%A1%E9%81%93%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
+      <link>/posts/2019-06-12-bash-shell-%E6%95%B0%E6%8D%AE%E6%B5%81%E9%87%8D%E5%AF%BC%E5%90%91%E4%B8%8E%E7%AE%A1%E9%81%93%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
       <pubDate>Wed, 12 Jun 2019 03:08:39 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-06-12-bash-shell-%E6%95%B0%E6%8D%AE%E6%B5%81%E9%87%8D%E5%AF%BC%E5%90%91%E4%B8%8E%E7%AE%A1%E9%81%93%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
-      <description>数据流重导向3个方式发送的文件或者设备上
- 标准输入　（stdin） ：代码为 0 ，使用 &amp;lt;(指定标准输入文件或者设备) 或 &amp;laquo;(后面跟上内容如字符串可以结束输入) ； 标准输出　（stdout）：代码为 1 ，使用 &amp;gt;(覆盖输出设备或文件的数据) 或 &amp;raquo;(累加输出设备或文件的数据)； 标准错误输出（stderr）：代码为 2 ，使用 2&amp;gt; 或 2&amp;raquo; ；(和标准输出一样，只不过是错误信息)  错误输出数据和正确输出一样，只需在后面跟上2&amp;gt;或者2&amp;raquo;
-&amp;amp;&amp;amp;和||跟编程代码中的与和或很像
-管道命令 cut主要的用途是将同一行里面的数据按照规定的字符进行拆分，有点像java中的String.split。
-cut是取出一行一行中我们想要的,那么grep就是过滤一行一行的的数据，过滤包含或者不包含的数据
- sort  sort 是很有趣的指令，他可以帮我们进行排序，而且可以依据不同的数据型态来排序喔！ 例如数字与文字的排序就不一样。此外，排序的字符与语系的编码有关，因此， 如果您需要排序时，建议使用 LANG=C 来让语系统一，数据排序比较好一些。
- wc  如果我想要知道 /etc/man_db.conf 这个文件里面有多少字？多少行？多少字符的话， 可以怎么做呢？其实可以利用 wc 这个指令来达成喔！他可以帮我们计算输出的讯息的整体数据！
- uniq   tee  会将数据流整个传送给文件或设备，因此我们除非去读取该文件或设备， 否则就无法继续利用这个数据流。万一我想要将这个数据流的处理过程中将某段讯息存下来，应该怎么做？ 利用 tee 就可以啰～
-tee 会同时将数据流分送到文件去与屏幕 （screen）；而输出到屏幕的，其实就是 stdout ，那就可以让下个指令继续处理喔！
-tee 可以让 standard output 转存一份到文件内并将同样的数据继续送到屏幕去处理！ 这样除了可以让我们同时分析一份数据并记录下来之外，还可以作为处理一份数据的中间暂存盘记录之用！</description>
+      <guid>/posts/2019-06-12-bash-shell-%E6%95%B0%E6%8D%AE%E6%B5%81%E9%87%8D%E5%AF%BC%E5%90%91%E4%B8%8E%E7%AE%A1%E9%81%93%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
+      <description>数据流重导向3个方式发送的文件或者设备上 标准输入 （stdin） ：代码为 0 ，使用 &amp;lt;(指定标准输入文件或者设备) 或 &amp;laquo;(后面跟上</description>
     </item>
     
     <item>
       <title>Bash Shell常用快捷键</title>
-      <link>https://helixs.github.io/posts/2019-06-11-bash-shell%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <link>/posts/2019-06-11-bash-shell%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Tue, 11 Jun 2019 09:06:49 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-06-11-bash-shell%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
-      <description>编辑命令  Ctrl + a ：移到命令行首 Ctrl + e ：移到命令行尾 Ctrl + f ：按字符前移（右向） Ctrl + b ：按字符后移（左向） Alt + f ：按单词前移（右向） Alt + b ：按单词后移（左向） Ctrl + xx：在命令行首和光标之间移动 Ctrl + u ：从光标处删除至命令行首 Ctrl + k ：从光标处删除至命令行尾 Ctrl + w ：从光标处删除至字首 Alt + d ：从光标处删除至字尾 Ctrl + d ：删除光标处的字符 Ctrl + h ：删除光标前的字符 Ctrl + y ：粘贴至光标后 Alt + c ：从光标处更改为首字母大写的单词 Alt + u ：从光标处更改为全部大写的单词 Alt + l ：从光标处更改为全部小写的单词 Ctrl + t ：交换光标处和之前的字符 Alt + t ：交换光标处和之前的单词 Alt + Backspace：与 Ctrl + w 相同类似，分隔符有些差别  重新执行命令  Ctrl + r：逆向搜索命令历史 Ctrl + g：从历史搜索模式退出 Ctrl + p：历史中的上一条命令 Ctrl + n：历史中的下一条命令 Alt + .</description>
+      <guid>/posts/2019-06-11-bash-shell%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description>编辑命令 Ctrl + a ：移到命令行首 Ctrl + e ：移到命令行尾 Ctrl + f ：按字符前移（右向） Ctrl + b ：按字符后移（左向） Alt + f ：按单词前移（右向） Alt + b ：按单词</description>
     </item>
     
     <item>
       <title>vi/vim常用快捷键</title>
-      <link>https://helixs.github.io/posts/2019-06-04-vi-vim%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <link>/posts/2019-06-04-vi-vim%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Tue, 04 Jun 2019 07:39:38 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-06-04-vi-vim%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
-      <description>第一部份：一般指令模式可用的按钮说明，光标移动、复制贴上、搜寻取代等  &amp;lt;td&amp;gt; 光标向左移动一个字符 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标向下移动一个字符 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标向上移动一个字符 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标向右移动一个字符 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 屏幕“向下”移动一页，相当于 [Page Down]按键 （常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 屏幕“向上”移动一页，相当于 [Page Up] 按键 （常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 屏幕“向下”移动半页 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 屏幕“向上”移动半页 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标移动到非空白字符的下一列 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标移动到非空白字符的上一列 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 那个 n 表示“数字”，例如 20 。按下数字后再按空白键，光标会向右移动这一列的 n 个字符。例如 20&amp;lt;space&amp;gt; 则光标会向后面移动 20 个字符距离。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 这是数字“ 0 ”：移动到这一列的最前面字符处 （常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 移动到这一列的最后面字符处（常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标移动到这个屏幕的最上方那一列的第一个字符 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标移动到这个屏幕的中央那一列的第一个字符 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 光标移动到这个屏幕的最下方那一列的第一个字符 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 移动到这个文件的最后一列（常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; n 为数字。移动到这个文件的第 n 列。例如 20G 则会移动到这个文件的第 20 列（可配合 :set nu） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 移动到这个文件的第一列，相当于 1G 啊！ （常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; n 为数字。光标向下移动 n 列（常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 向光标之下寻找一个名称为 word 的字串。例如要在文件内搜寻 vbird 这个字串，就输入 /vbird 即可！ （常用） &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 向光标之上寻找一个字串名称为 word 的字串。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; 这个 n 是英文按键。代表“&amp;lt;u&amp;gt;重复前一个搜寻的动作&amp;lt;/u&amp;gt;”。举例来说， 如果刚刚我们执行 /vbird 去向下搜寻 vbird 这个字串，则按下 n 后，会向下继续搜寻下一个名称为 vbird 的字串。如果是执行 ?</description>
+      <guid>/posts/2019-06-04-vi-vim%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description>第一部份：一般指令模式可用的按钮说明，光标移动、复制贴上、搜寻取代等 &amp;lt;td&amp;gt; 光标向左移动一个字符 &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; 光标向下移动一个字符 &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; 光标向上移动一个字符 &amp;lt;/td&amp;gt;</description>
     </item>
     
     <item>
       <title>卸载阿里云监控服务</title>
-      <link>https://helixs.github.io/posts/2019-03-06-%E5%8D%B8%E8%BD%BD%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1/</link>
+      <link>/posts/2019-03-06-%E5%8D%B8%E8%BD%BD%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1/</link>
       <pubDate>Wed, 06 Mar 2019 05:28:28 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-03-06-%E5%8D%B8%E8%BD%BD%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1/</guid>
-      <description>卸载阿里云盾监控： 删除残留： 屏蔽云盾 IP，用包过滤屏蔽如下IP： 卸载云监控Java版本插件： sudo /usr/local/cloudmonitor/wrapper/bin/cloudmonitor.sh remove
-sudo rm -rf /usr/local/cloudmonitor</description>
+      <guid>/posts/2019-03-06-%E5%8D%B8%E8%BD%BD%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1/</guid>
+      <description>卸载阿里云盾监控： 删除残留： 屏蔽云盾 IP，用包过滤屏蔽如下IP： 卸载云监控Java版本插件： sudo /usr/local/cloudmonitor/wrapper/bin/cloudmonitor.sh remove sudo rm -rf /usr/local/cloudmonitor</description>
     </item>
     
     <item>
       <title>centos7 防火墙端口配置和SSH端口配置</title>
-      <link>https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</link>
+      <link>/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</link>
       <pubDate>Tue, 30 Oct 2018 21:36:03 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</guid>
-      <description>防火墙 启动防火墙
-systemctl start firewalld 关闭防火墙
-systemctl stop firewalld 查看防火墙状态
-systemctl status firewalld CRLF will be replaced by LF in blog/content/posts/2018-11-21-aria2配置文件.md. The file will have its original line endings in your working directory
-开机禁用防火墙
-systemctl disable firewalld 开机启用防火墙
-systemctl enable firewalld 开放指定端口 firewall-cmd --zone=public --add-port=80/tcp --permanent 关闭指定端口
-firewall-cmd --zone=public --remove-port=80/tcp --permanent 重启防火墙 firewall-cmd --reload –zone 作用域
-–add-port=80/tcp 添加端口，格式为：端口/通讯协议
-–permanent 永久生效，没有此参数重启后失效
-查看防火墙规则 firewall-cmd --list-all 查看开放端口
-firewall-cmd --list-ports  SSH vim /etc/ssh/sshd_config 找到下面 Port 大部分默认端口为22 改成你想要的端口如 1234</description>
+      <guid>/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</guid>
+      <description>防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld CRLF will be replaced by LF in blog/content/posts/2018-11-21-ari</description>
     </item>
     
   </channel>

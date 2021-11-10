@@ -1,138 +1,40 @@
-<!doctype html><html lang="en"
+<!doctype html><html lang="zh-cn"
   >
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>kotlin特性之inline内联函数 - 西门吹风</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
-<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
-<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+    <title>kotlin特性之inline内联函数 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="/images/favicons/manifest.json">
+<link rel="icon" href="/images/favicons/favicon.ico">
 <meta name="keywords" content="" />
 <meta name="description" content="" /><meta itemprop="name" content="kotlin特性之inline内联函数">
-<meta itemprop="description" content="inline内联函数可以说是kotlin的一个高级特性了，不过在C&#43;&#43;其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一定的内联优化。
-为什么需要内联 处理器调用一个函数的步骤如下：
-  保留当前执行栈的信息
-  为被调用的函数分配栈区
-  初始化被调用函数中的参数、内部变量
-  执行被调用函数并返回
-  销毁被调用函数的执行栈
-  取出第一步保存的信息并恢复，然后继续执行
-  从这个流程中可以看到，所谓函数调用的开销主要是当前执行栈的保存与恢复、被调用函数栈区的分配与销毁两部分的开销。
-调用函数是一个入栈出栈的过程，意味着需要内存的开销和释放。增加了机器运行的负担，而使用内联函数就在编译器级别，将函数中的代码，直接放入调用函数的地方。这样就减少了一个入栈和出栈的过程，还是很不错的吧。不过相应的，编译后所生成的字节码的长度肯定是要变大的。我们可以根据一定的场景进行内联。
-inline 先来看看kotlin自带的inline函数
-然后我们试试
-然后我们Decompile转为java代码
-我们可以看到main方法中调用printTexts方法已经直接将函数代码放入到了main方法里。
-不过在定义printTexts方法的时候编译器提示了
-expected performance impact of inlining is insignificant. Inlining works best for functions with parameters of functional types
-刻意将普通方法加入inline并不会给性能带来多少的优化，反而会带来更多的字节码。建议将参数为函数形式的方法使用inline可以提高性能。
-转为java
-我们不加入inline内联实际上调用了printTexts方法中的Function1的回调函数。
-然后在printTexts方法前面加入inline后再看看
-参数为函数类型的函数使用inline的确可以提高性能，避免进入callback回调地狱。其实普通的方法不使用inline的情况下jvm也会帮我们实现部分的，如果需要的话那么你也可以强制使用Inline也没关系。
-noinline 通过上面的代码我们看到，默认情况下内联函数的的参数如果是函数的话，那么参数函数也是被内联的
-如果函数参数在内联函数的方法体内被其他非内联函数调用,就会报错.
-我们可以加入noinline
-正常，转java
-我们可以看到参数函数不会被内联，而是转为callback了，那么就能正常调用非inline的函数了。
-crossinline 我们来看一看下面的代码
-答案是不会执行，除非使用的是return@printTexts 。默认内联函数lambda参数中return是可以进行调用函数处return的，因为已经和调用处函数融为一体了。
-我们可以在block参数前加入crossinline来防止printTexts局部return
-reified 其实我个人认为这个reified才是内联函数中最牛逼的玩意儿。在java中我们的泛型在运行时都是一堆object，被擦除了没啥卵用。
-我们来试试哈
-这个操作在java中可能实现吗，答案是不可能的。但是在kotlin中通过inline和reified就可以实现
-这样我们就可以获取到泛型信息了，运行时的哦，困扰我多年的问题终于有办法了。比如我现在直接传入泛型而不用传入class就可以知道T是什么类型了。在java时候还要使用一堆头疼的反射等。其实inline的时候相当于就是吧T类型的class作为一个参数传进来了，还是蛮强大的。看看java代码
-我们可以用来干嘛？"><meta itemprop="datePublished" content="2019-09-11T07:15:28+00:00" />
+<meta itemprop="description" content="inline内联函数可以说是kotlin的一个高级特性了，不过在C&#43;&#43;其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一"><meta itemprop="datePublished" content="2019-09-11T07:15:28+00:00" />
 <meta itemprop="dateModified" content="2019-09-11T07:15:28+00:00" />
-<meta itemprop="wordCount" content="58">
+<meta itemprop="wordCount" content="1379">
 <meta itemprop="keywords" content="" /><meta property="og:title" content="kotlin特性之inline内联函数" />
-<meta property="og:description" content="inline内联函数可以说是kotlin的一个高级特性了，不过在C&#43;&#43;其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一定的内联优化。
-为什么需要内联 处理器调用一个函数的步骤如下：
-  保留当前执行栈的信息
-  为被调用的函数分配栈区
-  初始化被调用函数中的参数、内部变量
-  执行被调用函数并返回
-  销毁被调用函数的执行栈
-  取出第一步保存的信息并恢复，然后继续执行
-  从这个流程中可以看到，所谓函数调用的开销主要是当前执行栈的保存与恢复、被调用函数栈区的分配与销毁两部分的开销。
-调用函数是一个入栈出栈的过程，意味着需要内存的开销和释放。增加了机器运行的负担，而使用内联函数就在编译器级别，将函数中的代码，直接放入调用函数的地方。这样就减少了一个入栈和出栈的过程，还是很不错的吧。不过相应的，编译后所生成的字节码的长度肯定是要变大的。我们可以根据一定的场景进行内联。
-inline 先来看看kotlin自带的inline函数
-然后我们试试
-然后我们Decompile转为java代码
-我们可以看到main方法中调用printTexts方法已经直接将函数代码放入到了main方法里。
-不过在定义printTexts方法的时候编译器提示了
-expected performance impact of inlining is insignificant. Inlining works best for functions with parameters of functional types
-刻意将普通方法加入inline并不会给性能带来多少的优化，反而会带来更多的字节码。建议将参数为函数形式的方法使用inline可以提高性能。
-转为java
-我们不加入inline内联实际上调用了printTexts方法中的Function1的回调函数。
-然后在printTexts方法前面加入inline后再看看
-参数为函数类型的函数使用inline的确可以提高性能，避免进入callback回调地狱。其实普通的方法不使用inline的情况下jvm也会帮我们实现部分的，如果需要的话那么你也可以强制使用Inline也没关系。
-noinline 通过上面的代码我们看到，默认情况下内联函数的的参数如果是函数的话，那么参数函数也是被内联的
-如果函数参数在内联函数的方法体内被其他非内联函数调用,就会报错.
-我们可以加入noinline
-正常，转java
-我们可以看到参数函数不会被内联，而是转为callback了，那么就能正常调用非inline的函数了。
-crossinline 我们来看一看下面的代码
-答案是不会执行，除非使用的是return@printTexts 。默认内联函数lambda参数中return是可以进行调用函数处return的，因为已经和调用处函数融为一体了。
-我们可以在block参数前加入crossinline来防止printTexts局部return
-reified 其实我个人认为这个reified才是内联函数中最牛逼的玩意儿。在java中我们的泛型在运行时都是一堆object，被擦除了没啥卵用。
-我们来试试哈
-这个操作在java中可能实现吗，答案是不可能的。但是在kotlin中通过inline和reified就可以实现
-这样我们就可以获取到泛型信息了，运行时的哦，困扰我多年的问题终于有办法了。比如我现在直接传入泛型而不用传入class就可以知道T是什么类型了。在java时候还要使用一堆头疼的反射等。其实inline的时候相当于就是吧T类型的class作为一个参数传进来了，还是蛮强大的。看看java代码
-我们可以用来干嘛？" />
+<meta property="og:description" content="inline内联函数可以说是kotlin的一个高级特性了，不过在C&#43;&#43;其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://helixs.github.io/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-09-11T07:15:28+00:00" />
-<meta property="article:modified_time" content="2019-09-11T07:15:28+00:00" />
+<meta property="article:modified_time" content="2019-09-11T07:15:28+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="kotlin特性之inline内联函数"/>
-<meta name="twitter:description" content="inline内联函数可以说是kotlin的一个高级特性了，不过在C&#43;&#43;其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一定的内联优化。
-为什么需要内联 处理器调用一个函数的步骤如下：
-  保留当前执行栈的信息
-  为被调用的函数分配栈区
-  初始化被调用函数中的参数、内部变量
-  执行被调用函数并返回
-  销毁被调用函数的执行栈
-  取出第一步保存的信息并恢复，然后继续执行
-  从这个流程中可以看到，所谓函数调用的开销主要是当前执行栈的保存与恢复、被调用函数栈区的分配与销毁两部分的开销。
-调用函数是一个入栈出栈的过程，意味着需要内存的开销和释放。增加了机器运行的负担，而使用内联函数就在编译器级别，将函数中的代码，直接放入调用函数的地方。这样就减少了一个入栈和出栈的过程，还是很不错的吧。不过相应的，编译后所生成的字节码的长度肯定是要变大的。我们可以根据一定的场景进行内联。
-inline 先来看看kotlin自带的inline函数
-然后我们试试
-然后我们Decompile转为java代码
-我们可以看到main方法中调用printTexts方法已经直接将函数代码放入到了main方法里。
-不过在定义printTexts方法的时候编译器提示了
-expected performance impact of inlining is insignificant. Inlining works best for functions with parameters of functional types
-刻意将普通方法加入inline并不会给性能带来多少的优化，反而会带来更多的字节码。建议将参数为函数形式的方法使用inline可以提高性能。
-转为java
-我们不加入inline内联实际上调用了printTexts方法中的Function1的回调函数。
-然后在printTexts方法前面加入inline后再看看
-参数为函数类型的函数使用inline的确可以提高性能，避免进入callback回调地狱。其实普通的方法不使用inline的情况下jvm也会帮我们实现部分的，如果需要的话那么你也可以强制使用Inline也没关系。
-noinline 通过上面的代码我们看到，默认情况下内联函数的的参数如果是函数的话，那么参数函数也是被内联的
-如果函数参数在内联函数的方法体内被其他非内联函数调用,就会报错.
-我们可以加入noinline
-正常，转java
-我们可以看到参数函数不会被内联，而是转为callback了，那么就能正常调用非inline的函数了。
-crossinline 我们来看一看下面的代码
-答案是不会执行，除非使用的是return@printTexts 。默认内联函数lambda参数中return是可以进行调用函数处return的，因为已经和调用处函数融为一体了。
-我们可以在block参数前加入crossinline来防止printTexts局部return
-reified 其实我个人认为这个reified才是内联函数中最牛逼的玩意儿。在java中我们的泛型在运行时都是一堆object，被擦除了没啥卵用。
-我们来试试哈
-这个操作在java中可能实现吗，答案是不可能的。但是在kotlin中通过inline和reified就可以实现
-这样我们就可以获取到泛型信息了，运行时的哦，困扰我多年的问题终于有办法了。比如我现在直接传入泛型而不用传入class就可以知道T是什么类型了。在java时候还要使用一堆头疼的反射等。其实inline的时候相当于就是吧T类型的class作为一个参数传进来了，还是蛮强大的。看看java代码
-我们可以用来干嘛？"/>
-<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
-  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+<meta name="twitter:description" content="inline内联函数可以说是kotlin的一个高级特性了，不过在C&#43;&#43;其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
   <div class="container">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i class="fas fa-bars"></i>
-    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="" loading="lazy"
-  
+    </button><a class="navbar-brand me-3" href="/"><img class="logo" alt="Logo" src="/images/logo.png" loading="lazy"
+   width="128" height="128"
    />
-西门吹风
+BOOTSTRAP
     </a>
     <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
   aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
@@ -148,11 +50,11 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
   </div>
   <div class="offcanvas-body">
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
-      target="_blank" href="https://twitter.com/intent/tweet?title=kotlin%e7%89%b9%e6%80%a7%e4%b9%8binline%e5%86%85%e8%81%94%e5%87%bd%e6%95%b0&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-09-11-kotlin%25E7%2589%25B9%25E6%2580%25A7%25E4%25B9%258Binline%25E5%2586%2585%25E8%2581%2594%25E5%2587%25BD%25E6%2595%25B0%2f">
+      target="_blank" href="https://twitter.com/intent/tweet?title=kotlin%e7%89%b9%e6%80%a7%e4%b9%8binline%e5%86%85%e8%81%94%e5%87%bd%e6%95%b0&url=%2fposts%2f2019-09-11-kotlin%25E7%2589%25B9%25E6%2580%25A7%25E4%25B9%258Binline%25E5%2586%2585%25E8%2581%2594%25E5%2587%25BD%25E6%2595%25B0%2f">
       <i class="fab fa-fw fa-twitter"></i> Twitter
     </a>
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
-      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-09-11-kotlin%25E7%2589%25B9%25E6%2580%25A7%25E4%25B9%258Binline%25E5%2586%2585%25E8%2581%2594%25E5%2587%25BD%25E6%2595%25B0%2f">
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=%2fposts%2f2019-09-11-kotlin%25E7%2589%25B9%25E6%2580%25A7%25E4%25B9%258Binline%25E5%2586%2585%25E8%2581%2594%25E5%2587%25BD%25E6%2595%25B0%2f">
       <i class="fab fa-fw fa-facebook-f"></i> Facebook
     </a>
   </div>
@@ -165,7 +67,7 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
 
 <div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
   <div class="offcanvas-header">
-    <h3 class="offcanvas-title">Settings</h3>
+    <h3 class="offcanvas-title">设置</h3>
     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
       <i class="fas fa-times"></i>
     </button>
@@ -175,7 +77,7 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
 <section class="setting">
   <form class="row">
     <div class="col-auto">
-      <label><i class="fas fa-fw fa-adjust"></i> Mode</label>
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
     </div>
     <div class="col-auto ms-auto">
       <div class="form-check form-switch">
@@ -185,11 +87,22 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
   </form>
 </section>
 
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
 
 <section class="setting palettes">
   <form class="row">
     <div class="col-auto">
-      <label><i class="fas fa-fw fa-palette"></i> Palette</label>
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
     </div>
     <div class="col-auto ms-auto">
       <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
@@ -197,29 +110,29 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
       </a>
     </div>
   </form>
-  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="Blue"
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
         class="btn btn-sm palette" data-palette="blue">
-      </button><button type="button" id="palette-blue-gray" aria-label="Blue Gray"
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
         class="btn btn-sm palette" data-palette="blue-gray">
-      </button><button type="button" id="palette-brown" aria-label="Brown"
+      </button><button type="button" id="palette-brown" aria-label="棕色"
         class="btn btn-sm palette" data-palette="brown">
-      </button><button type="button" id="palette-cyan" aria-label="Cyan"
+      </button><button type="button" id="palette-cyan" aria-label="青色"
         class="btn btn-sm palette" data-palette="cyan">
-      </button><button type="button" id="palette-green" aria-label="Green"
+      </button><button type="button" id="palette-green" aria-label="绿色"
         class="btn btn-sm palette" data-palette="green">
-      </button><button type="button" id="palette-indigo" aria-label="Indigo"
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
         class="btn btn-sm palette" data-palette="indigo">
-      </button><button type="button" id="palette-orange" aria-label="Orange"
+      </button><button type="button" id="palette-orange" aria-label="橙色"
         class="btn btn-sm palette" data-palette="orange">
-      </button><button type="button" id="palette-pink" aria-label="Pink"
+      </button><button type="button" id="palette-pink" aria-label="粉色"
         class="btn btn-sm palette" data-palette="pink">
-      </button><button type="button" id="palette-purple" aria-label="Purple"
+      </button><button type="button" id="palette-purple" aria-label="紫色"
         class="btn btn-sm palette" data-palette="purple">
-      </button><button type="button" id="palette-red" aria-label="Red"
+      </button><button type="button" id="palette-red" aria-label="红色"
         class="btn btn-sm palette" data-palette="red">
-      </button><button type="button" id="palette-teal" aria-label="Teal"
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
         class="btn btn-sm palette" data-palette="teal">
-      </button><button type="button" id="palette-yellow" aria-label="Yellow"
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
         class="btn btn-sm palette" data-palette="yellow">
       </button></div>
 </section>
@@ -227,14 +140,45 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
 </div>
 
     <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
-      <form class="search-bar my-1" action="https://helixs.github.io/search">
+      <form class="search-bar my-1" action="/search">
   <div class="input-group input-group-sm">
     <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
     <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
   </div>
 </form>
 
-      <ul class="navbar-nav ms-auto"></ul>
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
     </div>
   </div>
 </nav>
@@ -244,7 +188,7 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
 <div class="col-lg-8">
   <div class="container"><nav class="row card component" aria-label="breadcrumb">
   <div class="card-body">
-    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">Home</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">Posts</a></li><li class="breadcrumb-item active">kotlin特性之inline内联函数</li></ol>
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="/">主页</a></li><li class="breadcrumb-item"><a href="/posts/">文章</a></li><li class="breadcrumb-item active">Kotlin特性之inline内联函数</li></ol>
   </div>
 </nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
   <div class="d-flex flex-column component rounded post-panel">
@@ -255,20 +199,51 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
   
     
 
-    
-    
-    
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
     
   </div>
 </div>
 <div class="card-body">
-        <h1 class="card-title my-3">kotlin特性之inline内联函数
+        <h1 class="card-title my-3">Kotlin特性之inline内联函数
 </h1><div class="post-meta"><span class="post-date" title="created on">
-    <i class="fas fa-fw fa-calendar-alt"></i>Sep 11, 2019
+    <i class="fas fa-fw fa-calendar-alt"></i>2019-09-11
   </span><span class="post-reading-time" title="reading time">
-    <i class="fas fa-fw fa-coffee"></i>1 min read
-  </span><a href="https://helixs.github.io/categories/kotlin/" class="badge rounded-pill text-white bg-primary post-taxonomy">kotlin</a></div>
-<div class="post-content mb-3"><p>inline内联函数可以说是kotlin的一个高级特性了，不过在C++其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一定的内联优化。</p>
+    <i class="fas fa-fw fa-coffee"></i>3 分钟阅读
+  </span><a href="/categories/kotlin/" class="badge rounded-pill text-white bg-primary post-taxonomy">kotlin</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+        <li><a href="#inline">inline</a></li>
+        <li><a href="#noinline">noinline</a></li>
+        <li><a href="#crossinline">crossinline</a></li>
+        <li><a href="#reified">reified</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><p>inline内联函数可以说是kotlin的一个高级特性了，不过在C++其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一定的内联优化。</p>
 <h4 id="为什么需要内联">为什么需要内联</h4>
 <p>处理器调用一个函数的步骤如下：</p>
 <ol>
@@ -352,79 +327,147 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
 <!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
 <p>是不是很强大？也可以通过is和as的方式强转T。so fun。</p>
+</div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
 </div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
   <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
-    <a href="https://helixs.github.io/posts/2019-09-02-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BC%98%E5%8C%96/">冒泡排序的概念和优化
+    <a href="/posts/2019-09-02-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BC%98%E5%8C%96/">冒泡排序的概念和优化
 </a>
   </div><div class="post-nav post-next">
-    <a href="https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/">Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue
+    <a href="/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/">Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue
 </a>
     <i class="fas fa-fw fa-chevron-right"></i>
-  </div></div></div>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="/posts/2019-09-02-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BC%98%E5%8C%96/">冒泡排序的概念和优化
+</a></li><li><a href="/posts/2019-08-20-flutter-sliverappbar/">Flutter SliverAppBar
+</a></li><li><a href="/posts/2019-07-30-java-gc%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/">Java GC简单认识
+</a></li><li><a href="/posts/2019-07-29-java-gc%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/">Jvm运行时内存分配
+</a></li><li><a href="/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/">通过openssl获取证书摘要信息
+</a></li></ul>
+  </section></div>
     </article><div class="card component row post-comments">
-  <div class="card-body"></div>
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
 </div></div>
 </div><aside class="col-lg-4 sidebar d-flex">
   <div class="container">
     
-    <section class="recent-posts row card component">
+    <section class="card row text-center profile component">
   <div class="card-body">
-    <h2 class="card-title">Recent Posts</h2>
-    <ul><li><a href="https://helixs.github.io/posts/my-first-post/">My First Post
-</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
-</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
-</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
-</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Razon Yang" src="/images/profile.webp" loading="lazy"
+   width="400" height="400"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Razon Yang</div><div class="profile-bio">Gopher, PHPer, Full Stack Engineer.</div><div class="profile-company"><i class="fas fa-fw fa-building"></i>Company</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>Earth</div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li><li><a href="/posts/2021-03-26-leetcode%E4%B9%8B%E5%9C%A8%E6%95%B0%E7%BB%84%E4%B8%AD%E8%AE%A1%E7%AE%97%E6%9F%90%E4%B8%AA%E4%B8%A4%E4%B8%AA%E6%95%B0%E5%92%8C%E7%AD%89%E4%BA%8E%E7%9B%AE%E6%A0%87%E5%80%BC/">LeetCode之在数组中计算某个两个数和等于目标值
 </a></li></ul>
   </div>
 </section><section class="taxonomies row card component">
       <div class="card-body">
         <h2 class="card-title">
-          <a href="https://helixs.github.io/categories">Categories</a>
+          <a href="/categories">分类</a>
         </h2>
-        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+        <div><a href="/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
             Android开发
-          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
-            未分类
-          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+          </a><a href="/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
             编程生活
-          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+          </a><a href="/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
             LeetCode
-          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+          </a><a href="/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
             linux常用配置
-          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+          </a><a href="/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
             源码分析
-          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+          </a><a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
             数据结构和算法
-          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
-            vps工具
-          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+          </a><a href="/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
             flutter
-          </a><a href="https://helixs.github.io/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="badge bg-primary text-white rounded post-taxonomy" title="开发环境">
+          </a><a href="/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="badge bg-primary text-white rounded post-taxonomy" title="开发环境">
             开发环境
           </a></div>
       </div>
     </section><section class="taxonomies row card component">
       <div class="card-body">
         <h2 class="card-title">
-          <a href="https://helixs.github.io/tags">Tags</a>
+          <a href="/series">专栏</a>
         </h2>
-        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+        <div><a href="/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="/tags">标签</a>
+        </h2>
+        <div><a href="/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
             android
-          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+          </a><a href="/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
             bbr
-          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+          </a><a href="/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
             centos
-          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+          </a><a href="/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
             DownloadManager
-          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+          </a><a href="/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
             fragment
-          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+          </a><a href="/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
             gradle
-          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+          </a><a href="/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
             matrialButton
-          </a><a href="https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/" class="badge bg-primary text-white rounded post-taxonomy" title="启动模式">
-            启动模式
           </a></div>
       </div>
     </section>
@@ -432,13 +475,67 @@ reified 其实我个人认为这个reified才是内联函数中最牛逼的玩�
   </div>
 </aside>
 </div>
-    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"></nav>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
 <div class="copyright mb-2">
-  
+  Copyright © 2016-2021 Razon Yang. All Rights Reserved.
 </div>
 <div class="powered-by mb-2">
   Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
 </div></footer>
-<script src="https://helixs.github.io/js/bundle.min.b6665b560bd48dd0478c60f275f624d3c8ec7795a5d83679d18221053b102798.js" integrity="sha256-tmZbVgvUjdBHjGDydfYk08jsd5Wl2DZ50YIhBTsQJ5g=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+<script src="/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
 </body>
 </html>

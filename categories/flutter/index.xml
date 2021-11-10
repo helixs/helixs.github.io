@@ -1,51 +1,37 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>flutter on 西门吹风</title>
-    <link>https://helixs.github.io/categories/flutter/</link>
-    <description>Recent content in flutter on 西门吹风</description>
+    <title>flutter on Hugo Bootstrap</title>
+    <link>/categories/flutter/</link>
+    <description>Recent content in flutter on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Tue, 27 Apr 2021 02:12:57 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/flutter/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
+    <lastBuildDate>Tue, 27 Apr 2021 02:12:57 +0000</lastBuildDate><atom:link href="/categories/flutter/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Flutter Web使用的一些心得和一些问题</title>
-      <link>https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</link>
+      <link>/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</link>
       <pubDate>Tue, 27 Apr 2021 02:12:57 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</guid>
-      <description>公司这段时间新建了一个网站项目，因为是新项目，选择技术栈来说是比较值得探讨的问题，因为前端缺人，本身我们组又是移动应用开发为主，虽然前端也会，毕竟不是一直从事前端开发，不能那么快速将项目上线。刚好前不久Flutter2.0发布了，FlutterWeb也开启了正式之路，然后我就跟同事们说要不就用这玩意儿吧，来吃肉(填坑？)。然后大家就欣然同意。
-FlutterWeb实现原理基本上和移动应用一个道理，默认情况下都是使用的调用Canvaskit+skia引擎调用WebGL实现绘制。也可以使用html+css+canvas进行渲染，这样少了Skia引擎，会让包大小少2mb左右，不过展示的样式可能就是根据浏览器默认渲染的方式进行了，差别还是蛮大的。
-1、使用默认Canvaskit渲染方式，会在打开应用之初加载字体1秒钟内，出现中文字体乱码问题！！！关于这个问题，我们暂时智能使用html的方式进行官方目前还没有什么有效的解决方式，问题在这里https://github.com/flutter/flutter/issues/73628 出现问题的主要原因是，自绘引擎需要字体库支持，FlutterWeb 默认会使用Noto字体，因为一般电脑上都不会带有这个字体，所以会在线寻找这个字体，比如google或者一些第三方字体库网站，导致加载缓慢和乱码。当然还有办法可以解决这个问题，就是将字体放到本地资源库，比如将Noto字体作为默认字体一起打包到web网站上，下载速度就快了很多,你也可以换一些自己的中文字体(注意版权问题)，不会出现乱码情况。坏处就是还是会增加一些服务器的负担。
- 2、应用体积过大，我们大概做了十几个页面吧，打包下来最后会生成main.dart.js文件，搞下来已经7mb了，而且没办法拆分，意思就是你打开这个网站就等于加载了几乎整个应用渲染逻辑！更意味着打开网站下载js，执行js，渲染js 是你不得不面对的三道速度墙！记得如果你真的要用它，放到生产环境时候要给nginx或者其他方式实现brotli或者gzip压缩来减少传输时间！当然官方现在也没有很好的解决办法来如何拆分它！https://github.com/flutter/flutter/issues/46589 3、因为FlutterWeb是自绘引擎，默认是不支持文字选中和复制了，如果你需要文字选中和复制需要使用SelectableText ，从体验上来讲，还是有那么不太舒服哦，跟原生Web标准还是差很多。如果你的网页需要允许用户进行大量的复制操作，请谨慎尝试。
-4、如果你的网页需要提高标签值被爬的难度，那么它可能是比较好的一个办法，一堆js等着你去解析吧。
-问题待续….
-根据上面的信息，我大概确定的是它目前定位基本上和nativeApp一个级别的WebApp，也可以直接生成webApp应用给浏览器保留，所以他不合适用来做很多传统的WebPage应用了。</description>
+      <guid>/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</guid>
+      <description>公司这段时间新建了一个网站项目，因为是新项目，选择技术栈来说是比较值得探讨的问题，因为前端缺人，本身我们组又是移动应用开发为主，虽然前端也会</description>
     </item>
     
     <item>
       <title>Flutter SliverAppBar</title>
-      <link>https://helixs.github.io/posts/2019-08-20-flutter-sliverappbar/</link>
+      <link>/posts/2019-08-20-flutter-sliverappbar/</link>
       <pubDate>Tue, 20 Aug 2019 08:35:31 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-08-20-flutter-sliverappbar/</guid>
-      <description> </description>
+      <guid>/posts/2019-08-20-flutter-sliverappbar/</guid>
+      <description></description>
     </item>
     
     <item>
       <title>Flutter.dio进行application/x-www-form-urlencoded请求注意事项</title>
-      <link>https://helixs.github.io/posts/2019-07-22-flutter-dio%E8%BF%9B%E8%A1%8Capplication-x-www-form-urlencoded%E8%AF%B7%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
+      <link>/posts/2019-07-22-flutter-dio%E8%BF%9B%E8%A1%8Capplication-x-www-form-urlencoded%E8%AF%B7%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
       <pubDate>Mon, 22 Jul 2019 06:52:51 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-07-22-flutter-dio%E8%BF%9B%E8%A1%8Capplication-x-www-form-urlencoded%E8%AF%B7%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
-      <description>转载请注明出处https://xmcf.me/?p=312  前些天使用Flutter的dio库进行post请求。说来也怪。服务器只允许使用application/x-www-form-urlencoded方式接收数据，data数据格式大概如下。
-dataArr=[{“type”:”file”,”path”:”xxxx/wsdsd.txt”}]想了想用json不就行了么。form好麻烦。奈何你只是服务者。直接用dio库进行请求，contentType设置为application/x-www-form-urlencoded。就像这样
-请求失败了，服务器接收数据格式错误。怎么查文档也不行，只能看dio源代码入手。找到RequestOptions看看他是如何做data编码的，找到DefaultTransformer.transformRequest(RequestOptions options)
-再找到 Transformer.urlEncodeMap(data)
-得到的结果是
-晕，我也没时间看它错在哪里了，看来做好的办法就是自己进行encode编码了，也就是除了key=value之间的=号其他都要进行url编码，毕竟=才是唯一标准，看来dio库也是有bug的。顺便提一下，flutter的log居然从来不打双引号或者单引号，String看起来真麻烦。
-按照刚才的例子直接改成
-这样就可以了。
- —-坑一直很多，需要一步一步的填。</description>
+      <guid>/posts/2019-07-22-flutter-dio%E8%BF%9B%E8%A1%8Capplication-x-www-form-urlencoded%E8%AF%B7%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
+      <description>转载请注明出处https://xmcf.me/?p=312 前些天使用Flutter的dio库进行post请求。说来也怪。服务器只允许使用ap</description>
     </item>
     
   </channel>
