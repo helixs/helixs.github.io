@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>bbr on Hugo Bootstrap</title>
-    <link>/tags/bbr/</link>
+    <link>https://helixs.github.io/tags/bbr/</link>
     <description>Recent content in bbr on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
-    <lastBuildDate>Wed, 16 Jan 2019 06:29:02 +0000</lastBuildDate><atom:link href="/tags/bbr/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 16 Jan 2019 06:29:02 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/bbr/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>centos开启bbr</title>
-      <link>/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</link>
+      <link>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</link>
       <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
       
-      <guid>/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</guid>
+      <guid>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</guid>
       <description>TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接的效果。 Goo</description>
     </item>
     

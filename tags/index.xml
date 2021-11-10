@@ -2,107 +2,107 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>标签 on Hugo Bootstrap</title>
-    <link>/tags/</link>
+    <link>https://helixs.github.io/tags/</link>
     <description>Recent content in 标签 on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
-    <lastBuildDate>Fri, 19 Feb 2021 07:27:02 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 19 Feb 2021 07:27:02 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>android</title>
-      <link>/tags/android/</link>
+      <link>https://helixs.github.io/tags/android/</link>
       <pubDate>Fri, 19 Feb 2021 07:27:02 +0000</pubDate>
       
-      <guid>/tags/android/</guid>
+      <guid>https://helixs.github.io/tags/android/</guid>
       <description></description>
     </item>
     
     <item>
       <title>gradle</title>
-      <link>/tags/gradle/</link>
+      <link>https://helixs.github.io/tags/gradle/</link>
       <pubDate>Fri, 19 Feb 2021 07:27:02 +0000</pubDate>
       
-      <guid>/tags/gradle/</guid>
+      <guid>https://helixs.github.io/tags/gradle/</guid>
       <description></description>
     </item>
     
     <item>
       <title>CSS</title>
-      <link>/tags/css/</link>
+      <link>https://helixs.github.io/tags/css/</link>
       <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/css/</guid>
+      <guid>https://helixs.github.io/tags/css/</guid>
       <description></description>
     </item>
     
     <item>
       <title>HTML</title>
-      <link>/tags/html/</link>
+      <link>https://helixs.github.io/tags/html/</link>
       <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/html/</guid>
+      <guid>https://helixs.github.io/tags/html/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Markdown</title>
-      <link>/tags/markdown/</link>
+      <link>https://helixs.github.io/tags/markdown/</link>
       <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/markdown/</guid>
+      <guid>https://helixs.github.io/tags/markdown/</guid>
       <description></description>
     </item>
     
     <item>
       <title>DownloadManager</title>
-      <link>/tags/downloadmanager/</link>
+      <link>https://helixs.github.io/tags/downloadmanager/</link>
       <pubDate>Wed, 11 Mar 2020 01:53:58 +0000</pubDate>
       
-      <guid>/tags/downloadmanager/</guid>
+      <guid>https://helixs.github.io/tags/downloadmanager/</guid>
       <description></description>
     </item>
     
     <item>
       <title>启动模式</title>
-      <link>/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</link>
+      <link>https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</link>
       <pubDate>Mon, 16 Dec 2019 08:50:53 +0000</pubDate>
       
-      <guid>/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</guid>
+      <guid>https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</guid>
       <description></description>
     </item>
     
     <item>
       <title>matrialButton</title>
-      <link>/tags/matrialbutton/</link>
+      <link>https://helixs.github.io/tags/matrialbutton/</link>
       <pubDate>Thu, 28 Nov 2019 03:34:18 +0000</pubDate>
       
-      <guid>/tags/matrialbutton/</guid>
+      <guid>https://helixs.github.io/tags/matrialbutton/</guid>
       <description></description>
     </item>
     
     <item>
       <title>fragment</title>
-      <link>/tags/fragment/</link>
+      <link>https://helixs.github.io/tags/fragment/</link>
       <pubDate>Fri, 15 Feb 2019 06:02:00 +0000</pubDate>
       
-      <guid>/tags/fragment/</guid>
+      <guid>https://helixs.github.io/tags/fragment/</guid>
       <description></description>
     </item>
     
     <item>
       <title>bbr</title>
-      <link>/tags/bbr/</link>
+      <link>https://helixs.github.io/tags/bbr/</link>
       <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
       
-      <guid>/tags/bbr/</guid>
+      <guid>https://helixs.github.io/tags/bbr/</guid>
       <description></description>
     </item>
     
     <item>
       <title>centos</title>
-      <link>/tags/centos/</link>
+      <link>https://helixs.github.io/tags/centos/</link>
       <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
       
-      <guid>/tags/centos/</guid>
+      <guid>https://helixs.github.io/tags/centos/</guid>
       <description></description>
     </item>
     

@@ -2,71 +2,71 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>源码分析 on Hugo Bootstrap</title>
-    <link>/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+    <link>https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
     <description>Recent content in 源码分析 on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
-    <lastBuildDate>Sun, 26 Apr 2020 05:36:46 +0000</lastBuildDate><atom:link href="/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 26 Apr 2020 05:36:46 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Android源码一步一步分析系列之Retrofit</title>
-      <link>/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</link>
+      <link>https://helixs.github.io/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</link>
       <pubDate>Sun, 26 Apr 2020 05:36:46 +0000</pubDate>
       
-      <guid>/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</guid>
+      <guid>https://helixs.github.io/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</guid>
       <description>Retrofit是原Square大神JakeWharton面向Android和Java平台的http客户端。 那么我们常用的Retrofit+</description>
     </item>
     
     <item>
       <title>Android源码一步一步分析系列之OkHttp(6)——CallServerInterceptor</title>
-      <link>/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp6-callserverinterceptor/</link>
+      <link>https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp6-callserverinterceptor/</link>
       <pubDate>Fri, 10 Apr 2020 10:02:31 +0000</pubDate>
       
-      <guid>/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp6-callserverinterceptor/</guid>
+      <guid>https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp6-callserverinterceptor/</guid>
       <description>终于来到了最后一个拦截器，主要是通过上一个拦截器建立起来的连接通道通过交换机进行数据 包装发送 和 接受解包。 写入请求 Header 如果请求头的 Expect: 100-continue 时，只发送</description>
     </item>
     
     <item>
       <title>Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor</title>
-      <link>/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp5-connectinterceptor/</link>
+      <link>https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp5-connectinterceptor/</link>
       <pubDate>Fri, 10 Apr 2020 06:17:06 +0000</pubDate>
       
-      <guid>/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp5-connectinterceptor/</guid>
+      <guid>https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp5-connectinterceptor/</guid>
       <description>ConnectInterceptor拦截器里面的东西不多，主要是调用了连接池里面的东西。 为什么需要这个拦截器，当我们每次发送一次Http请求</description>
     </item>
     
     <item>
       <title>Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor</title>
-      <link>/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/</link>
+      <link>https://helixs.github.io/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/</link>
       <pubDate>Thu, 09 Apr 2020 05:16:19 +0000</pubDate>
       
-      <guid>/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/</guid>
+      <guid>https://helixs.github.io/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/</guid>
       <description>CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本</description>
     </item>
     
     <item>
       <title>Android源码一步一步分析系列之OkHttp(3)——BridgeInterceptor</title>
-      <link>/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/</link>
+      <link>https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/</link>
       <pubDate>Tue, 07 Apr 2020 10:09:27 +0000</pubDate>
       
-      <guid>/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/</guid>
+      <guid>https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/</guid>
       <description>了解更多请看 Android源码一步一步分析系列之OkHttp(1)——揭开面纱Android源码一步一步分析系列之OkHttp(2)——Re</description>
     </item>
     
     <item>
       <title>Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor</title>
-      <link>/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp2-retryandfollowupinterceptor/</link>
+      <link>https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp2-retryandfollowupinterceptor/</link>
       <pubDate>Tue, 07 Apr 2020 05:38:46 +0000</pubDate>
       
-      <guid>/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp2-retryandfollowupinterceptor/</guid>
+      <guid>https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp2-retryandfollowupinterceptor/</guid>
       <description>可以看一下上一篇文章 Android源码一步一步分析系列之OkHttp(1)——揭开面纱 RetryAndFollowUpInterceptor</description>
     </item>
     
     <item>
       <title>Android源码一步一步分析系列之OkHttp(1)——揭开面纱</title>
-      <link>/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/</link>
+      <link>https://helixs.github.io/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/</link>
       <pubDate>Thu, 02 Apr 2020 10:53:46 +0000</pubDate>
       
-      <guid>/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/</guid>
+      <guid>https://helixs.github.io/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/</guid>
       <description>说来很惭愧，做了这么多年Android没有仔仔细细的看过Okhttp源代码，空余时间都在学习些周边的技术。现在按照新手方式看一步写一步。 Ok</description>
     </item>
     

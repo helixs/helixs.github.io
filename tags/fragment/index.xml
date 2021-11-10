@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>fragment on Hugo Bootstrap</title>
-    <link>/tags/fragment/</link>
+    <link>https://helixs.github.io/tags/fragment/</link>
     <description>Recent content in fragment on Hugo Bootstrap</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>Copyright © 2016-{year} Razon Yang. All Rights Reserved.</copyright>
-    <lastBuildDate>Fri, 15 Feb 2019 06:02:00 +0000</lastBuildDate><atom:link href="/tags/fragment/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 15 Feb 2019 06:02:00 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/fragment/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>viewpager&#43;fragment的懒加载</title>
-      <link>/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</link>
+      <link>https://helixs.github.io/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</link>
       <pubDate>Fri, 15 Feb 2019 06:02:00 +0000</pubDate>
       
-      <guid>/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</guid>
+      <guid>https://helixs.github.io/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</guid>
       <description>使用 FragmentPagerAdapter 时，ViewPager 中的所有 Fragment 实例常驻内存，当 Fragment 变得不可见时仅仅是视图结构的销毁，即调用了 onDestroyView 方法。由于 FragmentPagerAdapter 内存消耗较大，所以适合少量静</description>
     </item>
     
