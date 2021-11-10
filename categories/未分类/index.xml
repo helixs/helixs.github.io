@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>未分类 on 西门吹风</title>
+    <link>https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/</link>
+    <description>Recent content in 未分类 on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 27 Mar 2019 07:37:48 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>android沉浸状态栏</title>
+      <link>https://helixs.github.io/posts/2019-03-27-android%E6%B2%89%E6%B5%B8%E7%8A%B6%E6%80%81%E6%A0%8F/</link>
+      <pubDate>Wed, 27 Mar 2019 07:37:48 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-03-27-android%E6%B2%89%E6%B5%B8%E7%8A%B6%E6%80%81%E6%A0%8F/</guid>
+      <description>&amp;lt;p&amp;gt; Android 4.4 为什么能够实现沉浸式的效果呢？因为在Android 4.4 新增了一个重要的属性：&amp;lt;code&amp;gt;FLAG_TRANSLUCENT_STATUS&amp;lt;/code&amp;gt; &amp;lt;/p&amp;gt; &amp;lt;pre&amp;gt;&amp;lt;code class=&amp;quot;hljs java copyable&amp;quot;&amp;gt; &amp;amp;lt;span class=&amp;quot;hljs-comment&amp;quot;&amp;gt;/** * Window flag: request a translucent status bar with minimal system-provided * background protection. * * &amp;amp;lt;p&amp;amp;gt;This flag can be controlled in your theme through the * {&amp;amp;lt;span class=&amp;quot;hljs-doctag&amp;quot;&amp;gt;@link&amp;amp;lt;/span&amp;gt; android.R.attr#windowTranslucentStatus} attribute; this attribute * is automatically set for you in the standard translucent decor themes * such as * {&amp;amp;lt;span class=&amp;quot;hljs-doctag&amp;quot;&amp;gt;@link&amp;amp;lt;/span&amp;gt; android.R.style#Theme_Holo_NoActionBar_TranslucentDecor}, * {&amp;amp;lt;span class=&amp;quot;hljs-doctag&amp;quot;&amp;gt;@link&amp;amp;lt;/span&amp;gt; android.R.style#Theme_Holo_Light_NoActionBar_TranslucentDecor}, * {&amp;amp;lt;span class=&amp;quot;hljs-doctag&amp;quot;&amp;gt;@link&amp;amp;lt;/span&amp;gt; android.</description>
+    </item>
+    
+    <item>
+      <title>androidButton设置minHeight和minWidth无效的问题</title>
+      <link>https://helixs.github.io/posts/2019-03-11-androidbutton%E8%AE%BE%E7%BD%AEminheight%E5%92%8Cminwidth%E6%97%A0%E6%95%88%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 11 Mar 2019 03:46:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-03-11-androidbutton%E8%AE%BE%E7%BD%AEminheight%E5%92%8Cminwidth%E6%97%A0%E6%95%88%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>今天在代码中设置button的minheight，发现没有效果。结果发现代码中设置minHeight实际上对应的是text的绘制最小区域，要使用minimumHeight
+ </description>
+    </item>
+    
+    <item>
+      <title>实现在gridLayoutManager中宽高一致的item</title>
+      <link>https://helixs.github.io/posts/2019-03-06-%E5%AE%9E%E7%8E%B0%E5%9C%A8gridlayoutmanager%E4%B8%AD%E5%AE%BD%E9%AB%98%E4%B8%80%E8%87%B4%E7%9A%84item/</link>
+      <pubDate>Wed, 06 Mar 2019 09:34:07 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-03-06-%E5%AE%9E%E7%8E%B0%E5%9C%A8gridlayoutmanager%E4%B8%AD%E5%AE%BD%E9%AB%98%E4%B8%80%E8%87%B4%E7%9A%84item/</guid>
+      <description> </description>
+    </item>
+    
+    <item>
+      <title>自定义View绘制等相关介绍地址</title>
+      <link>https://helixs.github.io/posts/2019-02-26-%E8%87%AA%E5%AE%9A%E4%B9%89view%E7%BB%98%E5%88%B6%E7%AD%89%E7%9B%B8%E5%85%B3%E4%BB%8B%E7%BB%8D%E5%9C%B0%E5%9D%80/</link>
+      <pubDate>Tue, 26 Feb 2019 03:07:37 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-26-%E8%87%AA%E5%AE%9A%E4%B9%89view%E7%BB%98%E5%88%B6%E7%AD%89%E7%9B%B8%E5%85%B3%E4%BB%8B%E7%BB%8D%E5%9C%B0%E5%9D%80/</guid>
+      <description>Android图像处理——Paint之Xfermode https://blog.csdn.net/allen315410/article/details/45077165 </description>
+    </item>
+    
+    <item>
+      <title>Glide在共享元素动画时会gif会停止播放</title>
+      <link>https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/</link>
+      <pubDate>Wed, 19 Dec 2018 07:29:46 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/</guid>
+      <description>在上一篇文章中我们实现了recyclerView到viewpager的转换，用glide加载gif，viewpager中并不能正常播放，把动画关了就可以，初步猜想是因为，我们在viewpager的istantiateItem中用glide直接去into了，此时共享元素动画是处于暂停状态，所以我们的gif也被迫暂停，当然我这只是猜想。可以等viewpager加载完成之后再into，或者延迟加载。</description>
+    </item>
+    
+    <item>
+      <title>android TextView总汇</title>
+      <link>https://helixs.github.io/posts/2019-03-13-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-03-13-/</guid>
+      <description>textview inputtype</description>
+    </item>
+    
+    <item>
+      <title>android 启动速度优化</title>
+      <link>https://helixs.github.io/posts/2019-05-17-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-05-17-/</guid>
+      <description>我们打开一些androidApp的时候老是会出现一些黑屏，白屏，延迟打开等部分情况。少则1-2秒多则3-5秒
+1、我们通过adb shell命令来查看启动耗时的部分情况
+ ThisTime-&amp;gt;从launch到SplashActivity启动所消耗的时间
+TotalTime-&amp;gt;如果有多个activity的话就是总共的时长
+WaitTime-&amp;gt;创建进程到启动所消耗的时间
+2、</description>
+    </item>
+    
+    <item>
+      <title>android 查看签名md5及sha</title>
+      <link>https://helixs.github.io/posts/2019-03-26-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-03-26-/</guid>
+      <description>安装jdk，配置path变量</description>
+    </item>
+    
+    <item>
+      <title>Android_JetPack之ViewModel</title>
+      <link>https://helixs.github.io/posts/2020-09-30-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-09-30-/</guid>
+      <description>我们来引用官方对ViewModel的定义，我们为什么使用它？
+ViewModel类旨在以注重生命周期的方式存储和管理界面相关的数据。ViewModel类让数据可在发生屏幕旋转等配置更改后继续留存。Android 框架可以管理界面控制器（如 Activity 和 Fragment）的生命周期。Android 框架可能会决定销毁或重新创建界面控制器，以响应完全不受您控制的某些用户操作或设备事件。如果系统销毁或重新创建界面控制器，则存储在其中的任何临时性界面相关数据都会丢失。例如，应用的某个 Activity 中可能包含用户列表。因配置更改而重新创建 Activity 后，新 Activity 必须重新提取用户列表。对于简单的数据，Activity 可以使用 onSaveInstanceState()方法从 onCreate()中的捆绑包恢复其数据，但此方法仅适合可以序列化再反序列化的少量数据，而不适合数量可能较大的数据，如用户列表或位图。另一个问题是，界面控制器经常需要进行异步调用，这些调用可能需要一些时间才能返回结果。界面控制器需要管理这些调用，并确保系统在其销毁后清理这些调用以避免潜在的内存泄露。此项管理需要大量的维护工作，并且在因配置更改而重新创建对象的情况下，会造成资源的浪费，因为对象可能需要重新发出已经发出过的调用。诸如 Activity 和 Fragment 之类的界面控制器主要用于显示界面数据、对用户操作做出响应或处理操作系统通信（如权限请求）。如果要求界面控制器也负责从数据库或网络加载数据，那么会使类越发膨胀。为界面控制器分配过多的责任可能会导致单个类尝试自己处理应用的所有工作，而不是将工作委托给其他类。以这种方式为界面控制器分配过多的责任也会大大增加测试的难度。从界面控制器逻辑中分离出视图数据所有权的做法更易行且更高效。—这个其实就是presenter还有一点可以通过ViewModel，Fragment和Activity、Fragment和Fragment之间共享数据和监听，省去了一大半烦恼。、大概的介绍和使用可以看看官方的文档我们从源代码的角度来分析分析：
+就拿一个ViewModelProviders.of(this).get(UserModel.class)
+ViewModel
+ 它是一个很简单的抽象类，所以我们需要使用它，在onCleared中我们可以做一些清理操作，如网络请求，耗时任务什么的。当界面不需要它的时候会调用它。
+ViewModelProviders
+  </description>
+    </item>
+    
+    <item>
+      <title>Android在子线程中更新UI</title>
+      <link>https://helixs.github.io/posts/2020-04-20-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-04-20-/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>android截图之应用内</title>
+      <link>https://helixs.github.io/posts/2019-02-25-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-25-/</guid>
+      <description> </description>
+    </item>
+    
+    <item>
+      <title>Android源码一步一步分析系列之OkIO</title>
+      <link>https://helixs.github.io/posts/2020-04-16-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-04-16-/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>匹配算法之KMP及Next数组</title>
+      <link>https://helixs.github.io/posts/2019-10-18-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-10-18-/</guid>
+      <description>KMP算法 Knuth-Morris-Pratt(克努斯-莫里斯-普拉特)字符串查找算法。
+可在一个主文本字符串S内查找一个词W的出现位置。此算法通过运用对这个词在不匹配时本身就包含足够的信息来确定下一个匹配将在哪里开始的发现，从而避免重新检查先前匹配的字符。这个算法是由高德纳和沃恩·普拉特在1974年构思，同年詹姆斯·H·莫里斯也独立地设计出该算法，最终由三人于1977年联合发表。
+朴素模式匹配算法 了解KMP之前我们先来想想用最简单的方式匹配字符串
+有很长一段字符串S，我们想要从S中匹配字符串P，得到匹配到P后分别在S(p)出的position的位置，也可以是指针位置。
+我们用最简单的朴素模式匹配算法来匹配(该算法也称布鲁特-福斯算法，其基本思想是从主串S的第一个字符起与模式串P的第一个字符比较，若相等，则继续逐一对字符进行后续的比较，否则从主串S第二个字符起与模式串P的第一个字符重新比较，知道模式串中每个字符依次和主串中第一个连续的字符序列相等时位置，此时成为匹配成功)
+1、
+     首先，字符串”BBC ABCDAB ABCDABCDABDE”的第一个字符与搜索词”ABCDABD”的第一个字符，进行比较。因为B与A不匹配，所以搜索词后移一位。
+2、
+    因为B与A不匹配，搜索词再往后移。
+3、
+    就这样，直到字符串有一个字符，与搜索词的第一个字符相同为止。
+4、
+     接着比较字符串和搜索词的下一个字符，还是相同。
+5、
+    直到字符串有一个字符，与搜索词对应的字符不相同为止。
+6、
+     这时，最自然的反应是，将搜索词整个后移一位，再从头逐个比较。这样做虽然可行，但是效率很差，因为你要把”搜索位置”移到已经比较过的位置，重比一遍。
+ 这种方法最然最易看懂，不过时间复杂度那是相当的高呀。
+使用KMP算法 先看代码
+ </description>
+    </item>
+    
+    <item>
+      <title>最优二叉树-哈</title>
+      <link>https://helixs.github.io/posts/2020-03-19-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-19-/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

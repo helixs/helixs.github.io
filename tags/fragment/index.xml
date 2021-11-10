@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fragment on 西门吹风</title>
+    <link>https://helixs.github.io/tags/fragment/</link>
+    <description>Recent content in fragment on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 15 Feb 2019 06:02:00 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/fragment/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>viewpager&#43;fragment的懒加载</title>
+      <link>https://helixs.github.io/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</link>
+      <pubDate>Fri, 15 Feb 2019 06:02:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</guid>
+      <description>使用 FragmentPagerAdapter 时，ViewPager 中的所有 Fragment 实例常驻内存，当 Fragment 变得不可见时仅仅是视图结构的销毁，即调用了 onDestroyView 方法。由于 FragmentPagerAdapter 内存消耗较大，所以适合少量静态页面的场景。
+使用 FragmentStatePagerAdapter 时，当 Fragment 变得不可见，不仅视图层次销毁，实例也被销毁，即调用了 onDestroyView 和 onDestroy 方法，仅仅保存 Fragment 状态。相比而言， FragmentStatePagerAdapter 内存占用较小，所以适合大量动态页面，比如我们常见的新闻列表类应用。
+不管是哪种情况，他们的view都是有可能被销毁的。关键点是在于view的保存和fragment的显示隐藏状态
+ 二 、当使用FragmentPagerAdapter动态删除和添加的问题 看下面的源码
+instantiateItem在执行时会FragmentManager里面查找是否已存在对应的fragment，如果不存在，才会执行getItem 。所以会无效
+两个解决方法
+1使用FragmentPagerStateAdapter
+2覆写getItemId()
+  未完待续
+感谢http://yifeng.studio/2016/12/23/android-fragment-and-viewpager-attentions/ </description>
+    </item>
+    
+  </channel>
+</rss>

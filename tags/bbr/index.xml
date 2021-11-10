@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>bbr on 西门吹风</title>
+    <link>https://helixs.github.io/tags/bbr/</link>
+    <description>Recent content in bbr on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 16 Jan 2019 06:29:02 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/bbr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>centos开启bbr</title>
+      <link>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</link>
+      <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</guid>
+      <description>TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接的效果。
+Google提交到Linux主线并发表在ACM queue期刊上的TCP-BBR拥塞控制算法。继承了Google“先在生产环境上部署，再开源和发论文”的研究传统。TCP-BBR已经再YouTube服务器和Google跨数据中心的内部广域网(B4)上部署。由此可见出该算法的前途。
+TCP-BBR的目标就是最大化利用网络上瓶颈链路的带宽。一条网络链路就像一条水管，要想最大化利用这条水管，最好的办法就是给这跟水管灌满水。
+ BBR解决了两个问题：
+ 在有一定丢包率的网络链路上充分利用带宽。非常适合高延迟，高带宽的网络链路。 降低网络链路上的buffer占用率，从而降低延迟。非常适合慢速接入网络的用户。  以上来自http://blog.51cto.com/zero01/2064660 通过上面我们大概知道bbr就是想办法给你加大带宽流量的和速锐那种暴力发包是两回事。google的这个bbr算法已经集成到linux4.9内核以上，即便你的系统是最新版但是大多数情况下云服务厂商默认都还是使用的3.x，所以我们要升级内核并且切换到该内核上面，最后再开启bbr。
+然后我们进入http://elrepo.org/tiki/tiki-index.php 查看最新的rpm源，按照上面的方法进行源设置
+最新的教程已经不需要上面的这样了直接install
+然后，进入http://elrepo.org/tiki/kernel-ml 查看安装方法
+然后，使用这个看不懂的命令进入查看已经安装的内核
+我这里已经安装了4.20的内核版本了，还得切换到这个内核
+基本上就成功啦。</description>
+    </item>
+    
+  </channel>
+</rss>

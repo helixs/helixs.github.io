@@ -1,10 +1,83 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Helixs的小窝</title>
+    <title>Tags on 西门吹风</title>
     <link>https://helixs.github.io/tags/</link>
-    <description>Recent content in Tags on Helixs的小窝</description>
+    <description>Recent content in Tags on 西门吹风</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language><atom:link href="https://helixs.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 19 Feb 2021 07:27:02 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>android</title>
+      <link>https://helixs.github.io/tags/android/</link>
+      <pubDate>Fri, 19 Feb 2021 07:27:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gradle</title>
+      <link>https://helixs.github.io/tags/gradle/</link>
+      <pubDate>Fri, 19 Feb 2021 07:27:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/gradle/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DownloadManager</title>
+      <link>https://helixs.github.io/tags/downloadmanager/</link>
+      <pubDate>Wed, 11 Mar 2020 01:53:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/downloadmanager/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>启动模式</title>
+      <link>https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Mon, 16 Dec 2019 08:50:53 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>matrialButton</title>
+      <link>https://helixs.github.io/tags/matrialbutton/</link>
+      <pubDate>Thu, 28 Nov 2019 03:34:18 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/matrialbutton/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>fragment</title>
+      <link>https://helixs.github.io/tags/fragment/</link>
+      <pubDate>Fri, 15 Feb 2019 06:02:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/fragment/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bbr</title>
+      <link>https://helixs.github.io/tags/bbr/</link>
+      <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/bbr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>centos</title>
+      <link>https://helixs.github.io/tags/centos/</link>
+      <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/tags/centos/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

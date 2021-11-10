@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on 西门吹风</title>
+    <link>https://helixs.github.io/categories/c/</link>
+    <description>Recent content in C on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 30 May 2019 09:01:00 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C语言stdio中fgets和gets、puts的区别</title>
+      <link>https://helixs.github.io/posts/2019-05-30-c%E8%AF%AD%E8%A8%80stdio%E4%B8%ADfgets%E5%92%8Cgetsputs%E7%9A%84%E5%8C%BA%E5%88%AB/</link>
+      <pubDate>Thu, 30 May 2019 09:01:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-05-30-c%E8%AF%AD%E8%A8%80stdio%E4%B8%ADfgets%E5%92%8Cgetsputs%E7%9A%84%E5%8C%BA%E5%88%AB/</guid>
+      <description> 结果：
+红色是输入部分，**printf默认不会加回车，puts会在后面加入回车。**定义的inputs数组的最大只有10，我所输入的所有字符都打印出来了，所以gets函数并没有检查也无法检查inputs所占用的空间和范围，毕竟读取字符串也只能按照\0结尾。
+然后再来看看fgets()多了最大值和字符从那个地方获取。地方我们用默认就行了，毕竟不太懂。仔细数一数打印出来了多少个，其实是29个,看来第30个添加结束标志\0。末尾的样子就是I\0了
+所以我们以后输入字符串最好用fgets不要用gets。
+ ==看看输入字符后完整内存看看
+结果
+就算少输几位后面也就是0 10 0 0 0，fgets无论你怎么输入都会在\0后面加入\n ascii为10，所以我们以后最好在判断\0的\n情况咯。
+ </description>
+    </item>
+    
+  </channel>
+</rss>

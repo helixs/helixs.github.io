@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vps工具 on 西门吹风</title>
+    <link>https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/</link>
+    <description>Recent content in vps工具 on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 17 May 2019 02:05:50 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>centos7安装sha*dow***s-libev</title>
+      <link>https://helixs.github.io/posts/2019-05-17-centos7%E5%AE%89%E8%A3%85shadows-libev/</link>
+      <pubDate>Fri, 17 May 2019 02:05:50 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-05-17-centos7%E5%AE%89%E8%A3%85shadows-libev/</guid>
+      <description>基于总所周知的原因，获取开发者资料也很是麻烦，顺便做个记录，怕以后忘记。下面所有的xxxxx 替换为 shdowockslibev的版本呢比较的轻量级，用docker的方式安装最是省心。也怪自己不太会docker的使用，就直接用原生吧，以下都是基于centos7的
+打开它的github，找到centos 添加libev的源。顺便复制一下这个，创建文件librehat-xxxxx-epel-7.repo
+放入/etc/yum.repos.d/
+或者直接
+ 如果出现
+Error: Package: xxxxxxx-libev-3.2.0-2.el7.x86_64 (librehat-xxxxx)
+Requires: libsodium &amp;gt;= 1.0.4
+Error: Package: xxxxxx-libev-3.2.0-2.el7.x86_64 (librehat-xxxxx)
+Requires: mbedtls
+好像是udns源没有启用上，部分的vps可能会出现这个情况
+解决办法github或者
+成功后再执行安装操作。
+试试呢
+加上bbr那么效果更好了</description>
+    </item>
+    
+    <item>
+      <title>centos开启bbr</title>
+      <link>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</link>
+      <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</guid>
+      <description>TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接的效果。
+Google提交到Linux主线并发表在ACM queue期刊上的TCP-BBR拥塞控制算法。继承了Google“先在生产环境上部署，再开源和发论文”的研究传统。TCP-BBR已经再YouTube服务器和Google跨数据中心的内部广域网(B4)上部署。由此可见出该算法的前途。
+TCP-BBR的目标就是最大化利用网络上瓶颈链路的带宽。一条网络链路就像一条水管，要想最大化利用这条水管，最好的办法就是给这跟水管灌满水。
+ BBR解决了两个问题：
+ 在有一定丢包率的网络链路上充分利用带宽。非常适合高延迟，高带宽的网络链路。 降低网络链路上的buffer占用率，从而降低延迟。非常适合慢速接入网络的用户。  以上来自http://blog.51cto.com/zero01/2064660 通过上面我们大概知道bbr就是想办法给你加大带宽流量的和速锐那种暴力发包是两回事。google的这个bbr算法已经集成到linux4.9内核以上，即便你的系统是最新版但是大多数情况下云服务厂商默认都还是使用的3.x，所以我们要升级内核并且切换到该内核上面，最后再开启bbr。
+然后我们进入http://elrepo.org/tiki/tiki-index.php 查看最新的rpm源，按照上面的方法进行源设置
+最新的教程已经不需要上面的这样了直接install
+然后，进入http://elrepo.org/tiki/kernel-ml 查看安装方法
+然后，使用这个看不懂的命令进入查看已经安装的内核
+我这里已经安装了4.20的内核版本了，还得切换到这个内核
+基本上就成功啦。</description>
+    </item>
+    
+    <item>
+      <title>centos7 aria2 安装配置</title>
+      <link>https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</link>
+      <pubDate>Wed, 21 Nov 2018 07:45:05 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</guid>
+      <description>下载并编译aria2 最新版本新建aria2.conf配置文件
+vi /etc/aria2/aria2.conf
+测试
+ 配置www权限：&amp;lt;span class=&amp;ldquo;hljs-attribute&amp;rdquo;&amp;gt;vi&amp;lt;/span&amp;gt; /etc/sudoers按“i”进入编辑： root ALL=(ALL:ALL) ALL 这行下面添加上
+强制保存退出。
+以www身份运行aria2
+或者
+配置开机自启动：&amp;lt;span class=&amp;ldquo;hljs-attribute&amp;rdquo;&amp;gt;vi&amp;lt;/span&amp;gt; /etc/rc.local 在 exit 0 前面加上sudo -u www aria2c &amp;ndash;conf-path=&amp;lt;span class=&amp;ldquo;hljs-regexp&amp;rdquo;&amp;gt;/etc/&amp;lt;/span&amp;gt;aria2/aria2.conf -D来自 这里配置成系统服务
+赋予aria2c文件可执行权限
+from如果遇到多用户权限问题可以这样操作 https://www.jianshu.com/p/955e933eb191 </description>
+    </item>
+    
+    <item>
+      <title>Centos安装NextCloud</title>
+      <link>https://helixs.github.io/posts/2018-11-19-/</link>
+      <pubDate>Mon, 19 Nov 2018 03:09:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2018-11-19-/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

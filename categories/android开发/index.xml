@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Android开发 on 西门吹风</title>
+    <link>https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/</link>
+    <description>Recent content in Android开发 on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 19 Feb 2021 07:27:02 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AndroidStudio通过Gradle查看第三方依赖关系</title>
+      <link>https://helixs.github.io/posts/2021-02-19-androidstudio%E9%80%9A%E8%BF%87gradle%E6%9F%A5%E7%9C%8B%E7%AC%AC%E4%B8%89%E6%96%B9%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/</link>
+      <pubDate>Fri, 19 Feb 2021 07:27:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2021-02-19-androidstudio%E9%80%9A%E8%BF%87gradle%E6%9F%A5%E7%9C%8B%E7%AC%AC%E4%B8%89%E6%96%B9%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/</guid>
+      <description>进行Android开发我们经常遇到一些依赖冲突，以及库版本号不一致导致出现各种问题。往往就下面这张图只是看到了你所有的依赖项，并不知道这些依赖都是从哪里来的，除非你进去一个个查看pow.xml那么蠢了。
+                       看了半天也不知道是从哪里依赖的。
+有个简单的方法，打开gradle工具，找到项目下如app模块-&amp;gt;Tasks-&amp;gt;help-&amp;gt;dependencies-&amp;gt;双击                         那么他会执行 :app:dependencies命令,会打印出依赖项及子依赖项
+                      往上说的那些什么插件的都是老方法了，新版的studio没办法直观反映</description>
+    </item>
+    
+    <item>
+      <title>Android_RecyclerView设置最大数量高度</title>
+      <link>https://helixs.github.io/posts/2020-05-08-android_recyclerview%E8%AE%BE%E7%BD%AE%E6%9C%80%E5%A4%A7%E6%95%B0%E9%87%8F%E9%AB%98%E5%BA%A6/</link>
+      <pubDate>Fri, 08 May 2020 09:16:12 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-05-08-android_recyclerview%E8%AE%BE%E7%BD%AE%E6%9C%80%E5%A4%A7%E6%95%B0%E9%87%8F%E9%AB%98%E5%BA%A6/</guid>
+      <description>有这么一个需求，一个列表要满足一个条件
+1、列表少于等于5条，列表的高度跟随item的数量变化而变化
+2、如果超过5条，按照最大5条的高度显示，并支持滚动
+所以基本的由于item高度不能定死，所以支持设置recyclerView高度是wrap_content
+然后具体操作看了下源码，大部分计算都是在LayoutManager中，找到这里
+主要是通过这个方法测量子控件叠加的高度，方法居然给我是私有的，没办法继承，不然我就直接控制循环数量了。转而求其次，实现setMeasuredDimension方法
+哈哈，是不是超级简单，具体用法
+ </description>
+    </item>
+    
+    <item>
+      <title>Android源码一步一步分析系列之Retrofit</title>
+      <link>https://helixs.github.io/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</link>
+      <pubDate>Sun, 26 Apr 2020 05:36:46 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</guid>
+      <description>Retrofit是原Square大神JakeWharton面向Android和Java平台的http客户端。
+那么我们常用的Retrofit+Okhttp的关系是什么呢？其实Retrofit需要依赖Okhttp，就如同Okhttp依赖OkIO一样，Retrofit当使用Http请求时候方面了我们的结构化配置。
+Okhttp：
+Android为我们提供了两种HTTP交互的方式：HttpURLConnection和Apache HTTP Client（ Android 6.0——API 23已经不支持该方式了 ），虽然两者都支持HTTPS，流的上传和下载，配置超时IPv6和连接池，已足够满足我们各种HTTP请求的需求。但更高效的使用HTTP可以让我们的应用运行更快、更节省流量。这就诞生了Okhttp及Retrofit等HTTP库。OKHttp是一款高效的HTTP库，支持连接同一地址的链接共享同一个socket，通过连接池来减小响应延迟，还有透明的GZIP压缩，请求缓存等优势。OkHttp存在以下的特点：
+ 支持HTTP2/SPDY socket自动选择最好路线，并支持自动重连 拥有自动维护的socket连接池，减少握手次数 拥有队列线程池，轻松写并发 拥有Interceptors轻松处理请求与响应（比如透明GZIP压缩,LOGGING） 基于Headers的缓存策略  Retrofit:retrofit就是对okhttp做了一层封装。把网络请求都交给给了Okhttp，我们只需要通过简单的配置就能使用retrofit来进行网络请求了。Retrofit框架存在的优势：
+ Retrofit使用注解方式，大大简化了我们的URL拼写形式，而且注解含义一目了然，简单易懂； Retrofit使用简单，结构层次分明，每一步都能清晰的表达出之所以要使用的寓意； Retrofit支持同步和异步执行，使得请求变得异常简单，只要调用enqueue/execute即可完成； Retrofit更大自由度的支持我们自定义的业务逻辑，如自定义Converters。 Retrofit支持多种文件解析(Gson,Json,XML,Protobuf) Retrofit支持RxJava  我们来看如何使用
+基于com.squareup.retrofit2:retrofit:2.8.1.
+看到没，是不是很方便呢，我们只需配置一个baseUrl，放置一个接口配置清单，我们就可以进行简单的网络请求了。
+分析源码
+下面这张图是Retrofit常用依赖包
+    adapter和converter根据自己实际情况进行调整
+看看retrofit的东西，哟，不是很多，说明我们看它更加容易
+                http下面都是一堆注解，什么http方法 HEAD QUERY 等等非常丰富，retrofit运行过程中会反射获取这些类型再进行合理的封装。
+看看Retrofit中的成员变量
+Retrofit的Builder模式初始化
+在1和2中我们看到了使用平台
+Platform里面的东西其实不多，就是Callback的执行器和一些跟JAVA8特性相关，跟Retrofit核心关系不是很大。
+createSerivce
+这里面用到了动态代理模式，可以学习一下。
+下面我们就来看看ServiceMethod是怎么获取的
+1、RequestFactory
+2、HttpServiceMethod
+我们生成了RequestFactory后就马上调用了 HttpServiceMethod.parseAnnotations(retrofit, method, requestFactory);</description>
+    </item>
+    
+    <item>
+      <title>Android SAF储存访问框架</title>
+      <link>https://helixs.github.io/posts/2020-03-30-android-saf%E5%82%A8%E5%AD%98%E8%AE%BF%E9%97%AE%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Mon, 30 Mar 2020 07:22:04 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-30-android-saf%E5%82%A8%E5%AD%98%E8%AE%BF%E9%97%AE%E6%A1%86%E6%9E%B6/</guid>
+      <description>Android 4.4（API 级别 19）引入了存储访问框架 (SAF)。借助 SAF，用户可轻松在其所有首选文档存储提供程序中浏览并打开文档、图像及其他文件。用户可通过易用的标准界面，以统一方式在所有应用和提供程序中浏览文件，以及访问最近使用的文件。
+云存储服务或本地存储服务可实现封装其服务的 ``DocumentsProvider ，进而参与此生态系统。只需几行代码，便可将需要访问提供程序文档的客户端应用与 SAF 进行集成。
+简单的来说，不需要自己主动读取sdcard的媒体和文档，系统给你统一的UI，统一的选择器，让你获取资料。
+SAF 包含以下内容：
+ 文档提供程序 — 一种内容提供程序，可让存储服务（如 Google Drive）显示其管理的文件。文档提供程序以 ``DocumentsProvider 类的子类形式实现。文档提供程序的架构基于传统的文件层次结构，但其实际的数据存储方式由您决定。Android 平台包含若干内置文档提供程序，如 Downloads、Images 和 Videos。 客户端应用 — 一种自定义应用，它会调用 [ACTION\_OPEN\_DOCUMENT][2] 或 ACTION_CREATE_DOCUMENT ACTION_OPEN_DOCUMENT_TREE这三种Intent的Action,来实现打开，创建文档，以及打开文档树。 选择器 — 一种系统界面，可让用户访问所有满足客户端应用搜索条件的文档提供程序内的文档。           左边是我们的客户端， 中间SystemUI 选择器， 右边是我们的文档提供程序 就是实现了_DocumentsProvider 的提供方_
+在 Android 4.3 及更低版本中，如果您想让应用从其他应用中检索文件，则该应用必须调用 [ACTION_PICK][4] 或 ACTION_GET_CONTENT 等 Intent。然后，用户必须选择一个要从中选取文件的应用，并且所选应用必须提供用户界面，以便用户浏览和选取可用文件。
+在 Android 4.4 及更高版本中，您还可选择使用 ``ACTION_OPEN_DOCUMENT Intent，此 Intent 会显示由系统控制的选择器界面，以便用户浏览其他应用提供的所有文件。借助此界面，用户便可从任何受支持的应用中选取文件。
+[ACTION\_OPEN\_DOCUMENT][2] 并非用于代替 ACTION_GET_CONTENT 。您应根据应用需求选择所使用的 Intent：</description>
+    </item>
+    
+    <item>
+      <title>Android调用DownloadManager下载文件及安装apk，兼容6、7、8&#43;</title>
+      <link>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</link>
+      <pubDate>Wed, 11 Mar 2020 01:53:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</guid>
+      <description>我们的app经常有需求下载文件等，还有就是下载安装。
+1、下载文件的方式 1,很多三方框架都有文件上传下载功能，可以借助三方框架(比如Volley,OkHttp,或者还有个很不错的库OKdownload,不过这个库比较重量级，我们只做简单的下载就不太需要啦)
+2,也可以开启一个线程去下载,（可以用IntentService）
+3，最简单的一种方式：Android SDK 其实给我们提供了下载类DownloadManager,只需要简单的配置项设置，就能轻松实现下载功能。
+DownloadManager 是SDK 自带的，大概流程如下：
+（1）创建一个Request,进行简单的配置（下载地址，和文件保存地址等）
+（2）下载完成后，系统会发送一个下载完成的广播，我们需要监听广播。
+（3）监听到下载完成的广播后，根据id查找下载的apk文件
+（4）在代码中执行apk安装。
+Activity中使用
+简单的使用就是这些，有问题可以评论哦</description>
+    </item>
+    
+    <item>
+      <title>android对finishAffinity的简单认识</title>
+      <link>https://helixs.github.io/posts/2019-12-16-android%E5%AF%B9finishaffinity%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
+      <pubDate>Mon, 16 Dec 2019 08:50:53 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-12-16-android%E5%AF%B9finishaffinity%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
+      <description>大多数简单的Android应用我们都是直接startActivity启动和finish完成销毁。慢慢我们根据应用的各个场景及跳转复杂度开始使用了lanchMode诸如singleTask singleTop，NewTask等等。用是用了，但是用的是不清不楚不明不白，倘若面试疑问就是一脸懵逼。今天着重看看Task栈和finishAffinity的用法，不过在这之前还是找找启动模式的一些资料，先到网上翻阅，看看人们是怎么说的。
+Activity 启动模式和任务栈 任务栈（tasks-and-back-stack） 创建任务栈 在两种情况下，有可能会创建一个新的任务栈：
+（1）以 FLAG_ACTIVITY_NEW_TASK 方式启动一个 activity；
+（2）在 AndroidManifest.xml 中配置了 android:taskAffinity。
+如果我们使用 startActivity 启动一个 Activity，没有添加任何 flag 时，新启动的 Activity 会与调用 startActivity 的 Activity 位于同一个任务栈中；在默认情况下，应用内的所有 Activity 都会被存放在以包名命名的任务栈中。
+当我们以 FLAG_ACTIVITY_NEW_TASK 方式启动一个 Activity 时，如果某个任务栈里已经有该 Activity 了，那么会将该任务栈从后台切换到前台，也即从停止状态切换到活跃状态，否则先创建一个新的任务栈，将创建一个 Activity 实例，将该实例作为 Root Activity（任务栈最底部的 Activity）。
+如果在当前的任务栈中，按照FLAG_ACTIVITY_NEW_TASK启动当前根Activity是无法启动的。如果同样方式启动android:taskAffinity一致但是Activity不一样也不会启动新的任务栈，而是在当前任务栈启动一个新的Activity。 西门笔者试了一下，在默认的lanchMode下，如果要使用FLAG_ACTIVITY_NEW_TASK切换任务栈或者创建新的任务栈要同时满足两个需求，1、当且仅当当前任务栈的RootActivityandroid:taskAffinity和被启动的Activity的android:taskAffinity不一致2、如果要切换在后台的任务栈，需要满足被启动的Acitivity在其他某个任务栈的作为Root节点，不过相应的，你看看在没有魔改的android系统的多任务栏切换是不是多了那么多个taskAffinity窗口呢，哈哈~~~所以看看微信小程序是不是也是动态生成的小程序的任务栈。不过，如果同时也添加了 Intent.FLAG_ACTIVITY_MULTIPLE_TASK 属性，那么系统会无条件创建一个新的任务栈。
+如果要启动的 Activity 配置了 android:taskAffinity，那么系统会将该 Activity 放到对应的任务栈中。
+销毁任务栈  当我们从最近任务中移除对应的任务时，该任务栈也会被移除。从 Android 5.x 起，重启后任务栈可以被恢复。（see[持久化的任务栈][持久化的任务栈]） 当任务栈中已经没有 Activity 时，该任务栈会被自动销毁。 当系统内存较少时，任务栈也有可能被移除，只保留重建该任务栈需要的信息。  当任务栈被销毁时，之前在任务栈中的 Activity 关联的服务会触发 onTaskStopped() 回调，可以决定是否要结束服务；如果在 AndroidManifest.xml 设置 android:stopWithTask=&amp;quot;true&amp;quot;（默认 false），则不会接收到该回调，同时服务会自动被销毁。不过在 Android 4.</description>
+    </item>
+    
+    <item>
+      <title>Android MaterialButton的一些问题</title>
+      <link>https://helixs.github.io/posts/2019-11-28-android-materialbutton%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Thu, 28 Nov 2019 03:34:18 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-11-28-android-materialbutton%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</guid>
+      <description>MaterialButton和MaterialCardView的都新增了边框属性，我们没必要为了一个边框写那么多shape，一旦多了谁着得住。
+1、在使用MaterialButton注意一点是它必须设置android:textAppearance属性，不然会崩溃 This component requires that you specify a valid TextAppearance attribute. Update your app theme to inherit from Theme.MaterialComponents (or a descendant)它会检查textApearance属性，解决方式有两种如下:
+1、添加它就好
+2、application或activity或控件的theme继承自Theme.MaterialComponents.xxxx,使type能够找到这个属性，如
+其实想了想，也许以后MaterialComponents的text相关组件都会进行这种操作吧。
+2、在使用MaterialButton时候可能遇到背景颜色不能充满控件的问题。 如果按照以前默认的方式添加背景颜色，我们发现背景颜色不能充满上下编剧，我们对比使用appcompatButton
+      1、从上面的图片可以看出它们的背景颜色不一样。MaterialButton是不受android:background控制的，官方建议我们设置app:backgroundHint来进行背景的更改。
+2、AppCompatButton如果设置了android:background会覆盖上下左右的间距，MaterialButton则不会
+3、MaterialButton设置了app:backgroundHint左右是没有间距的，而上下有。AppCompatButton设置了app:backgroundHint是上下左右都有间距
+找到原因https://github.com/material-components/material-components-android/blob/master/docs/components/MaterialButton.md#attributes Note: MaterialButton is visually different from Button and AppCompatButton. One of the main differences is that AppCompatButton has a 4dp inset on the left and right sides, whereas MaterialButton does not. To add an inset to match AppCompatButton, set android:insetLeft and android:insetRight on the button to 4dp, or change the spacing on the button’s parent layout.</description>
+    </item>
+    
+    <item>
+      <title>Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue</title>
+      <link>https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</link>
+      <pubDate>Fri, 27 Sep 2019 06:30:21 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</guid>
+      <description>作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯到异步操作的时候呢都是直接Thread+handler根本没考虑后果，做完事就行。面试的时候就是被按在地上一顿摩擦。
+在alibaba开发手册上，这样写到：
+【强制】新建线程时，必须通过线程池提供（AsyncTask 或者ThreadPoolExecutor或者其他形式自定义的线程池），不允许在应用中自行显式创建线程。
+_ 说明：使用线程池的好处是减少在创建和销毁线程上所花的时间以及系统资源的开销，解决资源不足的问题。如果不使用线程池，有可能造成系统创建大量同类线程而导致消耗完内存或者“过度切换”的问题。另外创建匿名线程不便于后续的资源使用分析，对性能分析等会造成困扰。_
+所以我们在进阶开发的时候特别涉及到大量数据操作的时候很有必要使用线程池来管理我们的线程任务。
+线程池创建 Android中常用的线程池都是通过对ThreadPoolExecutor进行不同配置来实现的，下面是它的构造方法
+ corePoolSize线程池中核心线程的数量 maximumPoolSize 线程池中最大线程数量（其中包括了核心线程） keepAliveTime当线程数大于核心时，这是多余的空闲线程在终止之前等待新任务的最长时间，也就是非核心线程的超时时长，当系统中非核心线程闲置时间超过keepAliveTime之后，则会被回收。如果ThreadPoolExecutor的allowCoreThreadTimeOut属性设置为true，则该参数也表示核心线程的超时时长 unitkeepAliveTime 的时间单位多数情况下按照秒和毫秒来做 workQueueBlockingQueue的实现类 在执行任务之前用于保留任务的队列。该队列将仅保存由ThreadPoolExecutor.execute方法提交的 Runnable任务。这也是我们这片文章的重点内容 threadFactory线程池在创建线程的工厂类，如果不传入默认会有一个Executors.defaultThreadFactory() handler拒绝策略，当线程无法执行新任务时（一般是由于线程池中的线程数量已经达到最大数或者线程池关闭导致的），默认情况下，当线程池无法处理新线程时，会抛出一个RejectedExecutionException。  了解到了它的构造方法后我们来捋一捋，看一下ThreadPoolExecutor.execute方法
+ctl是AtomicInteger类型，(里面保存了当前线程池中有效线程数量count和当前线程池运行的状态runState，count的增减同步，保证每次get的时候数量是最新的，所谓的原子性。每次我们都只用get的值，里面是用位运算符关联两个值的。位运算我一脸懵逼反正它保存了两个值了)。如果当前运行的线程的数量小于核心线程数量(就是我们在构造方法传入的corePoolSize)，那么就正常添加并执行任务。如果没有添加成功，就继续检查当前线程池的运行状态，如果还是在运行中，那么尝试通过blockingQueue的offer方法(记住只有offer方法，后面讲的那么这个线程池没用上)把Runnable放到任务队列中（后续核心线程如果有任务完成，那么就从这个队列中使用take方法取出Runnable放入到核心线程去执行任务）。如果加入成功到队列中，检查线程池状态，如果线程池在运行，那么就删除添加的Runnable，如果一切成功就抛出RejectedExecutionException。后面都看得懂就不解释了。
+过程如下
+ execute一个线程之后，如果线程池中的线程数未达到核心线程数，则会立马启用一个核心线程去执行。 execute一个线程之后，如果线程池中的线程数已经达到核心线程数，且workQueue未满，则将新线程放入workQueue中等待执行。 execute一个线程之后，如果线程池中的线程数已经达到核心线程数但未超过非核心线程数，且workQueue已满，则开启一个非核心线程来执行任务。 execute一个线程之后，如果线程池中的线程数已经超过非核心线程数，则拒绝执行该任务。   BlockingQueue 下面引入网上对BlockingQueue的主要方法的解释
+&amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;抛出异常&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;特殊值&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;阻塞&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td align=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;em&amp;gt;&amp;lt;strong&amp;gt;超时&amp;lt;/strong&amp;gt;&amp;lt;/em&amp;gt; &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.csdn.net/itm_hadf/article/details/7538083&amp;quot; rel=&amp;quot;nofollow&amp;quot; data-token=&amp;quot;d84ab2ded6a50457642e83b0a8a699b4&amp;quot;&amp;gt;&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;&amp;lt;strong&amp;gt;add(e)&amp;lt;/strong&amp;gt;&amp;lt;/a&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.csdn.net/itm_hadf/article/details/7538083&amp;quot; rel=&amp;quot;nofollow&amp;quot; data-token=&amp;quot;d84ab2ded6a50457642e83b0a8a699b4&amp;quot;&amp;gt;&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;&amp;lt;strong&amp;gt;offer(e)&amp;lt;/strong&amp;gt;&amp;lt;/a&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.csdn.net/itm_hadf/article/details/7538083&amp;quot; rel=&amp;quot;nofollow&amp;quot; data-token=&amp;quot;d84ab2ded6a50457642e83b0a8a699b4&amp;quot;&amp;gt;&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;&amp;lt;strong&amp;gt;put(e)&amp;lt;/strong&amp;gt;&amp;lt;/a&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;td&amp;gt; &amp;lt;a href=&amp;quot;http://blog.</description>
+    </item>
+    
+    <item>
+      <title>Java GC简单认识</title>
+      <link>https://helixs.github.io/posts/2019-07-30-java-gc%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
+      <pubDate>Tue, 30 Jul 2019 04:00:27 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-07-30-java-gc%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
+      <description>前几日，我去外面试了试面试。找找新工作看看有没有合适的。前面基本上很顺利，没有什么特别的难度和问题，本以为可以满怀信心的入职，结果被泼了一盆冷水。被问到关于GC机制的问题，GC算法有哪些，规则如何等等，我懵逼了，我只知道GC是垃圾回收，在内存不够的时候会触发它，然后回收没有引用的内存。然后它是如何实现的可真没有仔细研究过。书到用时方恨少，事非经过不知难。
+在很多年前我们在运行android程序的时候，时不时的会卡顿，我当时不以为然。排除线程和代码相关的情况下多半都与触发了GC有关西。了解才知道，在触发GC线程的时候，其它线程会进行等待，包括UI线程，UI线程卡顿了，那么我们肯定就会卡了。
+可以看看jvm运行时内存分配哪些对象会被回收？ 对于寄存器、栈和本地方法区，他们都是跟随着当前线程走的，线程走完也就消亡了，所以不许要GC去触碰它。
+而GC的主要对象是Java堆，这个地方跟线程的生命周期没有直接关联，就算你方法走完，new的对象也不会马上消失，直到GC的时候才有可能回收它。次要对象就是方法区的常量或者类等，毕竟这个一般也不会大到哪里去。
+对象存活的依据 1、引用计数法  原理：给对象添加一个引用计数器，每当有地方引用时计数器加 1，引用失效时减 1。当该对象引用为 0 时，判定对象失效 优点：实现简单，判定效率高 缺点：很难解决对象之间循环引用的问题  如果 class A,classB都持有对方的引用那么就不可能回收了！。
+ &amp;lt;ol&amp;gt; &amp;lt;li&amp;gt; 判断对象是否覆盖了 finalize() 方法 &amp;lt;/li&amp;gt; &amp;lt;/ol&amp;gt; &amp;lt;p&amp;gt; 如果覆盖了 finalize() 方法，那么将 finalize() 放到 F-Queue 队列中 &amp;lt;/p&amp;gt; &amp;lt;p&amp;gt; 如果未覆盖该方法，则直接回收 &amp;lt;/p&amp;gt; &amp;lt;ol start=&amp;quot;2&amp;quot;&amp;gt; &amp;lt;li&amp;gt; 执行 F-Queue 队列中的 finalize() 方法&amp;lt;br /&amp;gt; 由虚拟机自动建立一个优先级较低的线程去执行 F-Queue 中的 finalize() 方法，这里的执行只是触发这些方法并不保证会等待它执行完毕。如果 finalize() 方法作了耗时操作，虚拟机会停止执行并将该对象清除。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; 对象销毁或重生&amp;lt;br /&amp;gt; &amp;lt;strong&amp;gt;在 finalize() 方法中，将 this 赋值给某一个引用，那么该对象就重生了。如果没有引用，该对象会被回收&amp;lt;/strong&amp;gt;。 &amp;lt;/li&amp;gt; &amp;lt;/ol&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;h5&amp;gt; 方法区的内存回收 &amp;lt;/h5&amp;gt; &amp;lt;ul&amp;gt; &amp;lt;li&amp;gt; 废弃的常量：&amp;lt;br /&amp;gt; 当前系统中没有任何对象引用常量池中的该常量，则是废弃常量 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; 废弃的类判断规则：&amp;lt;br /&amp;gt; 该类所有实例都被回收；&amp;lt;br /&amp;gt; 加载该类的 ClassLoader 已经被回收；&amp;lt;br /&amp;gt; 该类对应的 Class 对象没有引用，也无法通过反射访问该类的方法。 &amp;lt;/li&amp;gt; &amp;lt;/ul&amp;gt; &amp;lt;h4&amp;gt; 算法 &amp;lt;/h4&amp;gt; &amp;lt;p&amp;gt; 最基础的收集算法是&amp;amp;#8221;标记 &amp;amp;#8211; 清除&amp;amp;#8221;算法，之所以说它是最基础的是因为它逻辑简单、使用简便，而且后续的收集算法大多基于这种算法的不足而优化的。 &amp;lt;/p&amp;gt; &amp;lt;h5&amp;gt; 1.</description>
+    </item>
+    
+    <item>
+      <title>jvm运行时内存分配</title>
+      <link>https://helixs.github.io/posts/2019-07-29-java-gc%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
+      <pubDate>Mon, 29 Jul 2019 10:03:17 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-07-29-java-gc%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
+      <description>前几日，我去外面试了试面试。找找新工作看看有没有合适的。前面基本上很顺利，没有什么特别的难度和问题，本以为可以满怀信心的入职，结果被泼了一盆冷水。被问到关于GC机制的问题，GC算法有哪些，规则如何等等，我懵逼了，我只知道GC是垃圾回收，在内存不够的时候会触发它，然后回收没有引用的内存。然后它是如何实现的可真没有仔细研究过。书到用时方恨少，事非经过不知难。
+在很多年前我们在运行android程序的时候，时不时的会卡顿，我当时不以为然。排除线程和代码相关的情况下多半都与触发了GC有关西。了解才知道，在触发GC线程的时候，其它线程会进行等待，包括UI线程，UI线程卡顿了，那么我们肯定就会卡了。
+jvm运行时内存分配 1、栈 英文stack，运行于RAM之上。stack最主要的特征即是先进后出。栈内存上面有一个指针，和C语言的指针差不多，指针的加减直接影响栈内存的创建和释放。当载入一个新方法的时候，指针+，方法执行完毕，指针-。这是一种特别快、特别有效的数据保存方式，仅次于寄存器。创建程序时，Java编译器必须准确地知道堆栈内保存的所有数据的“长度”以及“存在时间”。这是由于它必须生成相应的代码，以便移动指针。
+ 每个线程包含一个栈区，栈中只保存基本数据类型的数据和自定义对象的引用(不是对象)，对象都存放在堆区中。 每个栈中的数据(原始类型和对象引用)都是私有的，其他栈不能访问。 栈分为3个部分：基本数据类型的变量区、执行环境上下文、操作指令区(存放操作指令)。  栈是存放线程调用方法时存储局部变量表，操作，方法出口等与方法执行相关的信息，Java栈所占内存的大小由Xss来调节，方法调用层次太多会撑爆这个区域即_StackOverflowError。_
+ps:这让我想起了递归，如果递归层级过多，不进行尾递归优化那么方法一直在载入没有执行完毕，那么一记StackOverflowError送给你
+程序计数器（ProgramCounter）寄存器 是cpu的一部分，离cpu最近，速度也最快。每个线程启动的时候，都会创建一个寄存器，保存正在执行jvm指令的地址和下一步指令的地址。寄存器的内容总是指向下一条将被执行指令的地址，这里的地址可以是一个本地指针，也可以是在方法区中相对应于该方法起始指令的偏移量。
+ps:想想为什么需要保存啊，不是直接执行就行了么。NONONO，现在程序都是多线程运行的，cpu要同时执行多条命令呀！这句话说的也不对，多线程是个假象，就算是32核64线程也是假象，cpu短时间内会在不同线程之间切换运行指令，造成一种同时运行多任务的假象，不过假象很有效，足以骗过我们愚蠢的人类。所以任务切来切去不找个地方保存下一步需要执行的地方，我回过神来就会迷失方向了。
+本地方法栈(也叫本地方法区) Nativemethodstack(本地方法栈)：保存native方法进入区域的地址。
+方法区 method（方法区）又叫静态区，存放所有的①类（class），②静态变量（static变量），③静态方法，④常量和⑤成员方法。
+1.又叫静态区，跟堆一样，被所有的线程共享。
+2.方法区中存放的都是在整个程序中永远唯一的元素。这也是方法区被所有的线程共享的原因。
+（顺便展开静态变量和常量的区别： 静态变量本质是变量，是整个类所有对象共享的一个变量，其值一旦改变对这个类的所有对象都有影响；常量一旦赋值后不能修改其引用，其中基本数据类型的常量不能修改其值。）
+Java里面是没有静态变量这个概念的，不信你自己在某个成员方法里面定义一个static int i = 0；Java里只有静态成员变量。它属于类的属性。至于他放哪里？楼上说的是静态区。我不知道到底有没有这个翻译。但是深入JVM里是翻译为方法区的。虚拟机的体系结构：①Java栈，② 堆，③PC寄存器，④方法区，⑤本地方法栈，⑥运行常量池。而方法区保存的就是一个类的模板，堆是放类的实例（即对象）的。栈是一般来用来函数计算的。随便找本计算机底层的书都知道了。栈里的数据，函数执行完就不会存储了。这就是为什么局部变量每一次都是一样的。就算给他加一后，下次执行函数的时候还是原来的样子。
+方法区的大小由-XX:PermSize和-XX:MaxPermSize来调节，类太多有可能撑爆永久代。静态变量或常量也有可能撑爆方法区。
+ 方法区的位置有三种情况：
+java7之前，方法区位于永久代(PermGen)，永久代和堆相互隔离，永久代的大小在启动JVM时可以设置一个固定值，不可变； java7中，存储在永久代的部分数据就已经转移到Java Heap或者Native memory。但永久代仍存在于JDK 1.7中，并没有完全移除，譬如符号引用(Symbols)转移到了native memory；字符串常量池(interned strings)转移到了Java heap；类的静态变量(class statics)转移到了Java heap。 java8中，取消永久代，方法存放于元空间(Metaspace)，元空间仍然与堆不相连，但与堆共享物理内存，逻辑上可认为在堆中  Native memory：本地内存，也称为C-Heap，是供JVM自身进程使用的。当Java Heap空间不足时会触发GC，但Native memory空间不够却不会触发GC。
+为什么移除永久代？
+1、字符串存在永久代中，容易出现性能问题和内存溢出。
+2、永久代大小不容易确定，PermSize指定太小容易造成永久代OOM
+3、永久代会为 GC 带来不必要的复杂度，并且回收效率偏低。
+4、Oracle 可能会将HotSpot 与 JRockit 合二为一。
+堆 类的对象放在heap（堆）中，所有的类对象都是通过new方法创建，创建后，在stack（栈）会创建类对象的引用（内存地址）。
+一种常规用途的内存池（也在RAM（随机存取存储器 ）区域），其中保存了Java对象。和栈不同：“内存堆”或“堆”最吸引人的地方在于编译器不必知道要从堆里分配多少存储空间，也不必知道存储的数据要在堆里停留多长的时间。因此，用堆保存数据时会得到更大的灵活性。要求创建一个对象时，只需用new命令编辑相应的代码即可。执行这些代码时，会在堆里自动进行数据的保存。当然，为达到这种灵活性，必然会付出一定的代价：在堆里分配存储空间时会花掉更长的时间。
+JVM将所有对象的实例（即用new创建的对象）（对应于对象的引用（引用就是内存地址））的内存都分配在堆上，堆所占内存的大小由-Xmx指令和-Xms指令来调节。
+运行常量池 这儿的“静态”是指“位于固定位置”。程序运行期间，静态存储的数据将随时等候调用。可用static关键字指出一个对象的特定元素是静态的。但Java对象本身永远都不会置入静态存储空间。
+这个区域属于方法区。该区域存放类和接口的常量，除此之外，它还存放成员变量和成员方法的所有引用。当一个成员变量或者成员方法被引用的时候，JVM就通过运行常量池中的这些引用来查找成员变量和成员方法在内存中的的实际地址。
+举个例子 命令 java AppMain</description>
+    </item>
+    
+    <item>
+      <title>通过openssl获取证书摘要信息</title>
+      <link>https://helixs.github.io/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</link>
+      <pubDate>Tue, 23 Jul 2019 07:42:30 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</guid>
+      <description> 转载请注明出处https://xmcf.me/?p=314 我们做app开发的时候，往往需要对应用信息安全做考虑。通过charles fiddler抓取http包是很随意的事情，https中间人也是很容易。所以做一个信任所有证书的商业应用来说是很low。
+拿android开发为例，如果考虑安全，必须进行证书锁定。如，通过network_security_config文件进行锁定。通过digest摘要来验证证书，而不用将证书放入到apk中，具体的不多说。
+下面是X509公钥证书的格式标准，另外还有中间机构和根证书就不说明了
+公钥证书的信息大概就是这些，在window的chrome我们可以随时到处证书就像这样
+两个格式的主要区别：
+虽然他们保存文件的的后缀都是cer区别就是der是保存的二进制文件，看不到里面的内容。
+而base64编码实际上是pem格式的证书。开头—–BEGIN CERTIFICATE—– 结尾 —–END CERTIFICATE—–
+他们最终包含的信息都是一样的，注意的是base64可以用文本编辑内容，不过不要随意修改多一个少一个空格也是不好的。
+保存完后我们就要通过openssl进行获取证书公钥的摘要了
+openssl登场
+因为我用的win10系统装了个linux内核还是蛮舒服的
+其大概过程是，1、让openssl安装x509公钥的标准读取证书信息 ，-pubkey 读取公钥 2、通过pkey -pukey 读取密钥信息通过-outform 按照der格式保存密钥信息 3、dgst按照sha256 进行hash计算得到了2进制数据 4、将二进制信息通过base64编码。最终就是我们所需要的信息了，我们得到的信息是通过hash计算不可逆的，所以保证了一定的安全性。
+android项目通过
+ </description>
+    </item>
+    
+    <item>
+      <title>OkHttp单一请求RequestBody执行两次writeTo的问题</title>
+      <link>https://helixs.github.io/posts/2019-07-19-okhttp%E5%8D%95%E4%B8%80%E8%AF%B7%E6%B1%82requestbody%E6%89%A7%E8%A1%8C%E4%B8%A4%E6%AC%A1writeto%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Fri, 19 Jul 2019 03:01:55 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-07-19-okhttp%E5%8D%95%E4%B8%80%E8%AF%B7%E6%B1%82requestbody%E6%89%A7%E8%A1%8C%E4%B8%A4%E6%AC%A1writeto%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>转载请注明出处https://xmcf.me/?p=309 今天测试提示了bug，在文件上传的时候会有进度显示，可是每次都会显示200%。找了半天也没有找到具体的问题所在。所以，我就从上传触发点入手了。
+原代码如下按道理来说这样执行都没啥问题的，不过它居然执行了两次。没办法了，去看Okhttp的源码，还是被我找到了
+上面是第一次，下面是第二次
+看看Okio.buffer中是什么
+ 执行顺序大概是
+第一次&amp;gt;
+HttpLoggingInterceptor.intercept-&amp;gt;MultipartBody.writeTo(BufferedSink)=&amp;gt;writeOrCountBytes(BufferedSink)=&amp;gt;PartBody.writeTo(BufferedSink)=&amp;gt;我们实现的writeTo(BufferedSink)
+第二次&amp;gt;
+CallServerInterceptor.intercept-
+ MultipartBody.writeTo(BufferedSink)=&amp;gt;writeOrCountBytes(BufferedSink)=&amp;gt;PartBody.writeTo(BufferedSink)=&amp;gt;我们实现的writeTo(BufferedSink)
+ 除了调用的地方，其他后续操作都一样，不一样的主要就是一个是writeTo(Buffer)一个是writeTo(RealBufferedSink)
+看看BufferedSink｛
+子类为Buffer和RealBufferedSink
+｝
+再看看RealBufferedSink{
+}
+由此可知，Buffer和RealBufferedSink都是BufferedSink的实现类，RealBufferedSink中拥有Buffer成员,write的时候真正也是调用的Buffer.write。
+所以我们可以通过判断BufferedSink的两个子类型来判断进行过滤。修改后的代码为
+测试一下好了。数据的Request和Response都会进入Okhttp的拦截器过滤和观察我们的数据，执行读取操作。除了我们自己添加的log拦截，默认还有自带的拦截器，他们会形成一个任务链模式。有人说直接把Httplog的等级改成Head那是很蠢的做法，那你还观察什么数据呢。或者自定义Log拦截器，把MultipartBody类型的日志过滤掉，这才是正确的做法，毕竟logcat里面弹出一堆乱码也是很烦的一件事。
+ 转载请注明出处https://xmcf.me/?p=309 </description>
+    </item>
+    
+    <item>
+      <title>WorkManager详解</title>
+      <link>https://helixs.github.io/posts/2019-05-27-workmanager%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 27 May 2019 10:02:52 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-05-27-workmanager%E8%AF%A6%E8%A7%A3/</guid>
+      <description>一、回顾一下以前的做法 以前我们在处理后台任务时，一般都是使用Service(含IntentService）或者线程/线程池，而Service不受页面生命周期影响，可以常驻后台，所以很适合做一些定时、延时任务，或者其他一些肉眼不可见的神秘勾当。 在处理一些复杂需求时，比如监听网络环境自动暂停重启后台上传下载这类变态任务，我们需要用Service结合Broadcast一起来做,非常的麻烦，再加上传输进度的回调，让人想疯！
+当然大量的后台任务过度消耗了设备的电量，比如多种第三方推送的service都在后台常驻，不良App后台自动上传用户隐私也带来了隐私安全问题。
+二、谷歌开始专项整顿  6.0 (API 级 23) 引入了Doze机制和应用程序待机 。当屏幕关闭且设备静止时, 打盹模式会限制应用程序的行为。应用程序待机将未使用的应用程序置于限制其网络访问、作业和同步的特殊状态。 Android 7.0 (API 级 24) 有限的隐性广播和Doze-on-the-go . Android 8.0 (API 级 26) 进一步限制了后台行为 , 例如在后台获取位置并释放缓存的 wakelocks。  尤其在Android O（8.0）中，谷歌对于后台的限制几乎可以称之为变态：
+ Android 8.0 有一项复杂功能；系统不允许后台应用创建后台服务。 因此，Android 8.0 引入了一种全新的方法，即 Context.startForegroundService()，以在前台启动新服务。 在系统创建服务后，应用有五秒的时间来调用该服务的 startForeground() 方法以显示新服务的用户可见通知。 如果应用在此时间限制内未调用 startForeground()，则系统将停止服务并声明此应用为 ANR。
+ 而且加入了对静态广播的限制：
+ Android 8.0 让这些限制更为严格。 针对 Android 8.0 的应用无法继续在其清单中为隐式广播注册广播接收器。 隐式广播是一种不专门针对该应用的广播。 例如，ACTION_PACKAGE_REPLACED 就是一种隐式广播，因为它将发送到注册的所有侦听器，让后者知道设备上的某些软件包已被替换。 不过，ACTION_MY_PACKAGE_REPLACED 不是隐式广播，因为不管已为该广播注册侦听器的其他应用有多少，它都会只发送到软件包已被替换的应用。 应用可以继续在它们的清单中注册显式广播。 应用可以在运行时使用 Context.registerReceiver() 为任意广播（不管是隐式还是显式）注册接收器。 需要签名权限的广播不受此限制所限，因为这些广播只会发送到使用相同证书签名的应用，而不是发送到设备上的所有应用。 在许多情况下，之前注册隐式广播的应用使用 JobScheduler 作业可以获得类似的功能。
+ 于此同时，官方推荐用5.</description>
+    </item>
+    
+    <item>
+      <title>android WebView视频全屏播放</title>
+      <link>https://helixs.github.io/posts/2019-05-22-android-webview%E8%A7%86%E9%A2%91%E5%85%A8%E5%B1%8F%E6%92%AD%E6%94%BE%E6%A0%87%E7%AD%BE/</link>
+      <pubDate>Wed, 22 May 2019 10:41:09 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-05-22-android-webview%E8%A7%86%E9%A2%91%E5%85%A8%E5%B1%8F%E6%92%AD%E6%94%BE%E6%A0%87%E7%AD%BE/</guid>
+      <description>今天有个需求，web页面有个视频是用标签进行播放的，点击放大按钮进行全屏播放。默认情况下，的确可以实现播放功能，但是放大按钮是无法点击的状态。所以我们要进行一下适配了。
+注意事项
+ 启动硬件加速 重写WebChromeClient-onShowCustomView方法 横竖屏切换的适配情况 Activity destory情况  1、硬件加速
+&amp;lt;activity &amp;hellip; android:hardwareAccelerated=&amp;ldquo;true&amp;rdquo; /&amp;gt;2、我们重写onShowCustomView
+此方法是通知我们当前的页面将进入全屏模式，也就是我们点击那个小全屏图标的时候，参数当中是一个view，需要将这个view添加到activity中的布局中，我们就直接添加到Webview上，毕竟Webview是个FrameLayout。
+实现了上面的方法后，video标签上的全屏按钮就有效果了，点击的时候，会撑满当前的WebView的大小（当然，如果实现全屏的话，那你的webview也要撑满全屏才是哦）。这个简易的全屏方式就实现了。
+我们也可以将这个全屏模式的view添加到别的layout上面，这个可以在webview不是全屏的页面上使用，具体就不介绍了，大家应该都会
+如果有特殊的退出全屏时的操作可以实现这个方法。
+3、横竖屏的适配操作
+如果页面全屏的时候需要有横屏的要求，需要加入兼容性的配置，最后不要让应用进行自动横竖屏，view的哪些东西保存状态是个麻烦，我们手动请求横竖屏，那么就可以躲避横竖屏自动切换所带来的生命周期干扰了。
+当屏幕方向变化的时候会回调Activity的onConfigurationChanged方法，而不会进行生命周期的变化。
+基本上我们的全屏功能就完成啦，切换时候的addview和removeView等等需要根据自己的情况实现
+4、退出的WebActivity的时候记得调用webview.destory()，异步进程可能导致视频还有声音在播放。
+谢谢大家
+参考–
+android webview中视频播放及全屏Android 横竖屏切换WebView 支持 Html5 video 进行全屏播放</description>
+    </item>
+    
+    <item>
+      <title>adb_fastboot常用命令</title>
+      <link>https://helixs.github.io/posts/2019-03-19-adb_fastboot%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Tue, 19 Mar 2019 03:53:48 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-03-19-adb_fastboot%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</guid>
+      <description>&amp;lt;div class=&amp;quot;blockcode&amp;quot;&amp;gt; &amp;lt;div id=&amp;quot;code_zsS&amp;quot;&amp;gt; &amp;lt;ol&amp;gt; &amp;lt;li&amp;gt; D: &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; cd adb &amp;lt;/li&amp;gt; &amp;lt;/ol&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;p&amp;gt; 以此切换到D:/adb工作目录，此时可通过输入 &amp;lt;/p&amp;gt; &amp;lt;div class=&amp;quot;blockcode&amp;quot;&amp;gt; &amp;lt;div id=&amp;quot;code_FvG&amp;quot;&amp;gt; &amp;lt;ol&amp;gt; &amp;lt;li&amp;gt; adb version &amp;lt;/li&amp;gt; &amp;lt;/ol&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;p&amp;gt; 根据提示信息确定是否可正常使用，如图即为正常的情况。 &amp;lt;/p&amp;gt; &amp;lt;p&amp;gt; &amp;lt;span style=&amp;quot;font-size: medium;&amp;quot;&amp;gt;&amp;lt;span style=&amp;quot;color: #0000ff;&amp;quot;&amp;gt;&amp;lt;strong&amp;gt;三、我可以用ADB和Fastboot干什么，怎么做？&amp;lt;/strong&amp;gt;&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt; &amp;lt;/p&amp;gt; &amp;lt;p&amp;gt; 在做任何事情之前，我们都需要连接手机到电脑端，并开启USB调试模式，通过命令查看是否连接正常。&amp;lt;br /&amp;gt; 如果处在开机状态或recovery下，命令为： &amp;lt;/p&amp;gt; &amp;lt;div class=&amp;quot;blockcode&amp;quot;&amp;gt; &amp;lt;div id=&amp;quot;code_dsO&amp;quot;&amp;gt; &amp;lt;ol&amp;gt; &amp;lt;li&amp;gt; adb devices &amp;lt;/li&amp;gt; &amp;lt;/ol&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;p&amp;gt; Fastboot下，命令为 &amp;lt;/p&amp;gt; &amp;lt;div class=&amp;quot;blockcode&amp;quot;&amp;gt; &amp;lt;div id=&amp;quot;code_V9r&amp;quot;&amp;gt; &amp;lt;ol&amp;gt; &amp;lt;li&amp;gt; fastboot devices &amp;lt;/li&amp;gt; &amp;lt;/ol&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;p&amp;gt; 根据返回信息确认是否连接正常，若返回信息左侧显示为一序列号，右侧显示device或recovery或sideload或fastboot均为正常情况，分别代表此时设备所处的状态，如： &amp;lt;/p&amp;gt; &amp;lt;p&amp;gt; &amp;lt;strong&amp;gt;&amp;lt;span style=&amp;quot;font-size: medium;&amp;quot;&amp;gt;&amp;lt;span style=&amp;quot;color: #f4a460;&amp;quot;&amp;gt;&amp;lt;1&amp;gt;ADB工具&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt;&amp;lt;/strong&amp;gt; &amp;lt;/p&amp;gt; &amp;lt;p&amp;gt; 最常用的，我们可以通过ADB，我们可以进行通过USB端进行ROM刷机包刷机操作。&amp;lt;br /&amp;gt; 将手机进入Recovery模式，可看到，由于一加三由于出厂Android版本为6.</description>
+    </item>
+    
+    <item>
+      <title>android从view中获取bitmap</title>
+      <link>https://helixs.github.io/posts/2019-02-28-android%E4%BB%8Eview%E4%B8%AD%E8%8E%B7%E5%8F%96bitmap/</link>
+      <pubDate>Thu, 28 Feb 2019 05:49:50 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-28-android%E4%BB%8Eview%E4%B8%AD%E8%8E%B7%E5%8F%96bitmap/</guid>
+      <description>我们从屏幕截图或者从imageView中获得bitmap大多都是从以下代码获取
+但是这些方法在api28的时候都过期了，虽然可以用不过在api26之后google放了个PixelCopy这个类，他是直接从指定的window上获取surface对象 在通过native方法获取的。
+&amp;lt;div&amp;gt; 还有它不是直接在view上获取，而是在window上，所以要确定要位置，不然获取的地方不单单是你绘制的那个区域了，所以我们要把控好位置和距离，这个是缺点如果图像层叠的话那就没办法了，盖住的部分肯定无法获取，这是缺点。不过也带来了优点，如果像获取某个区域块的图像，更是一种好方法。 如果不行那就还是用老的方法吧。 &amp;lt;/div&amp;gt; </description>
+    </item>
+    
+    <item>
+      <title>Bitmap加载之基本的使用</title>
+      <link>https://helixs.github.io/posts/2019-02-26-bitmap%E5%8A%A0%E8%BD%BD%E4%B9%8B%E5%9F%BA%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Tue, 26 Feb 2019 02:48:29 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-26-bitmap%E5%8A%A0%E8%BD%BD%E4%B9%8B%E5%9F%BA%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <description>上一篇文章已经转载了大神的，总结一下基本的加载使用方式
+ </description>
+    </item>
+    
+    <item>
+      <title>Android Bitmap最全面详解</title>
+      <link>https://helixs.github.io/posts/2019-02-26-android-bitmap%E6%9C%80%E5%85%A8%E9%9D%A2%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 26 Feb 2019 02:33:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-26-android-bitmap%E6%9C%80%E5%85%A8%E9%9D%A2%E8%AF%A6%E8%A7%A3/</guid>
+      <description>https://juejin.im/entry/59b6419d5188257e82675716  Bitmap图像处理的最重要类之一。用它可以获取图像文件信息，进行图像颜色变换、剪切、旋转、缩放等操作，并可以指定格式保存图像文件
+ ____
+Bitmap中有两个内部枚举类：Config和CompressFormat，
+Config是用来设置颜色配置信息的，
+CompressFormat是用来设置压缩方式的。
+__
+Config解析：
+ Bitmap.Config.ALPHA_8：颜色信息只由透明度组成，占8位。 Bitmap.Config.ARGB_4444：颜色信息由透明度与R（Red），G（Green），B（Blue）四部分组成，每个部分都占4位，总共占16位。 Bitmap.Config.ARGB_8888：颜色信息由透明度与R（Red），G（Green），B（Blue）四部分组成，每个部分都占8位，总共占32位。是Bitmap默认的颜色配置信息，也是最占空间的一种配置。 Bitmap.Config.RGB_565：颜色信息由R（Red），G（Green），B（Blue）三部分组成，R占5位，G占6位，B占5位，总共占16位。   通常我们优化Bitmap时，当需要做性能优化或者防止OOM（Out Of Memory），我们通常会使用Bitmap.Config.RGB_565这个配置，因为Bitmap.Config.ALPHA_8只有透明度，显示一般图片没有意义，Bitmap.Config.ARGB_4444显示图片不清楚，Bitmap.Config.ARGB_8888占用内存最多。
+ CompressFormat解析：
+ Bitmap.CompressFormat.JPEG：表示以JPEG压缩算法进行图像压缩，压缩后的格式可以是”.jpg”或者”.jpeg”，是一种有损压缩。 Bitmap.CompressFormat.PNG：表示以PNG压缩算法进行图像压缩，压缩后的格式可以是”.png”，是一种无损压缩。 Bitmap.CompressFormat.WEBP：表示以WebP压缩算法进行图像压缩，压缩后的格式可以是”.webp”，是一种有损压缩，质量相同的情况下，WebP格式图像的体积要比JPEG格式图像小40%。美中不足的是，WebP格式图像的编码时间“比JPEG格式图像长8倍”。  itmap.createBitmap(Bitmap source, int x, int y, int width, int height)
+根据源Bitmap对象source，创建出source对象裁剪后的图像的Bitmap。x,y分别代表裁剪时，x轴和y轴的第一个像素，width，height分别表示裁剪后的图像的宽度和高度。 注意：x+width要小于等于source的宽度，y+height要小于等于source的高度。
+Bitmap.createBitmap(Bitmap source, int x, int y, int width, int height,Matrix m, boolean filter)
+这个方法只比上面的方法多了m和filter这两个参数，m是一个Matrix（矩阵）对象，可以进行缩放，旋转，移动等动作，filter为true时表示source会被过滤，仅仅当m操作不仅包含移动操作，还包含别的操作时才适用。其实上面的方法本质上就是调用这个方法而已。
+ public static Bitmap createBitmap(Bitmap source, int x, int y, int width, int height) { return createBitmap(source, x, y, width, height, null, false); }  Bitmap缩放，旋转，移动，倾斜图像其实就是通过Bitmap.</description>
+    </item>
+    
+    <item>
+      <title>viewpager&#43;fragment的懒加载</title>
+      <link>https://helixs.github.io/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</link>
+      <pubDate>Fri, 15 Feb 2019 06:02:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/</guid>
+      <description>使用 FragmentPagerAdapter 时，ViewPager 中的所有 Fragment 实例常驻内存，当 Fragment 变得不可见时仅仅是视图结构的销毁，即调用了 onDestroyView 方法。由于 FragmentPagerAdapter 内存消耗较大，所以适合少量静态页面的场景。
+使用 FragmentStatePagerAdapter 时，当 Fragment 变得不可见，不仅视图层次销毁，实例也被销毁，即调用了 onDestroyView 和 onDestroy 方法，仅仅保存 Fragment 状态。相比而言， FragmentStatePagerAdapter 内存占用较小，所以适合大量动态页面，比如我们常见的新闻列表类应用。
+不管是哪种情况，他们的view都是有可能被销毁的。关键点是在于view的保存和fragment的显示隐藏状态
+ 二 、当使用FragmentPagerAdapter动态删除和添加的问题 看下面的源码
+instantiateItem在执行时会FragmentManager里面查找是否已存在对应的fragment，如果不存在，才会执行getItem 。所以会无效
+两个解决方法
+1使用FragmentPagerStateAdapter
+2覆写getItemId()
+  未完待续
+感谢http://yifeng.studio/2016/12/23/android-fragment-and-viewpager-attentions/ </description>
+    </item>
+    
+    <item>
+      <title>android布局之ConstraintLayout的一些特性</title>
+      <link>https://helixs.github.io/posts/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/</link>
+      <pubDate>Tue, 22 Jan 2019 08:43:57 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/</guid>
+      <description>前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。
+&amp;lt;ol&amp;gt; &amp;lt;li&amp;gt; 解决复杂布局嵌套过多，影响性能的问题。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; 相对定位，和RelativeLayout大致相同，也同样支持Baseline基线定位。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; 角度定位，更加玄学了。角度和距离定位了（想象一下在直角坐标系中中心点O距离点A的角度和距离了）。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; 支持按照比例偏移。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; 尺寸方面，match_parent尽量少用，直接0dp往上干。并且更好的支持比例约束。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; 链式布局，可以想象在Flex布局中justify-content，不过没有flex那么强大啦，也只有3个属性选择。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; Optimizer，当控件设置尺寸为0dp的时候布局会进行二次测量，不可避免的会进行耗时操作，所以要进行处理。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; Barrier，屏障，相当于一个阈值吧，不过我这样形容不恰当。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; Group，可以将控件进行分组，而直接在这个组上面设置属性，那么组当中所带入的属性会直接传到属于这个组的控件上面。感觉这个设计特别棒，如统一的颜色和统一的显示隐藏等。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; Placeholder，占位符，也很吊，可以动态控制显示的控件。不需要我们每次动态setVisibility了。 &amp;lt;/li&amp;gt; &amp;lt;li&amp;gt; Guideline，辅助线，执行复杂布局中这个是很有效的东西哦 &amp;lt;/li&amp;gt; &amp;lt;/ol&amp;gt; &amp;lt;p&amp;gt; 上面就是这个ConstraintLayout的一些特性了。下面就慢慢的介绍一下它的具体使用方式 &amp;lt;/p&amp;gt;  &amp;lt;p&amp;gt; &amp;lt;code class=&amp;quot;api-signature&amp;quot;&amp;gt;public class ConstraintLayout &amp;lt;/code&amp;gt;&amp;lt;code class=&amp;quot;api-signature&amp;quot;&amp;gt;&amp;amp;lt;code class=&amp;quot;api-signature&amp;quot;&amp;gt;extends &amp;lt;/code&amp;gt;&amp;lt;/code&amp;gt;&amp;lt;a href=&amp;quot;http://developer.android.com/reference/android/view/ViewGroup.html&amp;quot;&amp;gt;ViewGroup&amp;lt;/a&amp;gt; &amp;lt;/p&amp;gt; &amp;lt;div class=&amp;quot;devsite-table-wrapper&amp;quot;&amp;gt; &amp;lt;table class=&amp;quot;jd-inheritance-table&amp;quot;&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td class=&amp;quot;jd-inheritance-class-cell&amp;quot; colspan=&amp;quot;4&amp;quot;&amp;gt; &amp;lt;a href=&amp;quot;http://developer.android.com/reference/java/lang/Object.html&amp;quot;&amp;gt;java.lang.Object&amp;lt;/a&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td class=&amp;quot;jd-inheritance-space&amp;quot;&amp;gt; ↳ &amp;lt;/td&amp;gt; &amp;lt;td class=&amp;quot;jd-inheritance-class-cell&amp;quot; colspan=&amp;quot;3&amp;quot;&amp;gt; &amp;lt;a href=&amp;quot;http://developer.</description>
+    </item>
+    
+    <item>
+      <title>java关于判断emoji位数和截取的一些处理</title>
+      <link>https://helixs.github.io/posts/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/</link>
+      <pubDate>Mon, 14 Jan 2019 08:18:11 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/</guid>
+      <description>今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了
+结果测试加入了emoji表情，直接截取0-7会在部分手机上出现？等无法识别的情况，然后是查了查emoji是基于Unicode编码来的，也就是说随便一个emoji组成的字符长度最少是两位,所以我直接截取了表情的一半那肯定就是不行了，然后具体查了查编码的历史从ascii到utf-8等等，这里。
+然后找到了java的api主要关于unicode有以下几个方法
+&amp;lt;td&amp;gt; &amp;lt;code&amp;gt;&amp;amp;lt;b&amp;gt;&amp;amp;lt;a href=&amp;quot;http://tool.oschina.net/uploads/apidocs/jdk-zh/java/lang/String.html#codePointAt(int)&amp;quot;&amp;gt;codePointAt&amp;amp;lt;/a&amp;gt;&amp;amp;lt;/b&amp;gt;(int index)&amp;lt;/code&amp;gt;&amp;lt;br /&amp;gt; 返回指定索引处的字符（Unicode 代码点）。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; &amp;lt;code&amp;gt;&amp;amp;lt;b&amp;gt;&amp;amp;lt;a href=&amp;quot;http://tool.oschina.net/uploads/apidocs/jdk-zh/java/lang/String.html#codePointBefore(int)&amp;quot;&amp;gt;codePointBefore&amp;amp;lt;/a&amp;gt;&amp;amp;lt;/b&amp;gt;(int index)&amp;lt;/code&amp;gt;&amp;lt;br /&amp;gt; 返回指定索引之前的字符（Unicode 代码点）。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; &amp;lt;code&amp;gt;&amp;amp;lt;b&amp;gt;&amp;amp;lt;a href=&amp;quot;http://tool.oschina.net/uploads/apidocs/jdk-zh/java/lang/String.html#codePointCount(int,%20int)&amp;quot;&amp;gt;codePointCount&amp;amp;lt;/a&amp;gt;&amp;amp;lt;/b&amp;gt;(int beginIndex, int endIndex)&amp;lt;/code&amp;gt;&amp;lt;br /&amp;gt; 返回此 &amp;lt;code&amp;gt;String&amp;lt;/code&amp;gt; 的指定文本范围中的 Unicode 代码点数。 &amp;lt;/td&amp;gt;  &amp;lt;td&amp;gt; &amp;lt;code&amp;gt;&amp;amp;lt;b&amp;gt;&amp;amp;lt;a href=&amp;quot;http://tool.oschina.net/uploads/apidocs/jdk-zh/java/lang/String.html#offsetByCodePoints(int,%20int)&amp;quot;&amp;gt;offsetByCodePoints&amp;amp;lt;/a&amp;gt;&amp;amp;lt;/b&amp;gt;(int index, int codePointOffset)&amp;lt;/code&amp;gt;&amp;lt;br /&amp;gt; 返回此 &amp;lt;code&amp;gt;String&amp;lt;/code&amp;gt; 中从给定的 &amp;lt;code&amp;gt;index&amp;lt;/code&amp;gt; 处偏移 &amp;lt;code&amp;gt;codePointOffset&amp;lt;/code&amp;gt; 个代码点的索引。 &amp;lt;/td&amp;gt;  我们现在截取的字符数量是8位，然后我们就找到在0到7位中的unicode编码，这样汉字和emoji就一起解决了。
+是不是比上一个代码实现的简单的多。</description>
+    </item>
+    
+    <item>
+      <title>android项目引入kotlin包冲突问题</title>
+      <link>https://helixs.github.io/posts/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Wed, 26 Dec 2018 08:46:59 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/</guid>
+      <description>今天在android项目中导入了kotlin的支持，可是怎么运行也运行不起来
+Program type already present: javax.annotation.CheckReturnValue
+等等 包冲突了，检查不同的library的版本，然后清空缓存重试</description>
+    </item>
+    
+    <item>
+      <title>android recyclerview点击跳转到viewpager共享元素动画</title>
+      <link>https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/</link>
+      <pubDate>Tue, 11 Dec 2018 06:35:19 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/</guid>
+      <description>今天做项目的时候用到了Transition动画。也就是android5.0中出现的。基本的使用方式我们都知道是用TransitionName在两个activity中进行绑定。现在的场景是activityA中有个recyclerview，点击item的时候跳转到activityB。B中是一个类似全屏的viewpager。item中的图片元素共享的viewpager指定的Item上。并且viewpager可以动态删除item，返回的A的时候item也要同步数量。想想实现功能应该不难。难的地方在于两个页面的item数量不一样，共享元素view的位置可能也不一样。如果B当中已经改变了item的数量和选中的viewpager的position的位置，A那边的共享元素该如何改变呢。现在开始展现真正的轮子了。
+设置两个activity的style中 &amp;lt;span style=&amp;ldquo;color: #ff0000;&amp;quot;&amp;gt;android:windowContentTransitions&amp;lt;/span&amp;gt;为true
+共享元素关键点是绑定的view和view的TransitionName，那么我们就要给itemView设置transitionName了。这里我们使用url给item设置TransitionName，如果item的url一样那么可以自己想想，保持唯一就行了。
+ViewCompat是support兼容类。不然就要写一堆判断了很是烦。
+启动activity绑定transitionView,将list和选中的item传入
+之后我们到了B的Activity，这里我们不要为viewpager的每个itemview设置transitionName，我们直接给viewpager设置transitionName，以为viewpager选中页的两边都会加载view，处理起来稍微有点麻烦，直接设置viewpager的transitionName反而方便连贯。
+  2、进阶使用 基本的点击返回效果我们就搞好了，可是还是会出现动画不连贯的效果。一头雾水的搜了一下
+因为viewpager.setCurrentItem之后UI毕竟是在默认300ms完成绘制。所以我们要等待viewpager完全展示完成才能进行过渡动画的渲染。
+这样我们的连贯效果就实现了。
+3、完成实现 因为我们知道B页面是带有删除和翻页功能的，所以我们就要进行页面之间切换时候的ui数据整理。我试着在onActivityResult中用supportPostponeEnterTransition和supportStartPostponedEnterTransition实现数据的变换，发现效果并没有实现，onActivityResult在过渡动画后才调用。所以还是搜索一下
+满怀希望的试一试。结果懵逼，切换了还是没效果。。。==。B页面的共享viewpager的TransitionName还是原来的。我们要在返回的时候设置viewpager的TransitionName为当前选中的item的url。
+B中
+这里具体可以参考 https://blog.csdn.net/mr_wrong1/article/details/49669275 哈哈 。可以了。不过最后一步中，感觉只需要设置viewpager的TransitionName就行了，没试过。有时间再试试吧。
+4、遇到的问题 项目加载网络图片会出现一些问题。如果使用glide的话要禁用动画加载dontAnimate。
+还有部分时候会出现viewpager翻页会出现返回动画失效的问题,我们在返回的时候需要进行view的替换
+over</description>
+    </item>
+    
+  </channel>
+</rss>

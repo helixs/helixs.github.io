@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kotlin on 西门吹风</title>
+    <link>https://helixs.github.io/categories/kotlin/</link>
+    <description>Recent content in kotlin on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 11 Mar 2020 01:53:58 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/kotlin/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android调用DownloadManager下载文件及安装apk，兼容6、7、8&#43;</title>
+      <link>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</link>
+      <pubDate>Wed, 11 Mar 2020 01:53:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</guid>
+      <description>我们的app经常有需求下载文件等，还有就是下载安装。
+1、下载文件的方式 1,很多三方框架都有文件上传下载功能，可以借助三方框架(比如Volley,OkHttp,或者还有个很不错的库OKdownload,不过这个库比较重量级，我们只做简单的下载就不太需要啦)
+2,也可以开启一个线程去下载,（可以用IntentService）
+3，最简单的一种方式：Android SDK 其实给我们提供了下载类DownloadManager,只需要简单的配置项设置，就能轻松实现下载功能。
+DownloadManager 是SDK 自带的，大概流程如下：
+（1）创建一个Request,进行简单的配置（下载地址，和文件保存地址等）
+（2）下载完成后，系统会发送一个下载完成的广播，我们需要监听广播。
+（3）监听到下载完成的广播后，根据id查找下载的apk文件
+（4）在代码中执行apk安装。
+Activity中使用
+简单的使用就是这些，有问题可以评论哦</description>
+    </item>
+    
+    <item>
+      <title>kotlin特性之inline内联函数</title>
+      <link>https://helixs.github.io/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Wed, 11 Sep 2019 07:15:28 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</guid>
+      <description>inline内联函数可以说是kotlin的一个高级特性了，不过在C++其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一定的内联优化。
+为什么需要内联 处理器调用一个函数的步骤如下：
+  保留当前执行栈的信息
+  为被调用的函数分配栈区
+  初始化被调用函数中的参数、内部变量
+  执行被调用函数并返回
+  销毁被调用函数的执行栈
+  取出第一步保存的信息并恢复，然后继续执行
+  从这个流程中可以看到，所谓函数调用的开销主要是当前执行栈的保存与恢复、被调用函数栈区的分配与销毁两部分的开销。
+调用函数是一个入栈出栈的过程，意味着需要内存的开销和释放。增加了机器运行的负担，而使用内联函数就在编译器级别，将函数中的代码，直接放入调用函数的地方。这样就减少了一个入栈和出栈的过程，还是很不错的吧。不过相应的，编译后所生成的字节码的长度肯定是要变大的。我们可以根据一定的场景进行内联。
+inline 先来看看kotlin自带的inline函数
+然后我们试试
+然后我们Decompile转为java代码
+我们可以看到main方法中调用printTexts方法已经直接将函数代码放入到了main方法里。
+不过在定义printTexts方法的时候编译器提示了
+expected performance impact of inlining is insignificant. Inlining works best for functions with parameters of functional types
+刻意将普通方法加入inline并不会给性能带来多少的优化，反而会带来更多的字节码。建议将参数为函数形式的方法使用inline可以提高性能。
+转为java
+我们不加入inline内联实际上调用了printTexts方法中的Function1的回调函数。
+然后在printTexts方法前面加入inline后再看看
+参数为函数类型的函数使用inline的确可以提高性能，避免进入callback回调地狱。其实普通的方法不使用inline的情况下jvm也会帮我们实现部分的，如果需要的话那么你也可以强制使用Inline也没关系。
+noinline 通过上面的代码我们看到，默认情况下内联函数的的参数如果是函数的话，那么参数函数也是被内联的
+如果函数参数在内联函数的方法体内被其他非内联函数调用,就会报错.
+我们可以加入noinline
+正常，转java
+我们可以看到参数函数不会被内联，而是转为callback了，那么就能正常调用非inline的函数了。
+crossinline 我们来看一看下面的代码
+答案是不会执行，除非使用的是return@printTexts 。默认内联函数lambda参数中return是可以进行调用函数处return的，因为已经和调用处函数融为一体了。
+我们可以在block参数前加入crossinline来防止printTexts局部return
+reified 其实我个人认为这个reified才是内联函数中最牛逼的玩意儿。在java中我们的泛型在运行时都是一堆object，被擦除了没啥卵用。
+我们来试试哈
+这个操作在java中可能实现吗，答案是不可能的。但是在kotlin中通过inline和reified就可以实现
+这样我们就可以获取到泛型信息了，运行时的哦，困扰我多年的问题终于有办法了。比如我现在直接传入泛型而不用传入class就可以知道T是什么类型了。在java时候还要使用一堆头疼的反射等。其实inline的时候相当于就是吧T类型的class作为一个参数传进来了，还是蛮强大的。看看java代码
+我们可以用来干嘛？</description>
+    </item>
+    
+  </channel>
+</rss>

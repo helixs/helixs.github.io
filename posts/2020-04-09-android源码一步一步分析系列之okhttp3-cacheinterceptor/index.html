@@ -1,0 +1,566 @@
+<!doctype html><html lang="en"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor - 西门吹风</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor">
+<meta itemprop="description" content="CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本地化的改造操作。
+我们要了解缓存就必须理解Http缓存协议—彻底弄懂HTTP缓存机制及原理如果大家对缓存协议不清楚，最好看一下上面的内容，Okhttp缓存就是根据它的协议进行开发的，没有太大的改造。
+CacheInterceptor流程
+&lt;pre class=&quot;EnlighterJSRAW&quot; data-enlighter-language=&quot;java&quot; data-enlighter-theme=&quot;atomic&quot;&gt;/*  Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the &ldquo;License&rdquo;); you may not use this file except in compliance with the License. You may obtain a copy of the License at *  http://www."><meta itemprop="datePublished" content="2020-04-09T05:16:19+00:00" />
+<meta itemprop="dateModified" content="2020-04-09T05:16:19+00:00" />
+<meta itemprop="wordCount" content="947">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor" />
+<meta property="og:description" content="CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本地化的改造操作。
+我们要了解缓存就必须理解Http缓存协议—彻底弄懂HTTP缓存机制及原理如果大家对缓存协议不清楚，最好看一下上面的内容，Okhttp缓存就是根据它的协议进行开发的，没有太大的改造。
+CacheInterceptor流程
+&lt;pre class=&quot;EnlighterJSRAW&quot; data-enlighter-language=&quot;java&quot; data-enlighter-theme=&quot;atomic&quot;&gt;/*  Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the &ldquo;License&rdquo;); you may not use this file except in compliance with the License. You may obtain a copy of the License at *  http://www." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-09T05:16:19+00:00" />
+<meta property="article:modified_time" content="2020-04-09T05:16:19+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor"/>
+<meta name="twitter:description" content="CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本地化的改造操作。
+我们要了解缓存就必须理解Http缓存协议—彻底弄懂HTTP缓存机制及原理如果大家对缓存协议不清楚，最好看一下上面的内容，Okhttp缓存就是根据它的协议进行开发的，没有太大的改造。
+CacheInterceptor流程
+&lt;pre class=&quot;EnlighterJSRAW&quot; data-enlighter-language=&quot;java&quot; data-enlighter-theme=&quot;atomic&quot;&gt;/*  Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the &ldquo;License&rdquo;); you may not use this file except in compliance with the License. You may obtain a copy of the License at *  http://www."/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="" loading="lazy"
+  
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=Android%e6%ba%90%e7%a0%81%e4%b8%80%e6%ad%a5%e4%b8%80%e6%ad%a5%e5%88%86%e6%9e%90%e7%b3%bb%e5%88%97%e4%b9%8bOkHttp%284%29%e2%80%94%e2%80%94CacheInterceptor&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-09-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp3-cacheinterceptor%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-09-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp3-cacheinterceptor%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Settings</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> Mode</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> Palette</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="Blue"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="Blue Gray"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="Brown"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="Cyan"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="Green"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="Indigo"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="Orange"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="Pink"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="Purple"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="Red"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="Teal"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="Yellow"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">Home</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">Posts</a></li><li class="breadcrumb-item active">Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    
+    
+    
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>Apr 9, 2020
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>5 min read
+  </span><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge rounded-pill text-white bg-primary post-taxonomy">源码分析</a></div>
+<div class="post-content mb-3"><p>CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本地化的改造操作。</p>
+<p>我们要了解缓存就必须理解Http缓存协议—<!-- raw HTML omitted -->彻底弄懂HTTP缓存机制及原理<!-- raw HTML omitted --></p>
+<p>如果大家对缓存协议不清楚，最好看一下上面的内容，Okhttp缓存就是根据它的协议进行开发的，没有太大的改造。</p>
+<p><strong>CacheInterceptor流程</strong></p>
+<!-- raw HTML omitted -->
+<pre><code>&lt;pre class=&quot;EnlighterJSRAW&quot; data-enlighter-language=&quot;java&quot; data-enlighter-theme=&quot;atomic&quot;&gt;/*
+</code></pre>
+<ul>
+<li>Licensed to the Apache Software Foundation (ASF) under one or more</li>
+<li>contributor license agreements.  See the NOTICE file distributed with</li>
+<li>this work for additional information regarding copyright ownership.</li>
+<li>The ASF licenses this file to You under the Apache License, Version 2.0</li>
+<li>(the &ldquo;License&rdquo;); you may not use this file except in compliance with</li>
+<li>the License.  You may obtain a copy of the License at
+*</li>
+<li>
+<pre><code>http://www.apache.org/licenses/LICENSE-2.0
+</code></pre>
+</li>
+</ul>
+<p>*</p>
+<ul>
+<li>Unless required by applicable law or agreed to in writing, software</li>
+<li>distributed under the License is distributed on an &ldquo;AS IS&rdquo; BASIS,</li>
+<li>WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</li>
+<li>See the License for the specific language governing permissions and</li>
+<li>limitations under the License.
+*/
+package com.rta.rts.login.ui;</li>
+</ul>
+<p>import java.io.IOException;</p>
+<p>import javax.annotation.Nullable;</p>
+<p>import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.internal.Internal;
+import okhttp3.internal.Util;
+import okhttp3.internal.cache.CacheRequest;
+import okhttp3.internal.cache.CacheStrategy;
+import okhttp3.internal.cache.InternalCache;
+import okhttp3.internal.http.ExchangeCodec;
+import okhttp3.internal.http.HttpHeaders;
+import okhttp3.internal.http.HttpMethod;
+import okhttp3.internal.http.RealResponseBody;
+import okio.Buffer;
+import okio.BufferedSink;
+import okio.BufferedSource;
+import okio.Okio;
+import okio.Sink;
+import okio.Source;
+import okio.Timeout;</p>
+<p>import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static okhttp3.internal.Util.closeQuietly;
+import static okhttp3.internal.Util.discard;</p>
+<p>/** Serves requests from the cache and writes responses to the cache. */
+public final class CacheInterceptor implements Interceptor {
+final @Nullable InternalCache cache;</p>
+<p>public CacheInterceptor(@Nullable InternalCache cache) {
+this.cache = cache;
+}</p>
+<p>@Override public Response intercept(Chain chain) throws IOException {
+//1. 读取候选缓存；
+//根据request得到cache中缓存的response
+Response cacheCandidate = cache != null
+? cache.get(chain.request())
+: null;</p>
+<pre><code>long now = System.currentTimeMillis();
+//2. 创建缓存策略（强制缓存，对比缓存等策略)；
+//request判断缓存的策略，是否要使用了网络，缓存或两者都使用
+CacheStrategy strategy = new CacheStrategy.Factory(now, chain.request(), cacheCandidate).get();
+Request networkRequest = strategy.networkRequest;
+Response cacheResponse = strategy.cacheResponse;
+
+if (cache != null) {
+  cache.trackResponse(strategy);
+}
+
+if (cacheCandidate != null &amp;&amp; cacheResponse == null) {
+  closeQuietly(cacheCandidate.body()); // The cache candidate wasn't applicable. Close it.
+}
+
+// If we're forbidden from using the network and the cache is insufficient, fail.
+//3根据策略，不使用网络，缓存又没有直接报错；
+if (networkRequest == null &amp;&amp; cacheResponse == null) {
+  return new Response.Builder()
+      .request(chain.request())
+      .protocol(Protocol.HTTP_1_1)
+      .code(504)
+      .message(&quot;Unsatisfiable Request (only-if-cached)&quot;)
+      .body(Util.EMPTY_RESPONSE)
+      .sentRequestAtMillis(-1L)
+      .receivedResponseAtMillis(System.currentTimeMillis())
+      .build();
+}
+
+// If we don't need the network, we're done.
+// 4. 根据策略，不使用网络，有缓存就直接返回；
+if (networkRequest == null) {
+  return cacheResponse.newBuilder()
+      .cacheResponse(stripBody(cacheResponse))
+      .build();
+}
+
+Response networkResponse = null;
+try {
+  // 5. 前面个都没有返回，读取网络结果（跑下一个拦截器）；
+  //
+  networkResponse = chain.proceed(networkRequest);
+} finally {
+  // If we're crashing on I/O or otherwise, don't leak the cache body.
+  if (networkResponse == null &amp;&amp; cacheCandidate != null) {
+    closeQuietly(cacheCandidate.body());
+  }
+}
+//6. 接收到的网络结果，如果是code 304, 使用缓存，返回缓存结果（对比缓存）
+// If we have a cache response too, then we're doing a conditional get.
+//// 如果本地已经存在cacheResponse，那么让它和网络得到的networkResponse做比较，决定是否来更新缓存的cacheResponse
+if (cacheResponse != null) {
+  if (networkResponse.code() == HTTP_NOT_MODIFIED) {
+    Response response = cacheResponse.newBuilder()
+        .headers(combine(cacheResponse.headers(), networkResponse.headers()))
+        .sentRequestAtMillis(networkResponse.sentRequestAtMillis())
+        .receivedResponseAtMillis(networkResponse.receivedResponseAtMillis())
+        .cacheResponse(stripBody(cacheResponse))
+        .networkResponse(stripBody(networkResponse))
+        .build();
+    networkResponse.body().close();
+
+    // Update the cache after combining headers but before stripping the
+    // Content-Encoding header (as performed by initContentStream()).
+    cache.trackConditionalCacheHit();
+    cache.update(cacheResponse, response);
+    return response;
+  } else {
+    closeQuietly(cacheResponse.body());
+  }
+}
+//7. 读取网络结果；
+Response response = networkResponse.newBuilder()
+    .cacheResponse(stripBody(cacheResponse))
+    .networkResponse(stripBody(networkResponse))
+    .build();
+//8. 对数据进行缓存；
+if (cache != null) {
+  if (HttpHeaders.hasBody(response) &amp;&amp; CacheStrategy.isCacheable(response, networkRequest)) {
+    // Offer this request to the cache.
+    //// 缓存未经缓存过的response
+    CacheRequest cacheRequest = cache.put(response);
+    return cacheWritingResponse(cacheRequest, response);
+  }
+  //9. 返回网络读取的结果。
+  if (HttpMethod.invalidatesCache(networkRequest.method())) {
+    try {
+      cache.remove(networkRequest);
+    } catch (IOException ignored) {
+      // The cache cannot be written.
+    }
+  }
+}
+
+return response;
+</code></pre>
+<p>}</p>
+<p>private static Response stripBody(Response response) {
+return response != null &amp;&amp; response.body() != null
+? response.newBuilder().body(null).build()
+: response;
+}</p>
+<p>/**</p>
+<ul>
+<li>Returns a new source that writes bytes to {@code cacheRequest} as they are read by the source</li>
+<li>consumer. This is careful to discard bytes left over when the stream is closed; otherwise we</li>
+<li>may never exhaust the source stream and therefore not complete the cached response.
+*/
+private Response cacheWritingResponse(final CacheRequest cacheRequest, Response response)
+throws IOException {
+// Some apps return a null body; for compatibility we treat that like a null cache request.
+if (cacheRequest == null) return response;
+Sink cacheBodyUnbuffered = cacheRequest.body();
+if (cacheBodyUnbuffered == null) return response;</li>
+</ul>
+<pre><code>final BufferedSource source = response.body().source();
+final BufferedSink cacheBody = Okio.buffer(cacheBodyUnbuffered);
+
+Source cacheWritingSource = new Source() {
+  boolean cacheRequestClosed;
+
+  @Override public long read(Buffer sink, long byteCount) throws IOException {
+    long bytesRead;
+    try {
+      bytesRead = source.read(sink, byteCount);
+    } catch (IOException e) {
+      if (!cacheRequestClosed) {
+        cacheRequestClosed = true;
+        cacheRequest.abort(); // Failed to write a complete cache response.
+      }
+      throw e;
+    }
+
+    if (bytesRead == -1) {
+      if (!cacheRequestClosed) {
+        cacheRequestClosed = true;
+        cacheBody.close(); // The cache response is complete!
+      }
+      return -1;
+    }
+
+    sink.copyTo(cacheBody.buffer(), sink.size() - bytesRead, bytesRead);
+    cacheBody.emitCompleteSegments();
+    return bytesRead;
+  }
+
+  @Override public Timeout timeout() {
+    return source.timeout();
+  }
+
+  @Override public void close() throws IOException {
+    if (!cacheRequestClosed
+        &amp;&amp; !discard(this, ExchangeCodec.DISCARD_STREAM_TIMEOUT_MILLIS, MILLISECONDS)) {
+      cacheRequestClosed = true;
+      cacheRequest.abort();
+    }
+    source.close();
+  }
+};
+
+String contentType = response.header(&quot;Content-Type&quot;);
+long contentLength = response.body().contentLength();
+return response.newBuilder()
+    .body(new RealResponseBody(contentType, contentLength, Okio.buffer(cacheWritingSource)))
+    .build();
+</code></pre>
+<p>}</p>
+<p>/** Combines cached headers with a network headers as defined by RFC 7234, 4.3.4. */
+private static Headers combine(Headers cachedHeaders, Headers networkHeaders) {
+Headers.Builder result = new Headers.Builder();</p>
+<pre><code>for (int i = 0, size = cachedHeaders.size(); i &amp;lt; size; i++) {
+  String fieldName = cachedHeaders.name(i);
+  String value = cachedHeaders.value(i);
+  if (&quot;Warning&quot;.equalsIgnoreCase(fieldName) &amp;&amp; value.startsWith(&quot;1&quot;)) {
+    continue; // Drop 100-level freshness warnings.
+  }
+  if (isContentSpecificHeader(fieldName)
+      || !isEndToEnd(fieldName)
+      || networkHeaders.get(fieldName) == null) {
+    Internal.instance.addLenient(result, fieldName, value);
+  }
+}
+
+for (int i = 0, size = networkHeaders.size(); i &amp;lt; size; i++) {
+  String fieldName = networkHeaders.name(i);
+  if (!isContentSpecificHeader(fieldName) &amp;&amp; isEndToEnd(fieldName)) {
+    Internal.instance.addLenient(result, fieldName, networkHeaders.value(i));
+  }
+}
+
+return result.build();
+</code></pre>
+<p>}</p>
+<p>/**</p>
+<ul>
+<li>Returns true if {@code fieldName} is an end-to-end HTTP header, as defined by RFC 2616,</li>
+<li>13.5.1.
+*/
+static boolean isEndToEnd(String fieldName) {
+return !&ldquo;Connection&rdquo;.equalsIgnoreCase(fieldName)
+&amp;&amp; !&ldquo;Keep-Alive&rdquo;.equalsIgnoreCase(fieldName)
+&amp;&amp; !&ldquo;Proxy-Authenticate&rdquo;.equalsIgnoreCase(fieldName)
+&amp;&amp; !&ldquo;Proxy-Authorization&rdquo;.equalsIgnoreCase(fieldName)
+&amp;&amp; !&ldquo;TE&rdquo;.equalsIgnoreCase(fieldName)
+&amp;&amp; !&ldquo;Trailers&rdquo;.equalsIgnoreCase(fieldName)
+&amp;&amp; !&ldquo;Transfer-Encoding&rdquo;.equalsIgnoreCase(fieldName)
+&amp;&amp; !&ldquo;Upgrade&rdquo;.equalsIgnoreCase(fieldName);
+}</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>Returns true if {@code fieldName} is content specific and therefore should always be used</li>
+<li>from cached headers.
+*/
+static boolean isContentSpecificHeader(String fieldName) {
+return &ldquo;Content-Length&rdquo;.equalsIgnoreCase(fieldName)
+|| &ldquo;Content-Encoding&rdquo;.equalsIgnoreCase(fieldName)
+|| &ldquo;Content-Type&rdquo;.equalsIgnoreCase(fieldName);
+}
+}
+<!-- raw HTML omitted --></li>
+</ul>
+<pre><code>&lt;p&gt;
+  &amp;nbsp;
+&lt;/p&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/">Android源码一步一步分析系列之OkHttp(3)——BridgeInterceptor
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp5-connectinterceptor/">Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">Recent Posts</h2>
+    <ul><li><a href="https://helixs.github.io/posts/my-first-post/">My First Post
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">Categories</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="badge bg-primary text-white rounded post-taxonomy" title="开发环境">
+            开发环境
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">Tags</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a><a href="https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/" class="badge bg-primary text-white rounded post-taxonomy" title="启动模式">
+            启动模式
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"></nav>
+<div class="copyright mb-2">
+  
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.b6665b560bd48dd0478c60f275f624d3c8ec7795a5d83679d18221053b102798.js" integrity="sha256-tmZbVgvUjdBHjGDydfYk08jsd5Wl2DZ50YIhBTsQJ5g=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

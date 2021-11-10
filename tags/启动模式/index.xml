@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>启动模式 on 西门吹风</title>
+    <link>https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 启动模式 on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 16 Dec 2019 08:50:53 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>android对finishAffinity的简单认识</title>
+      <link>https://helixs.github.io/posts/2019-12-16-android%E5%AF%B9finishaffinity%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
+      <pubDate>Mon, 16 Dec 2019 08:50:53 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-12-16-android%E5%AF%B9finishaffinity%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
+      <description>大多数简单的Android应用我们都是直接startActivity启动和finish完成销毁。慢慢我们根据应用的各个场景及跳转复杂度开始使用了lanchMode诸如singleTask singleTop，NewTask等等。用是用了，但是用的是不清不楚不明不白，倘若面试疑问就是一脸懵逼。今天着重看看Task栈和finishAffinity的用法，不过在这之前还是找找启动模式的一些资料，先到网上翻阅，看看人们是怎么说的。
+Activity 启动模式和任务栈 任务栈（tasks-and-back-stack） 创建任务栈 在两种情况下，有可能会创建一个新的任务栈：
+（1）以 FLAG_ACTIVITY_NEW_TASK 方式启动一个 activity；
+（2）在 AndroidManifest.xml 中配置了 android:taskAffinity。
+如果我们使用 startActivity 启动一个 Activity，没有添加任何 flag 时，新启动的 Activity 会与调用 startActivity 的 Activity 位于同一个任务栈中；在默认情况下，应用内的所有 Activity 都会被存放在以包名命名的任务栈中。
+当我们以 FLAG_ACTIVITY_NEW_TASK 方式启动一个 Activity 时，如果某个任务栈里已经有该 Activity 了，那么会将该任务栈从后台切换到前台，也即从停止状态切换到活跃状态，否则先创建一个新的任务栈，将创建一个 Activity 实例，将该实例作为 Root Activity（任务栈最底部的 Activity）。
+如果在当前的任务栈中，按照FLAG_ACTIVITY_NEW_TASK启动当前根Activity是无法启动的。如果同样方式启动android:taskAffinity一致但是Activity不一样也不会启动新的任务栈，而是在当前任务栈启动一个新的Activity。 西门笔者试了一下，在默认的lanchMode下，如果要使用FLAG_ACTIVITY_NEW_TASK切换任务栈或者创建新的任务栈要同时满足两个需求，1、当且仅当当前任务栈的RootActivityandroid:taskAffinity和被启动的Activity的android:taskAffinity不一致2、如果要切换在后台的任务栈，需要满足被启动的Acitivity在其他某个任务栈的作为Root节点，不过相应的，你看看在没有魔改的android系统的多任务栏切换是不是多了那么多个taskAffinity窗口呢，哈哈~~~所以看看微信小程序是不是也是动态生成的小程序的任务栈。不过，如果同时也添加了 Intent.FLAG_ACTIVITY_MULTIPLE_TASK 属性，那么系统会无条件创建一个新的任务栈。
+如果要启动的 Activity 配置了 android:taskAffinity，那么系统会将该 Activity 放到对应的任务栈中。
+销毁任务栈  当我们从最近任务中移除对应的任务时，该任务栈也会被移除。从 Android 5.x 起，重启后任务栈可以被恢复。（see[持久化的任务栈][持久化的任务栈]） 当任务栈中已经没有 Activity 时，该任务栈会被自动销毁。 当系统内存较少时，任务栈也有可能被移除，只保留重建该任务栈需要的信息。  当任务栈被销毁时，之前在任务栈中的 Activity 关联的服务会触发 onTaskStopped() 回调，可以决定是否要结束服务；如果在 AndroidManifest.xml 设置 android:stopWithTask=&amp;quot;true&amp;quot;（默认 false），则不会接收到该回调，同时服务会自动被销毁。不过在 Android 4.</description>
+    </item>
+    
+  </channel>
+</rss>

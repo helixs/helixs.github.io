@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gradle on 西门吹风</title>
+    <link>https://helixs.github.io/tags/gradle/</link>
+    <description>Recent content in gradle on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 19 Feb 2021 07:27:02 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/gradle/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AndroidStudio通过Gradle查看第三方依赖关系</title>
+      <link>https://helixs.github.io/posts/2021-02-19-androidstudio%E9%80%9A%E8%BF%87gradle%E6%9F%A5%E7%9C%8B%E7%AC%AC%E4%B8%89%E6%96%B9%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/</link>
+      <pubDate>Fri, 19 Feb 2021 07:27:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2021-02-19-androidstudio%E9%80%9A%E8%BF%87gradle%E6%9F%A5%E7%9C%8B%E7%AC%AC%E4%B8%89%E6%96%B9%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/</guid>
+      <description>进行Android开发我们经常遇到一些依赖冲突，以及库版本号不一致导致出现各种问题。往往就下面这张图只是看到了你所有的依赖项，并不知道这些依赖都是从哪里来的，除非你进去一个个查看pow.xml那么蠢了。
+                       看了半天也不知道是从哪里依赖的。
+有个简单的方法，打开gradle工具，找到项目下如app模块-&amp;gt;Tasks-&amp;gt;help-&amp;gt;dependencies-&amp;gt;双击                         那么他会执行 :app:dependencies命令,会打印出依赖项及子依赖项
+                      往上说的那些什么插件的都是老方法了，新版的studio没办法直观反映</description>
+    </item>
+    
+  </channel>
+</rss>

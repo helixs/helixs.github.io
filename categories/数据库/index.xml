@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数据库 on 西门吹风</title>
+    <link>https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+    <description>Recent content in 数据库 on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 02 Apr 2021 07:02:08 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mariadb安装设置root密码</title>
+      <link>https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/</link>
+      <pubDate>Fri, 02 Apr 2021 07:02:08 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/</guid>
+      <description>启动远程连接
+红色部分是用户名和远程登录的密码，和本地密码不同。
+ </description>
+    </item>
+    
+    <item>
+      <title>Navicat各版本(包括15)通用激活教程</title>
+      <link>https://helixs.github.io/posts/2020-03-12-navicat%E5%90%84%E7%89%88%E6%9C%AC%E5%8C%85%E6%8B%AC15%E9%80%9A%E7%94%A8%E6%BF%80%E6%B4%BB%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Thu, 12 Mar 2020 08:39:49 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-12-navicat%E5%90%84%E7%89%88%E6%9C%AC%E5%8C%85%E6%8B%AC15%E9%80%9A%E7%94%A8%E6%BF%80%E6%B4%BB%E6%95%99%E7%A8%8B/</guid>
+      <description>Navicat是比较好的数据库管理软件，可是真的好贵啊，公司企业那些一直在用付费很正常，普通用户也不是一直用，所以很划不来。不过还是要支持正版。
+下载Navicat https://www.navicat.com.cn/products  最新版本已经是15了，下载完成后安装，记得安装目录就行
+下载激活工具 Navicat Software – Patch/Keygen 原始链接(可能出现网站不稳定的情况)
+根据浪儿提供的地址 https://www.lanzous.com/b0bkap39e 5p9d如果下载不了请关闭杀毒软件，或者信任。当然我也不知道有没有毒。哈哈
+断网 1、 打开激活工具，默认选中了Backup和Host，然后选择Navicat的版本，之后点击patch。
+弹窗选择框到Navicat安装目录选中navicat.exe完成
+              2、选中你的协议和products(mysql啊orancle等等)
+3、点击Generate生成激活码，复制激活码
+4、打开navicat，输入激活码，弹窗则手动，复制requestCode
+5、打开激活工具粘贴到requestCode，点击Generate生成ActivationCode，复制
+6、打开navicat粘上去，激活成功
+可以看看下面这个教程
+https://juejin.im/post/5d8081b0e51d4561d54dea19  本博客不提供任何文件下载服务，链接资源均搜集子网上，如果出现侵权行为，请关闭此页面。  </description>
+    </item>
+    
+    <item>
+      <title>安装mariadb设置初始密码及配置</title>
+      <link>https://helixs.github.io/posts/2020-03-11-%E5%AE%89%E8%A3%85mariadb%E8%AE%BE%E7%BD%AE%E5%88%9D%E5%A7%8B%E5%AF%86%E7%A0%81/</link>
+      <pubDate>Wed, 11 Mar 2020 10:49:51 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-11-%E5%AE%89%E8%A3%85mariadb%E8%AE%BE%E7%BD%AE%E5%88%9D%E5%A7%8B%E5%AF%86%E7%A0%81/</guid>
+      <description>初始密码的问题 安装MariaDb后按照网上说的什么mysql -u root -p 根本进不去啊，要输入密码，直接回车也不行。下面可以解决
+root用户远程访问数据库 root用户默认值只允许localhost，所以需要修改root用户的访问权限，不然在会拒绝连接。
+默认是3306端口号，记得开启端口，如果是云服务器记得配置3306的安全组
+还有如果是本地的防火墙可以参考centos7 防火墙端口配置和SSH端口配置 做完之后登录mysql -u root -p.表示所有ip可以进来，password表示root用户远程登录的密码，不是原来的密码，记得设置。然后就可以啦
+ navicat安装教程 Navicat各版本(包括15)通用激活教程 </description>
+    </item>
+    
+  </channel>
+</rss>

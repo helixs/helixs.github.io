@@ -1,0 +1,536 @@
+<!doctype html><html lang="en"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Java GC简单认识 - 西门吹风</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="Java GC简单认识">
+<meta itemprop="description" content="前几日，我去外面试了试面试。找找新工作看看有没有合适的。前面基本上很顺利，没有什么特别的难度和问题，本以为可以满怀信心的入职，结果被泼了一盆冷水。被问到关于GC机制的问题，GC算法有哪些，规则如何等等，我懵逼了，我只知道GC是垃圾回收，在内存不够的时候会触发它，然后回收没有引用的内存。然后它是如何实现的可真没有仔细研究过。书到用时方恨少，事非经过不知难。
+在很多年前我们在运行android程序的时候，时不时的会卡顿，我当时不以为然。排除线程和代码相关的情况下多半都与触发了GC有关西。了解才知道，在触发GC线程的时候，其它线程会进行等待，包括UI线程，UI线程卡顿了，那么我们肯定就会卡了。
+可以看看jvm运行时内存分配哪些对象会被回收？ 对于寄存器、栈和本地方法区，他们都是跟随着当前线程走的，线程走完也就消亡了，所以不许要GC去触碰它。
+而GC的主要对象是Java堆，这个地方跟线程的生命周期没有直接关联，就算你方法走完，new的对象也不会马上消失，直到GC的时候才有可能回收它。次要对象就是方法区的常量或者类等，毕竟这个一般也不会大到哪里去。
+对象存活的依据 1、引用计数法  原理：给对象添加一个引用计数器，每当有地方引用时计数器加 1，引用失效时减 1。当该对象引用为 0 时，判定对象失效 优点：实现简单，判定效率高 缺点：很难解决对象之间循环引用的问题  如果 class A,classB都持有对方的引用那么就不可能回收了！。
+ &lt;ol&gt; &lt;li&gt; 判断对象是否覆盖了 finalize() 方法 &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 如果覆盖了 finalize() 方法，那么将 finalize() 放到 F-Queue 队列中 &lt;/p&gt; &lt;p&gt; 如果未覆盖该方法，则直接回收 &lt;/p&gt; &lt;ol start=&quot;2&quot;&gt; &lt;li&gt; 执行 F-Queue 队列中的 finalize() 方法&lt;br /&gt; 由虚拟机自动建立一个优先级较低的线程去执行 F-Queue 中的 finalize() 方法，这里的执行只是触发这些方法并不保证会等待它执行完毕。如果 finalize() 方法作了耗时操作，虚拟机会停止执行并将该对象清除。 &lt;/li&gt; &lt;li&gt; 对象销毁或重生&lt;br /&gt; &lt;strong&gt;在 finalize() 方法中，将 this 赋值给某一个引用，那么该对象就重生了。如果没有引用，该对象会被回收&lt;/strong&gt;。 &lt;/li&gt; &lt;/ol&gt; &lt;/div&gt; &lt;h5&gt; 方法区的内存回收 &lt;/h5&gt; &lt;ul&gt; &lt;li&gt; 废弃的常量：&lt;br /&gt; 当前系统中没有任何对象引用常量池中的该常量，则是废弃常量 &lt;/li&gt; &lt;li&gt; 废弃的类判断规则：&lt;br /&gt; 该类所有实例都被回收；&lt;br /&gt; 加载该类的 ClassLoader 已经被回收；&lt;br /&gt; 该类对应的 Class 对象没有引用，也无法通过反射访问该类的方法。 &lt;/li&gt; &lt;/ul&gt; &lt;h4&gt; 算法 &lt;/h4&gt; &lt;p&gt; 最基础的收集算法是&amp;#8221;标记 &amp;#8211; 清除&amp;#8221;算法，之所以说它是最基础的是因为它逻辑简单、使用简便，而且后续的收集算法大多基于这种算法的不足而优化的。 &lt;/p&gt; &lt;h5&gt; 1."><meta itemprop="datePublished" content="2019-07-30T04:00:27+00:00" />
+<meta itemprop="dateModified" content="2019-07-30T04:00:27+00:00" />
+<meta itemprop="wordCount" content="308">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="Java GC简单认识" />
+<meta property="og:description" content="前几日，我去外面试了试面试。找找新工作看看有没有合适的。前面基本上很顺利，没有什么特别的难度和问题，本以为可以满怀信心的入职，结果被泼了一盆冷水。被问到关于GC机制的问题，GC算法有哪些，规则如何等等，我懵逼了，我只知道GC是垃圾回收，在内存不够的时候会触发它，然后回收没有引用的内存。然后它是如何实现的可真没有仔细研究过。书到用时方恨少，事非经过不知难。
+在很多年前我们在运行android程序的时候，时不时的会卡顿，我当时不以为然。排除线程和代码相关的情况下多半都与触发了GC有关西。了解才知道，在触发GC线程的时候，其它线程会进行等待，包括UI线程，UI线程卡顿了，那么我们肯定就会卡了。
+可以看看jvm运行时内存分配哪些对象会被回收？ 对于寄存器、栈和本地方法区，他们都是跟随着当前线程走的，线程走完也就消亡了，所以不许要GC去触碰它。
+而GC的主要对象是Java堆，这个地方跟线程的生命周期没有直接关联，就算你方法走完，new的对象也不会马上消失，直到GC的时候才有可能回收它。次要对象就是方法区的常量或者类等，毕竟这个一般也不会大到哪里去。
+对象存活的依据 1、引用计数法  原理：给对象添加一个引用计数器，每当有地方引用时计数器加 1，引用失效时减 1。当该对象引用为 0 时，判定对象失效 优点：实现简单，判定效率高 缺点：很难解决对象之间循环引用的问题  如果 class A,classB都持有对方的引用那么就不可能回收了！。
+ &lt;ol&gt; &lt;li&gt; 判断对象是否覆盖了 finalize() 方法 &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 如果覆盖了 finalize() 方法，那么将 finalize() 放到 F-Queue 队列中 &lt;/p&gt; &lt;p&gt; 如果未覆盖该方法，则直接回收 &lt;/p&gt; &lt;ol start=&quot;2&quot;&gt; &lt;li&gt; 执行 F-Queue 队列中的 finalize() 方法&lt;br /&gt; 由虚拟机自动建立一个优先级较低的线程去执行 F-Queue 中的 finalize() 方法，这里的执行只是触发这些方法并不保证会等待它执行完毕。如果 finalize() 方法作了耗时操作，虚拟机会停止执行并将该对象清除。 &lt;/li&gt; &lt;li&gt; 对象销毁或重生&lt;br /&gt; &lt;strong&gt;在 finalize() 方法中，将 this 赋值给某一个引用，那么该对象就重生了。如果没有引用，该对象会被回收&lt;/strong&gt;。 &lt;/li&gt; &lt;/ol&gt; &lt;/div&gt; &lt;h5&gt; 方法区的内存回收 &lt;/h5&gt; &lt;ul&gt; &lt;li&gt; 废弃的常量：&lt;br /&gt; 当前系统中没有任何对象引用常量池中的该常量，则是废弃常量 &lt;/li&gt; &lt;li&gt; 废弃的类判断规则：&lt;br /&gt; 该类所有实例都被回收；&lt;br /&gt; 加载该类的 ClassLoader 已经被回收；&lt;br /&gt; 该类对应的 Class 对象没有引用，也无法通过反射访问该类的方法。 &lt;/li&gt; &lt;/ul&gt; &lt;h4&gt; 算法 &lt;/h4&gt; &lt;p&gt; 最基础的收集算法是&amp;#8221;标记 &amp;#8211; 清除&amp;#8221;算法，之所以说它是最基础的是因为它逻辑简单、使用简便，而且后续的收集算法大多基于这种算法的不足而优化的。 &lt;/p&gt; &lt;h5&gt; 1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2019-07-30-java-gc%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-07-30T04:00:27+00:00" />
+<meta property="article:modified_time" content="2019-07-30T04:00:27+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java GC简单认识"/>
+<meta name="twitter:description" content="前几日，我去外面试了试面试。找找新工作看看有没有合适的。前面基本上很顺利，没有什么特别的难度和问题，本以为可以满怀信心的入职，结果被泼了一盆冷水。被问到关于GC机制的问题，GC算法有哪些，规则如何等等，我懵逼了，我只知道GC是垃圾回收，在内存不够的时候会触发它，然后回收没有引用的内存。然后它是如何实现的可真没有仔细研究过。书到用时方恨少，事非经过不知难。
+在很多年前我们在运行android程序的时候，时不时的会卡顿，我当时不以为然。排除线程和代码相关的情况下多半都与触发了GC有关西。了解才知道，在触发GC线程的时候，其它线程会进行等待，包括UI线程，UI线程卡顿了，那么我们肯定就会卡了。
+可以看看jvm运行时内存分配哪些对象会被回收？ 对于寄存器、栈和本地方法区，他们都是跟随着当前线程走的，线程走完也就消亡了，所以不许要GC去触碰它。
+而GC的主要对象是Java堆，这个地方跟线程的生命周期没有直接关联，就算你方法走完，new的对象也不会马上消失，直到GC的时候才有可能回收它。次要对象就是方法区的常量或者类等，毕竟这个一般也不会大到哪里去。
+对象存活的依据 1、引用计数法  原理：给对象添加一个引用计数器，每当有地方引用时计数器加 1，引用失效时减 1。当该对象引用为 0 时，判定对象失效 优点：实现简单，判定效率高 缺点：很难解决对象之间循环引用的问题  如果 class A,classB都持有对方的引用那么就不可能回收了！。
+ &lt;ol&gt; &lt;li&gt; 判断对象是否覆盖了 finalize() 方法 &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 如果覆盖了 finalize() 方法，那么将 finalize() 放到 F-Queue 队列中 &lt;/p&gt; &lt;p&gt; 如果未覆盖该方法，则直接回收 &lt;/p&gt; &lt;ol start=&quot;2&quot;&gt; &lt;li&gt; 执行 F-Queue 队列中的 finalize() 方法&lt;br /&gt; 由虚拟机自动建立一个优先级较低的线程去执行 F-Queue 中的 finalize() 方法，这里的执行只是触发这些方法并不保证会等待它执行完毕。如果 finalize() 方法作了耗时操作，虚拟机会停止执行并将该对象清除。 &lt;/li&gt; &lt;li&gt; 对象销毁或重生&lt;br /&gt; &lt;strong&gt;在 finalize() 方法中，将 this 赋值给某一个引用，那么该对象就重生了。如果没有引用，该对象会被回收&lt;/strong&gt;。 &lt;/li&gt; &lt;/ol&gt; &lt;/div&gt; &lt;h5&gt; 方法区的内存回收 &lt;/h5&gt; &lt;ul&gt; &lt;li&gt; 废弃的常量：&lt;br /&gt; 当前系统中没有任何对象引用常量池中的该常量，则是废弃常量 &lt;/li&gt; &lt;li&gt; 废弃的类判断规则：&lt;br /&gt; 该类所有实例都被回收；&lt;br /&gt; 加载该类的 ClassLoader 已经被回收；&lt;br /&gt; 该类对应的 Class 对象没有引用，也无法通过反射访问该类的方法。 &lt;/li&gt; &lt;/ul&gt; &lt;h4&gt; 算法 &lt;/h4&gt; &lt;p&gt; 最基础的收集算法是&amp;#8221;标记 &amp;#8211; 清除&amp;#8221;算法，之所以说它是最基础的是因为它逻辑简单、使用简便，而且后续的收集算法大多基于这种算法的不足而优化的。 &lt;/p&gt; &lt;h5&gt; 1."/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="" loading="lazy"
+  
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=Java%20GC%e7%ae%80%e5%8d%95%e8%ae%a4%e8%af%86&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-07-30-java-gc%25E7%25AE%2580%25E5%258D%2595%25E8%25AE%25A4%25E8%25AF%2586%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-07-30-java-gc%25E7%25AE%2580%25E5%258D%2595%25E8%25AE%25A4%25E8%25AF%2586%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Settings</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> Mode</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> Palette</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="Blue"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="Blue Gray"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="Brown"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="Cyan"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="Green"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="Indigo"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="Orange"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="Pink"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="Purple"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="Red"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="Teal"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="Yellow"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">Home</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">Posts</a></li><li class="breadcrumb-item active">Java GC简单认识</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    
+    
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Java GC简单认识
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>Jul 30, 2019
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>2 min read
+  </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge rounded-pill text-white bg-primary post-taxonomy">编程生活</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">Table Of Contents</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><p>前几日，我去外面试了试面试。找找新工作看看有没有合适的。前面基本上很顺利，没有什么特别的难度和问题，本以为可以满怀信心的入职，结果被泼了一盆冷水。被问到关于GC机制的问题，GC算法有哪些，规则如何等等，我懵逼了，我只知道GC是垃圾回收，在内存不够的时候会触发它，然后回收没有引用的内存。然后它是如何实现的可真没有仔细研究过。<strong>书到用时方恨少，事非经过不知难。</strong></p>
+<p>在很多年前我们在运行android程序的时候，时不时的会卡顿，我当时不以为然。排除线程和代码相关的情况下多半都与触发了GC有关西。了解才知道，在触发GC线程的时候，其它线程会进行等待，包括UI线程，UI线程卡顿了，那么我们肯定就会卡了。</p>
+<p>可以看看<!-- raw HTML omitted -->jvm运行时内存分配<!-- raw HTML omitted --></p>
+<h4 id="哪些对象会被回收">哪些对象会被回收？</h4>
+<p>对于寄存器、栈和本地方法区，他们都是跟随着当前线程走的，线程走完也就消亡了，所以不许要GC去触碰它。</p>
+<p>而GC的主要对象是Java堆，这个地方跟线程的生命周期没有直接关联，就算你方法走完，new的对象也不会马上消失，直到GC的时候才有可能回收它。次要对象就是方法区的常量或者类等，毕竟这个一般也不会大到哪里去。</p>
+<h4 id="对象存活的依据">对象存活的依据</h4>
+<h6 id="1引用计数法">1、引用计数法</h6>
+<ul>
+<li>原理：给对象添加一个引用计数器，每当有地方引用时计数器加 1，引用失效时减 1。当该对象引用为 0 时，判定对象失效</li>
+<li>优点：实现简单，判定效率高</li>
+<li>缺点：很难解决对象之间循环引用的问题</li>
+</ul>
+<p>如果 class A,classB都持有对方的引用那么就不可能回收了！。</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>  &lt;ol&gt;
+    &lt;li&gt;
+      判断对象是否覆盖了 finalize() 方法
+    &lt;/li&gt;
+  &lt;/ol&gt;
+  
+  &lt;p&gt;
+    如果覆盖了 finalize() 方法，那么将 finalize() 放到 F-Queue 队列中
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    如果未覆盖该方法，则直接回收
+  &lt;/p&gt;
+  
+  &lt;ol start=&quot;2&quot;&gt;
+    &lt;li&gt;
+      执行 F-Queue 队列中的 finalize() 方法&lt;br /&gt; 由虚拟机自动建立一个优先级较低的线程去执行 F-Queue 中的 finalize() 方法，这里的执行只是触发这些方法并不保证会等待它执行完毕。如果 finalize() 方法作了耗时操作，虚拟机会停止执行并将该对象清除。
+    &lt;/li&gt;
+    &lt;li&gt;
+      对象销毁或重生&lt;br /&gt; &lt;strong&gt;在 finalize() 方法中，将 this 赋值给某一个引用，那么该对象就重生了。如果没有引用，该对象会被回收&lt;/strong&gt;。
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+
+&lt;h5&gt;
+  方法区的内存回收
+&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    废弃的常量：&lt;br /&gt; 当前系统中没有任何对象引用常量池中的该常量，则是废弃常量
+  &lt;/li&gt;
+  &lt;li&gt;
+    废弃的类判断规则：&lt;br /&gt; 该类所有实例都被回收；&lt;br /&gt; 加载该类的 ClassLoader 已经被回收；&lt;br /&gt; 该类对应的 Class 对象没有引用，也无法通过反射访问该类的方法。
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;
+  算法
+&lt;/h4&gt;
+
+&lt;p&gt;
+  最基础的收集算法是&amp;#8221;标记 &amp;#8211; 清除&amp;#8221;算法，之所以说它是最基础的是因为它逻辑简单、使用简便，而且后续的收集算法大多基于这种算法的不足而优化的。
+&lt;/p&gt;
+
+&lt;h5&gt;
+  1. 标记 &amp;#8211; 清除算法
+&lt;/h5&gt;
+
+&lt;p&gt;
+  标记 &amp;#8211; 清除算法分为两个阶段：
+&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    标记阶段：标记的过程就是前面的可达性分析法执行的过程。首先遍历所有 GC Roots 对象，对从 GC Roots 对象可达的对象都打上一个可达标识。这个可达标识一般记录在对象 header 中（一个对象一般包括对象头、实例数据、对齐填充三个部分），表示该对象可以被 GC Roots 访问。
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;
+  &lt;img loading=&quot;lazy&quot; class=&quot;alignleft size-full wp-image-328&quot; src=&quot;https://xmcf.me/wp-content/uploads/2019/07/6762021-18c73d39d1889f60.png&quot; alt=&quot;&quot; width=&quot;660&quot; height=&quot;291&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/07/6762021-18c73d39d1889f60.png 660w, https://xmcf.me/wp-content/uploads/2019/07/6762021-18c73d39d1889f60-300x132.png 300w, https://xmcf.me/wp-content/uploads/2019/07/6762021-18c73d39d1889f60-430x190.png 430w&quot; sizes=&quot;(max-width: 660px) 100vw, 660px&quot; /&gt;
+&lt;/p&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>可以看到，上图 B、E、F、G、J、K 对象是可达对象，所以这些对象的对象头中就会记录可达信息。</p>
+<ol>
+<li>清除阶段：清除阶段是对堆内存进行遍历，通过读取这些对象的 header 信息来获取对象是否标记可达。如果未标记则表示这些对象没有引用，就可以进行回收。</li>
+</ol>
+<!-- raw HTML omitted -->
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>标记 – 清除算法主要不足有两个：</p>
+<ul>
+<li>效率问题：标记和清除都需要遍历，效率不高；</li>
+<li>空间问题：标记清除后会产生大量不连续的内存水平，空间碎片太多会导致大内存对象无法生成而频繁进行 GC。</li>
+</ul>
+<h5 id="2-复制算法">2. 复制算法</h5>
+<p>为了解决效率问题，复制算法出现了。</p>
+<ul>
+<li>原理：将可用内存按容量大小分为大小相等的两块，每次只使用其中一块。当这一块内存使用完毕，就将存活的对象复制到另一块上，然后再把这一块所有的对象一次性清理掉。</li>
+<li>图解：</li>
+</ul>
+<!-- raw HTML omitted -->
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>先将内存区域分为大小相等的两块，只使用其中一块，并标记可达对象。</p>
+<!-- raw HTML omitted -->
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>当一块内存使用完毕以后，将其中的可达对象复制到另一块，然后再一次性清除原理的内存空间。</p>
+<ul>
+<li>优点：简答高效，内存相对整齐</li>
+<li>缺点：<br>
+1.将内存分为一半，代价略高。<br>
+2.如果对象存活率高，需要复制的对象比较多，产生效率问题。</li>
+<li>优化：<br>
+在新生代中，由于大量的对象都是”朝生夕死”，也就是说一次垃圾收集后存活对象较少，因此我们可以把内存划分为三块：Eden、Survior1、Survior2，大小比例为 8:1:1。分配内存时只使用 Eden + Survior1，当这里的内存将满时，JVM 会出发一次 MinorGC，清除掉废弃对象，并将存活对象复制到另一块 Survior2 中。那么接下来就使用 Eden + Survior2 进行内存分配。通过这种方式只需浪费 10% 的内存空间即可实现复制清除算法，同时避免了内存碎片的问题。</li>
+</ul>
+<h5 id="3-标记-8211-整理算法">3. 标记 – 整理算法</h5>
+<ul>
+<li>原理：标记过程与 “标记 – 清除” 算法相同，但后续不是直接对可回收对象进行清理，而是让所有存活对象都向一端移动，然后直接清理掉一端边界外的内存。</li>
+</ul>
+<!-- raw HTML omitted -->
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<!-- raw HTML omitted -->
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<ul>
+<li>优点：无需复制，保证效率。内存规整。</li>
+<li>缺点：效率不如复制算法。</li>
+</ul>
+<!-- raw HTML omitted -->
+<pre><code>&lt;p&gt;
+  在了解了以上三种 GC 算法以后，作一个简单的排行：
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;strong&gt;效率：&lt;/strong&gt;复制算法 &gt; 标记 &amp;#8211; 整理算法 &gt; 标记 &amp;#8211; 清除 算法（标记 &amp;#8211; 清除会产生内存碎片，需要大内存时会出发新一轮 GC）。
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;strong&gt;内存规整率：&lt;/strong&gt;复制算法 = 标记 &amp;#8211; 整理 &gt; 标记 &amp;#8211; 清除。
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;strong&gt;内存利用率：&lt;/strong&gt;标记 &amp;#8211; 整理算法 = 标记 &amp;#8211; 清除算法 &gt; 复制算法。
+&lt;/p&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>  &lt;p&gt;
+    当前商业虚拟机的垃圾收集都采用 &amp;#8220;分代收集&amp;#8221; 算法，这种相当于结合以上几种算法进行结合。
+  &lt;/p&gt;
+  
+  &lt;ul&gt;
+    &lt;li&gt;
+      原理：把 Java 堆分为新生代和老年代，根据各个对象的年代采用最合适的收集算法。&lt;br /&gt; 针对新生代的对象，采取灵活比例的复制算法，只需要复制少量存活对象就可以完成收集。&lt;br /&gt; 针对老年代的对象，因为这些对象存活率高，没有额外空间进行分配担保，必须使用 标记 &amp;#8211; 清除 或 标记 &amp;#8211; 整理 算法。
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;div&gt;
+  &lt;p&gt;
+    几乎所有新生成的对象首先都是放在年轻代的。新生代内存按照8:1:1的比例分为一个Eden区和两个Survivor(Survivor0,Survivor1)区。大部分对象在Eden区中生成。当新对象生成，Eden Space申请失败（因为空间不足等），则会发起一次GC(Scavenge GC)。回收时先将Eden区存活对象复制到一个Survivor0区，然后清空Eden区，当这个Survivor0区也存放满了时，则将Eden区和Survivor0区存活对象复制到另一个Survivor1区，然后清空Eden和这个Survivor0区，此时Survivor0区是空的，然后将Survivor0区和Survivor1区交换，即保持Survivor1区为空， 如此往复。当Survivor1区不足以存放 Eden和Survivor0的存活对象时，就将存活对象直接存放到老年代。当对象在Survivor区躲过一次GC的话，其对象年龄便会加1，默认情况下，如果对象年龄达到15岁，就会移动到老年代中。若是老年代也满了就会触发一次Full GC，也就是新生代、老年代都进行回收。新生代大小可以由-Xmn来控制，也可以用-XX:SurvivorRatio来控制Eden和Survivor的比例。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    老年代:&lt;i&gt;&lt;b&gt;Old Generation&lt;/b&gt;&lt;/i&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div&gt;
+  &lt;p&gt;
+    在年轻代中经历了N次垃圾回收后仍然存活的对象，就会被放到年老代中。因此，可以认为年老代中存放的都是一些生命周期较长的对象。内存比新生代也大很多(大概比例是1:2)，当老年代内存满时触发Major GC即Full GC，Full GC发生频率比较低，老年代对象存活时间比较长，存活率标记高。一般来说，大对象会被直接分配到老年代。所谓的大对象是指需要大量连续存储空间的对象，最常见的一种大对象就是大数组。比如：      byte[] data = new byte[4*1024*1024]      这种一般会直接在老年代分配存储空间。      当然分配的规则并不是百分之百固定的，这要取决于当前使用的是哪种垃圾收集器组合和JVM的相关参数。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    永久代 or 元空间
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    用于存放静态文件（class类、方法）和常量等。持久代对垃圾回收没有显著影响，但是有些应用可能动态生成或者调用一些class，例如Hibernate 等，在这种时候需要设置一个比较大的持久代空间来存放这些运行过程中新增的类。对永久代的回收主要回收两部分内容：废弃常量和无用的类。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    永久代空间在Java SE8特性中已经被移除。取而代之的是元空间（MetaSpace）。因此不会再出现“java.lang.OutOfMemoryError: PermGen error”错误。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    &amp;nbsp;
+  &lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2019-07-29-java-gc%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/">jvm运行时内存分配
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2019-08-20-flutter-sliverappbar/">Flutter SliverAppBar
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">Recent Posts</h2>
+    <ul><li><a href="https://helixs.github.io/posts/my-first-post/">My First Post
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">Categories</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="badge bg-primary text-white rounded post-taxonomy" title="开发环境">
+            开发环境
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">Tags</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a><a href="https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/" class="badge bg-primary text-white rounded post-taxonomy" title="启动模式">
+            启动模式
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"></nav>
+<div class="copyright mb-2">
+  
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.b6665b560bd48dd0478c60f275f624d3c8ec7795a5d83679d18221053b102798.js" integrity="sha256-tmZbVgvUjdBHjGDydfYk08jsd5Wl2DZ50YIhBTsQJ5g=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

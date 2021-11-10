@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DownloadManager on 西门吹风</title>
+    <link>https://helixs.github.io/tags/downloadmanager/</link>
+    <description>Recent content in DownloadManager on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 11 Mar 2020 01:53:58 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/downloadmanager/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android调用DownloadManager下载文件及安装apk，兼容6、7、8&#43;</title>
+      <link>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</link>
+      <pubDate>Wed, 11 Mar 2020 01:53:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</guid>
+      <description>我们的app经常有需求下载文件等，还有就是下载安装。
+1、下载文件的方式 1,很多三方框架都有文件上传下载功能，可以借助三方框架(比如Volley,OkHttp,或者还有个很不错的库OKdownload,不过这个库比较重量级，我们只做简单的下载就不太需要啦)
+2,也可以开启一个线程去下载,（可以用IntentService）
+3，最简单的一种方式：Android SDK 其实给我们提供了下载类DownloadManager,只需要简单的配置项设置，就能轻松实现下载功能。
+DownloadManager 是SDK 自带的，大概流程如下：
+（1）创建一个Request,进行简单的配置（下载地址，和文件保存地址等）
+（2）下载完成后，系统会发送一个下载完成的广播，我们需要监听广播。
+（3）监听到下载完成的广播后，根据id查找下载的apk文件
+（4）在代码中执行apk安装。
+Activity中使用
+简单的使用就是这些，有问题可以评论哦</description>
+    </item>
+    
+  </channel>
+</rss>

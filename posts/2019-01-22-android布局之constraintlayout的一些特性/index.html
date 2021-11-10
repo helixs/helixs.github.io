@@ -1,0 +1,725 @@
+<!doctype html><html lang="en"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>android布局之ConstraintLayout的一些特性 - 西门吹风</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="android布局之ConstraintLayout的一些特性">
+<meta itemprop="description" content="前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。
+&lt;ol&gt; &lt;li&gt; 解决复杂布局嵌套过多，影响性能的问题。 &lt;/li&gt; &lt;li&gt; 相对定位，和RelativeLayout大致相同，也同样支持Baseline基线定位。 &lt;/li&gt; &lt;li&gt; 角度定位，更加玄学了。角度和距离定位了（想象一下在直角坐标系中中心点O距离点A的角度和距离了）。 &lt;/li&gt; &lt;li&gt; 支持按照比例偏移。 &lt;/li&gt; &lt;li&gt; 尺寸方面，match_parent尽量少用，直接0dp往上干。并且更好的支持比例约束。 &lt;/li&gt; &lt;li&gt; 链式布局，可以想象在Flex布局中justify-content，不过没有flex那么强大啦，也只有3个属性选择。 &lt;/li&gt; &lt;li&gt; Optimizer，当控件设置尺寸为0dp的时候布局会进行二次测量，不可避免的会进行耗时操作，所以要进行处理。 &lt;/li&gt; &lt;li&gt; Barrier，屏障，相当于一个阈值吧，不过我这样形容不恰当。 &lt;/li&gt; &lt;li&gt; Group，可以将控件进行分组，而直接在这个组上面设置属性，那么组当中所带入的属性会直接传到属于这个组的控件上面。感觉这个设计特别棒，如统一的颜色和统一的显示隐藏等。 &lt;/li&gt; &lt;li&gt; Placeholder，占位符，也很吊，可以动态控制显示的控件。不需要我们每次动态setVisibility了。 &lt;/li&gt; &lt;li&gt; Guideline，辅助线，执行复杂布局中这个是很有效的东西哦 &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 上面就是这个ConstraintLayout的一些特性了。下面就慢慢的介绍一下它的具体使用方式 &lt;/p&gt;  &lt;p&gt; &lt;code class=&quot;api-signature&quot;&gt;public class ConstraintLayout &lt;/code&gt;&lt;code class=&quot;api-signature&quot;&gt;&amp;lt;code class=&quot;api-signature&quot;&gt;extends &lt;/code&gt;&lt;/code&gt;&lt;a href=&quot;http://developer.android.com/reference/android/view/ViewGroup.html&quot;&gt;ViewGroup&lt;/a&gt; &lt;/p&gt; &lt;div class=&quot;devsite-table-wrapper&quot;&gt; &lt;table class=&quot;jd-inheritance-table&quot;&gt; &lt;tr&gt; &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;4&quot;&gt; &lt;a href=&quot;http://developer.android.com/reference/java/lang/Object.html&quot;&gt;java.lang.Object&lt;/a&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td class=&quot;jd-inheritance-space&quot;&gt; ↳ &lt;/td&gt; &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;3&quot;&gt; &lt;a href=&quot;http://developer."><meta itemprop="datePublished" content="2019-01-22T08:43:57+00:00" />
+<meta itemprop="dateModified" content="2019-01-22T08:43:57+00:00" />
+<meta itemprop="wordCount" content="584">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="android布局之ConstraintLayout的一些特性" />
+<meta property="og:description" content="前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。
+&lt;ol&gt; &lt;li&gt; 解决复杂布局嵌套过多，影响性能的问题。 &lt;/li&gt; &lt;li&gt; 相对定位，和RelativeLayout大致相同，也同样支持Baseline基线定位。 &lt;/li&gt; &lt;li&gt; 角度定位，更加玄学了。角度和距离定位了（想象一下在直角坐标系中中心点O距离点A的角度和距离了）。 &lt;/li&gt; &lt;li&gt; 支持按照比例偏移。 &lt;/li&gt; &lt;li&gt; 尺寸方面，match_parent尽量少用，直接0dp往上干。并且更好的支持比例约束。 &lt;/li&gt; &lt;li&gt; 链式布局，可以想象在Flex布局中justify-content，不过没有flex那么强大啦，也只有3个属性选择。 &lt;/li&gt; &lt;li&gt; Optimizer，当控件设置尺寸为0dp的时候布局会进行二次测量，不可避免的会进行耗时操作，所以要进行处理。 &lt;/li&gt; &lt;li&gt; Barrier，屏障，相当于一个阈值吧，不过我这样形容不恰当。 &lt;/li&gt; &lt;li&gt; Group，可以将控件进行分组，而直接在这个组上面设置属性，那么组当中所带入的属性会直接传到属于这个组的控件上面。感觉这个设计特别棒，如统一的颜色和统一的显示隐藏等。 &lt;/li&gt; &lt;li&gt; Placeholder，占位符，也很吊，可以动态控制显示的控件。不需要我们每次动态setVisibility了。 &lt;/li&gt; &lt;li&gt; Guideline，辅助线，执行复杂布局中这个是很有效的东西哦 &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 上面就是这个ConstraintLayout的一些特性了。下面就慢慢的介绍一下它的具体使用方式 &lt;/p&gt;  &lt;p&gt; &lt;code class=&quot;api-signature&quot;&gt;public class ConstraintLayout &lt;/code&gt;&lt;code class=&quot;api-signature&quot;&gt;&amp;lt;code class=&quot;api-signature&quot;&gt;extends &lt;/code&gt;&lt;/code&gt;&lt;a href=&quot;http://developer.android.com/reference/android/view/ViewGroup.html&quot;&gt;ViewGroup&lt;/a&gt; &lt;/p&gt; &lt;div class=&quot;devsite-table-wrapper&quot;&gt; &lt;table class=&quot;jd-inheritance-table&quot;&gt; &lt;tr&gt; &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;4&quot;&gt; &lt;a href=&quot;http://developer.android.com/reference/java/lang/Object.html&quot;&gt;java.lang.Object&lt;/a&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td class=&quot;jd-inheritance-space&quot;&gt; ↳ &lt;/td&gt; &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;3&quot;&gt; &lt;a href=&quot;http://developer." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-01-22T08:43:57+00:00" />
+<meta property="article:modified_time" content="2019-01-22T08:43:57+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="android布局之ConstraintLayout的一些特性"/>
+<meta name="twitter:description" content="前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。
+&lt;ol&gt; &lt;li&gt; 解决复杂布局嵌套过多，影响性能的问题。 &lt;/li&gt; &lt;li&gt; 相对定位，和RelativeLayout大致相同，也同样支持Baseline基线定位。 &lt;/li&gt; &lt;li&gt; 角度定位，更加玄学了。角度和距离定位了（想象一下在直角坐标系中中心点O距离点A的角度和距离了）。 &lt;/li&gt; &lt;li&gt; 支持按照比例偏移。 &lt;/li&gt; &lt;li&gt; 尺寸方面，match_parent尽量少用，直接0dp往上干。并且更好的支持比例约束。 &lt;/li&gt; &lt;li&gt; 链式布局，可以想象在Flex布局中justify-content，不过没有flex那么强大啦，也只有3个属性选择。 &lt;/li&gt; &lt;li&gt; Optimizer，当控件设置尺寸为0dp的时候布局会进行二次测量，不可避免的会进行耗时操作，所以要进行处理。 &lt;/li&gt; &lt;li&gt; Barrier，屏障，相当于一个阈值吧，不过我这样形容不恰当。 &lt;/li&gt; &lt;li&gt; Group，可以将控件进行分组，而直接在这个组上面设置属性，那么组当中所带入的属性会直接传到属于这个组的控件上面。感觉这个设计特别棒，如统一的颜色和统一的显示隐藏等。 &lt;/li&gt; &lt;li&gt; Placeholder，占位符，也很吊，可以动态控制显示的控件。不需要我们每次动态setVisibility了。 &lt;/li&gt; &lt;li&gt; Guideline，辅助线，执行复杂布局中这个是很有效的东西哦 &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 上面就是这个ConstraintLayout的一些特性了。下面就慢慢的介绍一下它的具体使用方式 &lt;/p&gt;  &lt;p&gt; &lt;code class=&quot;api-signature&quot;&gt;public class ConstraintLayout &lt;/code&gt;&lt;code class=&quot;api-signature&quot;&gt;&amp;lt;code class=&quot;api-signature&quot;&gt;extends &lt;/code&gt;&lt;/code&gt;&lt;a href=&quot;http://developer.android.com/reference/android/view/ViewGroup.html&quot;&gt;ViewGroup&lt;/a&gt; &lt;/p&gt; &lt;div class=&quot;devsite-table-wrapper&quot;&gt; &lt;table class=&quot;jd-inheritance-table&quot;&gt; &lt;tr&gt; &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;4&quot;&gt; &lt;a href=&quot;http://developer.android.com/reference/java/lang/Object.html&quot;&gt;java.lang.Object&lt;/a&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td class=&quot;jd-inheritance-space&quot;&gt; ↳ &lt;/td&gt; &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;3&quot;&gt; &lt;a href=&quot;http://developer."/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="" loading="lazy"
+  
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=android%e5%b8%83%e5%b1%80%e4%b9%8bConstraintLayout%e7%9a%84%e4%b8%80%e4%ba%9b%e7%89%b9%e6%80%a7&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-01-22-android%25E5%25B8%2583%25E5%25B1%2580%25E4%25B9%258Bconstraintlayout%25E7%259A%2584%25E4%25B8%2580%25E4%25BA%259B%25E7%2589%25B9%25E6%2580%25A7%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-01-22-android%25E5%25B8%2583%25E5%25B1%2580%25E4%25B9%258Bconstraintlayout%25E7%259A%2584%25E4%25B8%2580%25E4%25BA%259B%25E7%2589%25B9%25E6%2580%25A7%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Settings</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> Mode</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> Palette</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="Blue"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="Blue Gray"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="Brown"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="Cyan"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="Green"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="Indigo"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="Orange"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="Pink"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="Purple"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="Red"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="Teal"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="Yellow"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">Home</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">Posts</a></li><li class="breadcrumb-item active">android布局之ConstraintLayout的一些特性</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    
+    
+    
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">android布局之ConstraintLayout的一些特性
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>Jan 22, 2019
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>3 min read
+  </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a></div>
+<div class="post-content mb-3"><p>前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。</p>
+<!-- raw HTML omitted -->
+<pre><code>&lt;ol&gt;
+  &lt;li&gt;
+    解决复杂布局嵌套过多，影响性能的问题。
+  &lt;/li&gt;
+  &lt;li&gt;
+    相对定位，和RelativeLayout大致相同，也同样支持Baseline基线定位。
+  &lt;/li&gt;
+  &lt;li&gt;
+    角度定位，更加玄学了。角度和距离定位了（想象一下在直角坐标系中中心点O距离点A的角度和距离了）。
+  &lt;/li&gt;
+  &lt;li&gt;
+    支持按照比例偏移。
+  &lt;/li&gt;
+  &lt;li&gt;
+    尺寸方面，match_parent尽量少用，直接0dp往上干。并且更好的支持比例约束。
+  &lt;/li&gt;
+  &lt;li&gt;
+    链式布局，可以想象在Flex布局中justify-content，不过没有flex那么强大啦，也只有3个属性选择。
+  &lt;/li&gt;
+  &lt;li&gt;
+    Optimizer，当控件设置尺寸为0dp的时候布局会进行二次测量，不可避免的会进行耗时操作，所以要进行处理。
+  &lt;/li&gt;
+  &lt;li&gt;
+    Barrier，屏障，相当于一个阈值吧，不过我这样形容不恰当。
+  &lt;/li&gt;
+  &lt;li&gt;
+    Group，可以将控件进行分组，而直接在这个组上面设置属性，那么组当中所带入的属性会直接传到属于这个组的控件上面。感觉这个设计特别棒，如统一的颜色和统一的显示隐藏等。
+  &lt;/li&gt;
+  &lt;li&gt;
+    Placeholder，占位符，也很吊，可以动态控制显示的控件。不需要我们每次动态setVisibility了。
+  &lt;/li&gt;
+  &lt;li&gt;
+    Guideline，辅助线，执行复杂布局中这个是很有效的东西哦
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;
+  上面就是这个ConstraintLayout的一些特性了。下面就慢慢的介绍一下它的具体使用方式
+&lt;/p&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;p&gt;
+  &lt;code class=&quot;api-signature&quot;&gt;public class ConstraintLayout &lt;/code&gt;&lt;code class=&quot;api-signature&quot;&gt;&amp;lt;code class=&quot;api-signature&quot;&gt;extends &lt;/code&gt;&lt;/code&gt;&lt;a href=&quot;http://developer.android.com/reference/android/view/ViewGroup.html&quot;&gt;ViewGroup&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;devsite-table-wrapper&quot;&gt;
+  &lt;table class=&quot;jd-inheritance-table&quot;&gt;
+    &lt;tr&gt;
+      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;4&quot;&gt;
+        &lt;a href=&quot;http://developer.android.com/reference/java/lang/Object.html&quot;&gt;java.lang.Object&lt;/a&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    
+    &lt;tr&gt;
+      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
+           ↳
+      &lt;/td&gt;
+      
+      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;3&quot;&gt;
+        &lt;a href=&quot;http://developer.android.com/reference/android/view/View.html&quot;&gt;android.view.View&lt;/a&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    
+    &lt;tr&gt;
+      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
+      &lt;/td&gt;
+      
+      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
+           ↳
+      &lt;/td&gt;
+      
+      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;2&quot;&gt;
+        &lt;a href=&quot;http://developer.android.com/reference/android/view/ViewGroup.html&quot;&gt;android.view.ViewGroup&lt;/a&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    
+    &lt;tr&gt;
+      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
+      &lt;/td&gt;
+      
+      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
+      &lt;/td&gt;
+      
+      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
+           ↳
+      &lt;/td&gt;
+      
+      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;1&quot;&gt;
+        android.support.constraint.ConstraintLayout
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+  
+  &lt;h6&gt;
+    1、相对约束
+  &lt;/h6&gt;
+  
+  &lt;p&gt;
+    RelativeLayout用的还算熟练吧，不过我自己基本不用，为啥？大家应该都知道，要些一堆的align,to&amp;#8230;.等等和一大堆的ID，没有很好的层级关系和组关系。不喜欢麻烦的我往往喜欢使用一大堆LinearLayout和FrameLayout进行嵌套。层次倒是很清楚了哈。这样往往写的代码量也很多，嵌套也很多。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    我们先看看在ConstraintLayout中相对约束的基本使用
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    如layout_constraintLeft_toLeftOf=&amp;#8221;parent&amp;#8221; ：意思就是当前控件左边的约束是在父控件的左边，当然parent也可以是某个控件，依次类推基本的实现方式就是这样了。其实使用layout_constraintStart_toStartOf和上面是一样的效果，不过基本上被start和end替代了，因为有些语言是从右往左读的啦就是RTL-&gt;right to left，如阿拉伯语。哈哈是不是古时候的汉语也是从右往左呢。如果做国际化是有这个需求啦。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    layout_constraintBaseline_toBaselineOf 这个是基线对齐哦。
+  &lt;/p&gt;
+  
+  &lt;h6&gt;
+    2、角度定位
+  &lt;/h6&gt;
+  
+  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;Button
+    android:id=&quot;@+id/btn1&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
+
+&amp;lt;Button
+    android:id=&quot;@+id/btn2&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    app:layout_constraintCircle=&quot;@+id/btn1&quot;
+    app:layout_constraintCircleAngle=&quot;120&quot;
+    app:layout_constraintCircleRadius=&quot;150dp&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+  
+  &lt;p&gt;
+    角度定位是按照控件的中心点来的，在Y轴正方向上取长度为150dp的线段绕着点btn1中心顺时针旋转120度后就是btn2中心位置。
+  &lt;/p&gt;
+  
+  &lt;h6&gt;
+    3、margin
+  &lt;/h6&gt;
+  
+  &lt;p&gt;
+    ConstraintLayout中的margin和普通布局一样的，需要注意的是必须是控件已经完全约束了才能使margin这个属性有效果。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    这里主要说一下goneMargin
+  &lt;/p&gt;
+  
+  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt; &amp;lt;Button
+    android:id=&quot;@+id/btn1&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
+
+&amp;lt;Button
+    android:id=&quot;@+id/btn2&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    app:layout_goneMarginTop=&quot;10&quot;
+    app:layout_constraintCircle=&quot;@+id/btn1&quot;
+    app:layout_constraintCircleAngle=&quot;120&quot;
+    app:layout_constraintCircleRadius=&quot;150dp&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+  
+  &lt;p&gt;
+    如果当btn1被gone掉了，btn2依然可以距离btn1底部10dp。
+  &lt;/p&gt;
+  
+  &lt;h6&gt;
+    4、比例偏移
+  &lt;/h6&gt;
+  
+  &lt;p&gt;
+    我们偏移常常用的是margin具体的大小。ConstraintLayout可以按照比例偏移
+  &lt;/p&gt;
+  
+  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;Button
+    android:id=&quot;@+id/btn1&quot;
+    app:layout_constraintStart_toStartOf=&quot;parent&quot;
+    app:layout_constraintTop_toTopOf=&quot;parent&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:background=&quot;@color/design_default_color_primary&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
+
+&amp;lt;Button
+    android:layout_width=&quot;wrap_content&quot;
+    app:layout_constraintTop_toTopOf=&quot;parent&quot;
+    app:layout_constraintStart_toStartOf=&quot;@id/btn1&quot;
+    app:layout_constraintEnd_toEndOf=&quot;@id/btn2&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
+
+&amp;lt;Button
+    android:id=&quot;@+id/btn2&quot;
+    app:layout_constraintEnd_toEndOf=&quot;parent&quot;
+    app:layout_constraintTop_toTopOf=&quot;parent&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:background=&quot;@color/design_default_color_primary&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+  
+  &lt;p&gt;
+    按照上面的方式我们是
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    &lt;div id='gallery-1' class='gallery galleryid-171 gallery-columns-3 gallery-size-full'&gt;
+      &lt;figure class='gallery-item'&gt; 
+      
+      &lt;div class='gallery-icon portrait'&gt;
+        &lt;img width=&quot;428&quot; height=&quot;670&quot; src=&quot;https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x.png&quot; class=&quot;attachment-full size-full&quot; alt=&quot;&quot; loading=&quot;lazy&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x.png 428w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x-192x300.png 192w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x-224x350.png 224w&quot; sizes=&quot;(max-width: 428px) 100vw, 428px&quot; /&gt;
+      &lt;/div&gt;&lt;/figure&gt;
+    &lt;/div&gt;
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    默认是居中的，我们修改一下
+  &lt;/p&gt;
+  
+  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;Button
+    android:id=&quot;@+id/btn1&quot;
+    app:layout_constraintStart_toStartOf=&quot;parent&quot;
+    app:layout_constraintTop_toTopOf=&quot;parent&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:background=&quot;@color/design_default_color_primary&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
+
+&amp;lt;Button
+    android:layout_width=&quot;wrap_content&quot;
+    app:layout_constraintTop_toTopOf=&quot;parent&quot;
+    app:layout_constraintStart_toStartOf=&quot;@id/btn1&quot;
+   &amp;lt;span style=&quot;color: #ff0000;&quot;&gt; app:layout_constraintHorizontal_bias=&quot;0.3&quot;&amp;lt;/span&gt;
+    app:layout_constraintEnd_toEndOf=&quot;@id/btn2&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
+
+&amp;lt;Button
+    android:id=&quot;@+id/btn2&quot;
+    app:layout_constraintEnd_toEndOf=&quot;parent&quot;
+    app:layout_constraintTop_toTopOf=&quot;parent&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:background=&quot;@color/design_default_color_primary&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+  
+  &lt;p&gt;
+    是这样的
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-175 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/QQ20190122-175753@2x.png&quot; alt=&quot;&quot; width=&quot;414&quot; height=&quot;676&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175753@2x.png 414w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175753@2x-184x300.png 184w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175753@2x-214x350.png 214w&quot; sizes=&quot;(max-width: 414px) 100vw, 414px&quot; /&gt;
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    看到了吧，我们可以按照比例来放置约束条件，是不是不错呢。我们以前的话是不是还要在外面放入LinearLayout加入weight呢。
+  &lt;/p&gt;
+  
+  &lt;h6&gt;
+    5、尺寸约束
+  &lt;/h6&gt;
+  
+  &lt;p&gt;
+    如果你的控件想撑满parent的宽或者高，就不要使用match_parent了，直接设置0dp便是，前提是加上约束条件。如果直接用match_parent会超过屏幕显示哦，gg了。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    layout_constraintDimensionRatio这个属性是设置宽高比例。如果当宽或高其中一个设置为0dp的时候，
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    可以设置layout_constraintDimensionRatio=&amp;#8221;1:1&amp;#8243;，就是宽高1:1啦，当然也可以设置别的比例，很方便。
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    layout_constraintDimensionRatio=&amp;#8221;H,2:3&amp;#8243; 高宽比&lt;br /&gt; layout_constraintDimensionRatio=&amp;#8221;W,3:2&amp;#8243; 宽高比
+  &lt;/p&gt;
+  
+  &lt;h6&gt;
+    6、链式布局
+  &lt;/h6&gt;
+  
+  &lt;p&gt;
+    1、如果使用链式布局需要遵循这种要求
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-179 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/chains.png&quot; alt=&quot;&quot; width=&quot;630&quot; height=&quot;174&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/chains.png 630w, https://xmcf.me/wp-content/uploads/2019/01/chains-300x83.png 300w, https://xmcf.me/wp-content/uploads/2019/01/chains-430x119.png 430w&quot; sizes=&quot;(max-width: 630px) 100vw, 630px&quot; /&gt;
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    即链的两边都要有约束，且链上的控件只与相邻控件有约束条件
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    2、链头
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-180 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/chains-head.png&quot; alt=&quot;&quot; width=&quot;917&quot; height=&quot;135&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/chains-head.png 917w, https://xmcf.me/wp-content/uploads/2019/01/chains-head-300x44.png 300w, https://xmcf.me/wp-content/uploads/2019/01/chains-head-768x113.png 768w, https://xmcf.me/wp-content/uploads/2019/01/chains-head-430x63.png 430w&quot; sizes=&quot;(max-width: 917px) 100vw, 917px&quot; /&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+  链头即第一个控件是链属性设置的位置，水平方向上的开头或者垂直方向上的顶部第一个。链的属性都在这上面设置。
+&lt;/p&gt;
+
+&lt;p&gt;
+  3、链属性
+&lt;/p&gt;
+
+&lt;p&gt;
+  通过在链头设置layout_constraintHorizontal_chainStyle和layout_constraintVertical_chainStyle分别设置水平和垂直方向上的链样式。并且提供了三种属性
+&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    CHAIN_SPREAD 默认属性，元素相互展开
+  &lt;/li&gt;
+  &lt;li&gt;
+    CHAIN_SPREAD_INSIDE 元素也是相互展开，但是链的两端贴紧约束，不会展开
+  &lt;/li&gt;
+  &lt;li&gt;
+    CHAIN_PACKED 将元素们紧紧贴在一起，就是一坨。
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;
+  &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-181 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/chains-styles.png&quot; alt=&quot;&quot; width=&quot;1368&quot; height=&quot;616&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/chains-styles.png 1368w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-300x135.png 300w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-768x346.png 768w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-1024x461.png 1024w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-430x194.png 430w&quot; sizes=&quot;(max-width: 1368px) 100vw, 1368px&quot; /&gt;
+&lt;/p&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;p&gt;
+  就是当控件中使用了0dp的宽或者高的时候会进行2次测量，这时候就需要优化，不过我感觉真不知道怎么用，还需要多看看
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;i&gt;layout_optimizationLevel&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;b&gt;none&lt;/b&gt; : no optimizations are applied
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;b&gt;standard&lt;/b&gt; : Default. Optimize direct and barrier constraints only
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;b&gt;direct&lt;/b&gt; : optimize direct constraints
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;b&gt;barrier&lt;/b&gt; : optimize barrier constraints
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;b&gt;chain&lt;/b&gt; : optimize chain constraints (experimental)
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;b&gt;dimensions&lt;/b&gt; : optimize dimensions measures (experimental), reducing the number of measures of match constraints elements
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6&gt;
+  8、Barrier 屏障
+&lt;/h6&gt;
+
+&lt;p&gt;
+  当我们有ABC三个控件，C在AB的右边，但AB的宽度不一样，我们要让C永远都在A或者B的右边怎么办
+&lt;/p&gt;
+
+&lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;TextView
+    android:id=&quot;@+id/TextView1&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
+
+&amp;lt;TextView
+    android:id=&quot;@+id/TextView2&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    app:layout_constraintTop_toBottomOf=&quot;@+id/TextView1&quot; /&amp;gt;
+
+&amp;lt;android.support.constraint.Barrier
+    android:id=&quot;@+id/barrier&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    app:barrierDirection=&quot;right&quot;
+    app:constraint_referenced_ids=&quot;TextView1,TextView2&quot; /&amp;gt;
+
+&amp;lt;TextView
+    android:id=&quot;@+id/TextView3&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    app:layout_constraintLeft_toRightOf=&quot;@+id/barrier&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+  app:barrierDirection为屏障所在的位置，可设置的值有：bottom、end、left、right、start、top app:constraint_referenced_ids为屏障引用的控件，可设置多个(用“,”隔开)
+&lt;/p&gt;
+
+&lt;h6&gt;
+  9、group组
+&lt;/h6&gt;
+
+&lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;   &amp;lt;android.support.constraint.Group
+    android:id=&quot;@+id/group&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:visibility=&quot;invisible&quot;
+    app:constraint_referenced_ids=&quot;TextView1,TextView3&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+  我们可以将控件归类，统一的隐藏显示和改变颜色等等。
+&lt;/p&gt;
+
+&lt;h6&gt;
+  10、占位符
+&lt;/h6&gt;
+
+&lt;p&gt;
+  我们通过Placeholder控件，将其中其他一个控件进行绑定，转移到这里来，通过content属性
+&lt;/p&gt;
+
+&lt;h6&gt;
+  11、Guideline 辅助线
+&lt;/h6&gt;
+
+&lt;p&gt;
+  通过guideline可以实现较为复杂的布局，并且这个不会显示在屏幕上。主要属性是
+&lt;/p&gt;
+
+&lt;p&gt;
+  android:orientation
+&lt;/p&gt;
+
+&lt;p&gt;
+  layout_constraintGuide_begin
+&lt;/p&gt;
+
+&lt;p&gt;
+  layout_constraintGuide_end
+&lt;/p&gt;
+
+&lt;p&gt;
+  layout_constraintGuide_percent
+&lt;/p&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p> </p>
+<p> </p>
+<p> </p>
+<!-- raw HTML omitted -->
+<pre><code>&lt;div class=&quot;devsite-table-wrapper&quot;&gt;
+  &lt;p&gt;
+    &amp;nbsp;
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    &amp;nbsp;
+  &lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/">centos开启bbr
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2019-01-28-java%E5%92%8Ckotlin%E4%B8%AD%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6%E8%8D%89%E7%A8%BF/">java和kotlin中泛型通配符（草稿）
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">Recent Posts</h2>
+    <ul><li><a href="https://helixs.github.io/posts/my-first-post/">My First Post
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">Categories</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="badge bg-primary text-white rounded post-taxonomy" title="开发环境">
+            开发环境
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">Tags</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a><a href="https://helixs.github.io/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/" class="badge bg-primary text-white rounded post-taxonomy" title="启动模式">
+            启动模式
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"></nav>
+<div class="copyright mb-2">
+  
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.b6665b560bd48dd0478c60f275f624d3c8ec7795a5d83679d18221053b102798.js" integrity="sha256-tmZbVgvUjdBHjGDydfYk08jsd5Wl2DZ50YIhBTsQJ5g=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

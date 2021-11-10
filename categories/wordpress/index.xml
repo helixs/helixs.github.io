@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>wordpress on 西门吹风</title>
+    <link>https://helixs.github.io/categories/wordpress/</link>
+    <description>Recent content in wordpress on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 12 Nov 2018 10:24:15 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/wordpress/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>WordPress&#43;Nginx搭建全过程</title>
+      <link>https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Mon, 12 Nov 2018 10:24:15 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/</guid>
+      <description>最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价(PS：国内环境太差了，1Mbps还贵的不行，还要传身份证备案，当初在百度云和华为云注册了一下，隔三差五给我来个电话，发营销短信，我也是受不了了。虽然我不是做WF的事情，国内的隐私已经不是隐私了)。
+我装的系统是centos7，vps内存就那么点，就打算使用nginx替代apache了。又得知nginx主要是用来处理静态网页比较给力，对用php开发的wordpress是天生的不支持。所以就要通过nginx将php的动态请求转发到php-fpm解析器，处理完成后再通过nginx回馈给client，大概就是这个过程。
+本文章写于2018年11月份，看看wordpress官网的最新版本，我下载的是4.9.8版本。然后开看看这个版本的最低环境要求：
+ PHP 7.2或更高版本。 MySQL 5.6或更高版本_或_ MariaDB 版本10.0或更高版本(内存怪兽)。 HTTPS 支持(这个看自己需求了)  1、安装php 7.x2、安装MariaDB(与MySql源自同根生，只是oracle一贯的德行，没看到google被oracle搞的气的不行)设置数据库
+$ mysql_secure_installation
+下面就是根据自己的需求了
+# Enter current password for root (enter for none): 输入当前的root密码(默认空)，直接回车
+# Set root password?[Y/n] 设置新密码，y
+# Remove anonymous users?[Y/n] 移除匿名用户，y
+# Disallow root login remotely?[Y/n] 禁止root用户远程登录，y
+# Remove test database and access to it?[Y/n] 移除测试数据库，y
+# Reload privilege tables now?[Y/n] y
+$ mysql -u ‘数据库用户’ -p因为是我用的是root所以就填的root了，然后输入数据库用户的密码就是你刚才设置的
+$ CREATE DATABASE wordpress(名字随意，初始化进入wordpress的时候是要选择这个的)
+exit
+这样我们的数据库配置基本上就完成了</description>
+    </item>
+    
+  </channel>
+</rss>

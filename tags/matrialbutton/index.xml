@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>matrialButton on 西门吹风</title>
+    <link>https://helixs.github.io/tags/matrialbutton/</link>
+    <description>Recent content in matrialButton on 西门吹风</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 28 Nov 2019 03:34:18 +0000</lastBuildDate><atom:link href="https://helixs.github.io/tags/matrialbutton/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android MaterialButton的一些问题</title>
+      <link>https://helixs.github.io/posts/2019-11-28-android-materialbutton%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Thu, 28 Nov 2019 03:34:18 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-11-28-android-materialbutton%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</guid>
+      <description>MaterialButton和MaterialCardView的都新增了边框属性，我们没必要为了一个边框写那么多shape，一旦多了谁着得住。
+1、在使用MaterialButton注意一点是它必须设置android:textAppearance属性，不然会崩溃 This component requires that you specify a valid TextAppearance attribute. Update your app theme to inherit from Theme.MaterialComponents (or a descendant)它会检查textApearance属性，解决方式有两种如下:
+1、添加它就好
+2、application或activity或控件的theme继承自Theme.MaterialComponents.xxxx,使type能够找到这个属性，如
+其实想了想，也许以后MaterialComponents的text相关组件都会进行这种操作吧。
+2、在使用MaterialButton时候可能遇到背景颜色不能充满控件的问题。 如果按照以前默认的方式添加背景颜色，我们发现背景颜色不能充满上下编剧，我们对比使用appcompatButton
+      1、从上面的图片可以看出它们的背景颜色不一样。MaterialButton是不受android:background控制的，官方建议我们设置app:backgroundHint来进行背景的更改。
+2、AppCompatButton如果设置了android:background会覆盖上下左右的间距，MaterialButton则不会
+3、MaterialButton设置了app:backgroundHint左右是没有间距的，而上下有。AppCompatButton设置了app:backgroundHint是上下左右都有间距
+找到原因https://github.com/material-components/material-components-android/blob/master/docs/components/MaterialButton.md#attributes Note: MaterialButton is visually different from Button and AppCompatButton. One of the main differences is that AppCompatButton has a 4dp inset on the left and right sides, whereas MaterialButton does not. To add an inset to match AppCompatButton, set android:insetLeft and android:insetRight on the button to 4dp, or change the spacing on the button’s parent layout.</description>
+    </item>
+    
+  </channel>
+</rss>
