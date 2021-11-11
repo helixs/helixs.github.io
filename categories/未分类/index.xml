@@ -43,14 +43,5 @@
       <description>Android图像处理——Paint之Xfermode https://blog.csdn.net/allen315410/article/details/45077165</description>
     </item>
     
-    <item>
-      <title>Glide在共享元素动画时会gif会停止播放</title>
-      <link>https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/</link>
-      <pubDate>Wed, 19 Dec 2018 07:29:46 +0000</pubDate>
-      
-      <guid>https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/</guid>
-      <description>在上一篇文章中我们实现了recyclerView到viewpager的转换，用glide加载gif，viewpager中并不能正常播放，把动</description>
-    </item>
-    
   </channel>
 </rss>

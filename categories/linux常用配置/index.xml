@@ -63,11 +63,11 @@
     
     <item>
       <title>centos7 防火墙端口配置和SSH端口配置</title>
-      <link>https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</link>
+      <link>https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</link>
       <pubDate>Tue, 30 Oct 2018 21:36:03 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</guid>
-      <description>防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld CRLF will be replaced by LF in blog/content/posts/2018-11-21-ari</description>
+      <guid>https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</guid>
+      <description>防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld 开机禁用防火墙 1systemctl disable firewalld 开机启用防火墙 1systemctl enable firewalld 开放指定端口 1firewall-cmd --zone=public --add-port=80/tcp --permanent 关闭指定端口 1firewall-cmd --zone=public --remove-port=80/tcp --permanent</description>
     </item>
     
   </channel>

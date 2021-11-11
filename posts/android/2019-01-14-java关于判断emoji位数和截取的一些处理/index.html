@@ -3,26 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>android布局之ConstraintLayout的一些特性 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+    <title>java关于判断emoji位数和截取的一些处理 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
 <link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
 <meta name="keywords" content="" />
-<meta name="description" content="" /><meta itemprop="name" content="android布局之ConstraintLayout的一些特性">
-<meta itemprop="description" content="前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。 &lt;ol&gt; &lt;li&gt; 解决复杂布"><meta itemprop="datePublished" content="2019-01-22T08:43:57+00:00" />
-<meta itemprop="dateModified" content="2019-01-22T08:43:57+00:00" />
-<meta itemprop="wordCount" content="2829">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="android布局之ConstraintLayout的一些特性" />
-<meta property="og:description" content="前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。 &lt;ol&gt; &lt;li&gt; 解决复杂布" />
+<meta name="description" content="" /><meta itemprop="name" content="java关于判断emoji位数和截取的一些处理">
+<meta itemprop="description" content="今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了 1public static String getDisplay(String"><meta itemprop="datePublished" content="2019-01-14T08:18:11+00:00" />
+<meta itemprop="dateModified" content="2019-01-14T08:18:11+00:00" />
+<meta itemprop="wordCount" content="579">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="java关于判断emoji位数和截取的一些处理" />
+<meta property="og:description" content="今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了 1public static String getDisplay(String" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://helixs.github.io/posts/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2019-01-22T08:43:57+00:00" />
-<meta property="article:modified_time" content="2019-01-22T08:43:57+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+<meta property="og:url" content="https://helixs.github.io/posts/android/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-01-14T08:18:11+00:00" />
+<meta property="article:modified_time" content="2019-01-14T08:18:11+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="android布局之ConstraintLayout的一些特性"/>
-<meta name="twitter:description" content="前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。 &lt;ol&gt; &lt;li&gt; 解决复杂布"/>
+<meta name="twitter:title" content="java关于判断emoji位数和截取的一些处理"/>
+<meta name="twitter:description" content="今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了 1public static String getDisplay(String"/>
 <meta name="twitter:site" content="@yourtwitterusername"/>
 <link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
@@ -50,11 +50,11 @@ BOOTSTRAP
   </div>
   <div class="offcanvas-body">
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
-      target="_blank" href="https://twitter.com/intent/tweet?title=android%e5%b8%83%e5%b1%80%e4%b9%8bConstraintLayout%e7%9a%84%e4%b8%80%e4%ba%9b%e7%89%b9%e6%80%a7&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-01-22-android%25E5%25B8%2583%25E5%25B1%2580%25E4%25B9%258Bconstraintlayout%25E7%259A%2584%25E4%25B8%2580%25E4%25BA%259B%25E7%2589%25B9%25E6%2580%25A7%2f">
+      target="_blank" href="https://twitter.com/intent/tweet?title=java%e5%85%b3%e4%ba%8e%e5%88%a4%e6%96%ademoji%e4%bd%8d%e6%95%b0%e5%92%8c%e6%88%aa%e5%8f%96%e7%9a%84%e4%b8%80%e4%ba%9b%e5%a4%84%e7%90%86&url=https%3a%2f%2fhelixs.github.io%2fposts%2fandroid%2f2019-01-14-java%25E5%2585%25B3%25E4%25BA%258E%25E5%2588%25A4%25E6%2596%25ADemoji%25E4%25BD%258D%25E6%2595%25B0%25E5%2592%258C%25E6%2588%25AA%25E5%258F%2596%25E7%259A%2584%25E4%25B8%2580%25E4%25BA%259B%25E5%25A4%2584%25E7%2590%2586%2f">
       <i class="fab fa-fw fa-twitter"></i> Twitter
     </a>
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
-      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-01-22-android%25E5%25B8%2583%25E5%25B1%2580%25E4%25B9%258Bconstraintlayout%25E7%259A%2584%25E4%25B8%2580%25E4%25BA%259B%25E7%2589%25B9%25E6%2580%25A7%2f">
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2fandroid%2f2019-01-14-java%25E5%2585%25B3%25E4%25BA%258E%25E5%2588%25A4%25E6%2596%25ADemoji%25E4%25BD%258D%25E6%2595%25B0%25E5%2592%258C%25E6%2588%25AA%25E5%258F%2596%25E7%259A%2584%25E4%25B8%2580%25E4%25BA%259B%25E5%25A4%2584%25E7%2590%2586%2f">
       <i class="fab fa-fw fa-facebook-f"></i> Facebook
     </a>
   </div>
@@ -188,7 +188,7 @@ BOOTSTRAP
 <div class="col-lg-8">
   <div class="container"><nav class="row card component" aria-label="breadcrumb">
   <div class="card-body">
-    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Android布局之ConstraintLayout的一些特性</li></ol>
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Java关于判断emoji位数和截取的一些处理</li></ol>
   </div>
 </nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
   <div class="d-flex flex-column component rounded post-panel">
@@ -213,473 +213,72 @@ BOOTSTRAP
   </div>
 </div>
 <div class="card-body">
-        <h1 class="card-title my-3">Android布局之ConstraintLayout的一些特性
+        <h1 class="card-title my-3">Java关于判断emoji位数和截取的一些处理
 </h1><div class="post-meta"><span class="post-date" title="created on">
-    <i class="fas fa-fw fa-calendar-alt"></i>2019-01-22
+    <i class="fas fa-fw fa-calendar-alt"></i>2019-01-14
   </span><span class="post-reading-time" title="reading time">
-    <i class="fas fa-fw fa-coffee"></i>6 分钟阅读
+    <i class="fas fa-fw fa-coffee"></i>2 分钟阅读
   </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a></div>
-<div class="post-content mb-3"><p>前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;ol&gt;
-  &lt;li&gt;
-    解决复杂布局嵌套过多，影响性能的问题。
-  &lt;/li&gt;
-  &lt;li&gt;
-    相对定位，和RelativeLayout大致相同，也同样支持Baseline基线定位。
-  &lt;/li&gt;
-  &lt;li&gt;
-    角度定位，更加玄学了。角度和距离定位了（想象一下在直角坐标系中中心点O距离点A的角度和距离了）。
-  &lt;/li&gt;
-  &lt;li&gt;
-    支持按照比例偏移。
-  &lt;/li&gt;
-  &lt;li&gt;
-    尺寸方面，match_parent尽量少用，直接0dp往上干。并且更好的支持比例约束。
-  &lt;/li&gt;
-  &lt;li&gt;
-    链式布局，可以想象在Flex布局中justify-content，不过没有flex那么强大啦，也只有3个属性选择。
-  &lt;/li&gt;
-  &lt;li&gt;
-    Optimizer，当控件设置尺寸为0dp的时候布局会进行二次测量，不可避免的会进行耗时操作，所以要进行处理。
-  &lt;/li&gt;
-  &lt;li&gt;
-    Barrier，屏障，相当于一个阈值吧，不过我这样形容不恰当。
-  &lt;/li&gt;
-  &lt;li&gt;
-    Group，可以将控件进行分组，而直接在这个组上面设置属性，那么组当中所带入的属性会直接传到属于这个组的控件上面。感觉这个设计特别棒，如统一的颜色和统一的显示隐藏等。
-  &lt;/li&gt;
-  &lt;li&gt;
-    Placeholder，占位符，也很吊，可以动态控制显示的控件。不需要我们每次动态setVisibility了。
-  &lt;/li&gt;
-  &lt;li&gt;
-    Guideline，辅助线，执行复杂布局中这个是很有效的东西哦
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;
-  上面就是这个ConstraintLayout的一些特性了。下面就慢慢的介绍一下它的具体使用方式
-&lt;/p&gt;
-</code></pre>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;p&gt;
-  &lt;code class=&quot;api-signature&quot;&gt;public class ConstraintLayout &lt;/code&gt;&lt;code class=&quot;api-signature&quot;&gt;&amp;lt;code class=&quot;api-signature&quot;&gt;extends &lt;/code&gt;&lt;/code&gt;&lt;a href=&quot;http://developer.android.com/reference/android/view/ViewGroup.html&quot;&gt;ViewGroup&lt;/a&gt;
-&lt;/p&gt;
-
-&lt;div class=&quot;devsite-table-wrapper&quot;&gt;
-  &lt;table class=&quot;jd-inheritance-table&quot;&gt;
-    &lt;tr&gt;
-      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;4&quot;&gt;
-        &lt;a href=&quot;http://developer.android.com/reference/java/lang/Object.html&quot;&gt;java.lang.Object&lt;/a&gt;
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    
-    &lt;tr&gt;
-      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
-           ↳
-      &lt;/td&gt;
-      
-      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;3&quot;&gt;
-        &lt;a href=&quot;http://developer.android.com/reference/android/view/View.html&quot;&gt;android.view.View&lt;/a&gt;
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    
-    &lt;tr&gt;
-      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
-      &lt;/td&gt;
-      
-      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
-           ↳
-      &lt;/td&gt;
-      
-      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;2&quot;&gt;
-        &lt;a href=&quot;http://developer.android.com/reference/android/view/ViewGroup.html&quot;&gt;android.view.ViewGroup&lt;/a&gt;
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    
-    &lt;tr&gt;
-      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
-      &lt;/td&gt;
-      
-      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
-      &lt;/td&gt;
-      
-      &lt;td class=&quot;jd-inheritance-space&quot;&gt;
-           ↳
-      &lt;/td&gt;
-      
-      &lt;td class=&quot;jd-inheritance-class-cell&quot; colspan=&quot;1&quot;&gt;
-        android.support.constraint.ConstraintLayout
-      &lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/table&gt;
-  
-  &lt;h6&gt;
-    1、相对约束
-  &lt;/h6&gt;
-  
-  &lt;p&gt;
-    RelativeLayout用的还算熟练吧，不过我自己基本不用，为啥？大家应该都知道，要些一堆的align,to&amp;#8230;.等等和一大堆的ID，没有很好的层级关系和组关系。不喜欢麻烦的我往往喜欢使用一大堆LinearLayout和FrameLayout进行嵌套。层次倒是很清楚了哈。这样往往写的代码量也很多，嵌套也很多。
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    我们先看看在ConstraintLayout中相对约束的基本使用
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    如layout_constraintLeft_toLeftOf=&amp;#8221;parent&amp;#8221; ：意思就是当前控件左边的约束是在父控件的左边，当然parent也可以是某个控件，依次类推基本的实现方式就是这样了。其实使用layout_constraintStart_toStartOf和上面是一样的效果，不过基本上被start和end替代了，因为有些语言是从右往左读的啦就是RTL-&gt;right to left，如阿拉伯语。哈哈是不是古时候的汉语也是从右往左呢。如果做国际化是有这个需求啦。
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    layout_constraintBaseline_toBaselineOf 这个是基线对齐哦。
-  &lt;/p&gt;
-  
-  &lt;h6&gt;
-    2、角度定位
-  &lt;/h6&gt;
-  
-  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;Button
-    android:id=&quot;@+id/btn1&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
-
-&amp;lt;Button
-    android:id=&quot;@+id/btn2&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    app:layout_constraintCircle=&quot;@+id/btn1&quot;
-    app:layout_constraintCircleAngle=&quot;120&quot;
-    app:layout_constraintCircleRadius=&quot;150dp&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-  
-  &lt;p&gt;
-    角度定位是按照控件的中心点来的，在Y轴正方向上取长度为150dp的线段绕着点btn1中心顺时针旋转120度后就是btn2中心位置。
-  &lt;/p&gt;
-  
-  &lt;h6&gt;
-    3、margin
-  &lt;/h6&gt;
-  
-  &lt;p&gt;
-    ConstraintLayout中的margin和普通布局一样的，需要注意的是必须是控件已经完全约束了才能使margin这个属性有效果。
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    这里主要说一下goneMargin
-  &lt;/p&gt;
-  
-  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt; &amp;lt;Button
-    android:id=&quot;@+id/btn1&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
-
-&amp;lt;Button
-    android:id=&quot;@+id/btn2&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    app:layout_goneMarginTop=&quot;10&quot;
-    app:layout_constraintCircle=&quot;@+id/btn1&quot;
-    app:layout_constraintCircleAngle=&quot;120&quot;
-    app:layout_constraintCircleRadius=&quot;150dp&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-  
-  &lt;p&gt;
-    如果当btn1被gone掉了，btn2依然可以距离btn1底部10dp。
-  &lt;/p&gt;
-  
-  &lt;h6&gt;
-    4、比例偏移
-  &lt;/h6&gt;
-  
-  &lt;p&gt;
-    我们偏移常常用的是margin具体的大小。ConstraintLayout可以按照比例偏移
-  &lt;/p&gt;
-  
-  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;Button
-    android:id=&quot;@+id/btn1&quot;
-    app:layout_constraintStart_toStartOf=&quot;parent&quot;
-    app:layout_constraintTop_toTopOf=&quot;parent&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:background=&quot;@color/design_default_color_primary&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
-
-&amp;lt;Button
-    android:layout_width=&quot;wrap_content&quot;
-    app:layout_constraintTop_toTopOf=&quot;parent&quot;
-    app:layout_constraintStart_toStartOf=&quot;@id/btn1&quot;
-    app:layout_constraintEnd_toEndOf=&quot;@id/btn2&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
-
-&amp;lt;Button
-    android:id=&quot;@+id/btn2&quot;
-    app:layout_constraintEnd_toEndOf=&quot;parent&quot;
-    app:layout_constraintTop_toTopOf=&quot;parent&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:background=&quot;@color/design_default_color_primary&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-  
-  &lt;p&gt;
-    按照上面的方式我们是
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    &lt;div id='gallery-1' class='gallery galleryid-171 gallery-columns-3 gallery-size-full'&gt;
-      &lt;figure class='gallery-item'&gt; 
-      
-      &lt;div class='gallery-icon portrait'&gt;
-        &lt;img width=&quot;428&quot; height=&quot;670&quot; src=&quot;https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x.png&quot; class=&quot;attachment-full size-full&quot; alt=&quot;&quot; loading=&quot;lazy&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x.png 428w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x-192x300.png 192w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175228@2x-224x350.png 224w&quot; sizes=&quot;(max-width: 428px) 100vw, 428px&quot; /&gt;
-      &lt;/div&gt;&lt;/figure&gt;
-    &lt;/div&gt;
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    默认是居中的，我们修改一下
-  &lt;/p&gt;
-  
-  &lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;Button
-    android:id=&quot;@+id/btn1&quot;
-    app:layout_constraintStart_toStartOf=&quot;parent&quot;
-    app:layout_constraintTop_toTopOf=&quot;parent&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:background=&quot;@color/design_default_color_primary&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
-
-&amp;lt;Button
-    android:layout_width=&quot;wrap_content&quot;
-    app:layout_constraintTop_toTopOf=&quot;parent&quot;
-    app:layout_constraintStart_toStartOf=&quot;@id/btn1&quot;
-   &amp;lt;span style=&quot;color: #ff0000;&quot;&gt; app:layout_constraintHorizontal_bias=&quot;0.3&quot;&amp;lt;/span&gt;
-    app:layout_constraintEnd_toEndOf=&quot;@id/btn2&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
-
-&amp;lt;Button
-    android:id=&quot;@+id/btn2&quot;
-    app:layout_constraintEnd_toEndOf=&quot;parent&quot;
-    app:layout_constraintTop_toTopOf=&quot;parent&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:background=&quot;@color/design_default_color_primary&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-  
-  &lt;p&gt;
-    是这样的
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-175 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/QQ20190122-175753@2x.png&quot; alt=&quot;&quot; width=&quot;414&quot; height=&quot;676&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175753@2x.png 414w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175753@2x-184x300.png 184w, https://xmcf.me/wp-content/uploads/2019/01/QQ20190122-175753@2x-214x350.png 214w&quot; sizes=&quot;(max-width: 414px) 100vw, 414px&quot; /&gt;
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    看到了吧，我们可以按照比例来放置约束条件，是不是不错呢。我们以前的话是不是还要在外面放入LinearLayout加入weight呢。
-  &lt;/p&gt;
-  
-  &lt;h6&gt;
-    5、尺寸约束
-  &lt;/h6&gt;
-  
-  &lt;p&gt;
-    如果你的控件想撑满parent的宽或者高，就不要使用match_parent了，直接设置0dp便是，前提是加上约束条件。如果直接用match_parent会超过屏幕显示哦，gg了。
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    layout_constraintDimensionRatio这个属性是设置宽高比例。如果当宽或高其中一个设置为0dp的时候，
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    可以设置layout_constraintDimensionRatio=&amp;#8221;1:1&amp;#8243;，就是宽高1:1啦，当然也可以设置别的比例，很方便。
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    layout_constraintDimensionRatio=&amp;#8221;H,2:3&amp;#8243; 高宽比&lt;br /&gt; layout_constraintDimensionRatio=&amp;#8221;W,3:2&amp;#8243; 宽高比
-  &lt;/p&gt;
-  
-  &lt;h6&gt;
-    6、链式布局
-  &lt;/h6&gt;
-  
-  &lt;p&gt;
-    1、如果使用链式布局需要遵循这种要求
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-179 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/chains.png&quot; alt=&quot;&quot; width=&quot;630&quot; height=&quot;174&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/chains.png 630w, https://xmcf.me/wp-content/uploads/2019/01/chains-300x83.png 300w, https://xmcf.me/wp-content/uploads/2019/01/chains-430x119.png 430w&quot; sizes=&quot;(max-width: 630px) 100vw, 630px&quot; /&gt;
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    即链的两边都要有约束，且链上的控件只与相邻控件有约束条件
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    2、链头
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-180 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/chains-head.png&quot; alt=&quot;&quot; width=&quot;917&quot; height=&quot;135&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/chains-head.png 917w, https://xmcf.me/wp-content/uploads/2019/01/chains-head-300x44.png 300w, https://xmcf.me/wp-content/uploads/2019/01/chains-head-768x113.png 768w, https://xmcf.me/wp-content/uploads/2019/01/chains-head-430x63.png 430w&quot; sizes=&quot;(max-width: 917px) 100vw, 917px&quot; /&gt;
-  &lt;/p&gt;
-&lt;/div&gt;
-
-&lt;p&gt;
-  链头即第一个控件是链属性设置的位置，水平方向上的开头或者垂直方向上的顶部第一个。链的属性都在这上面设置。
-&lt;/p&gt;
-
-&lt;p&gt;
-  3、链属性
-&lt;/p&gt;
-
-&lt;p&gt;
-  通过在链头设置layout_constraintHorizontal_chainStyle和layout_constraintVertical_chainStyle分别设置水平和垂直方向上的链样式。并且提供了三种属性
-&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    CHAIN_SPREAD 默认属性，元素相互展开
-  &lt;/li&gt;
-  &lt;li&gt;
-    CHAIN_SPREAD_INSIDE 元素也是相互展开，但是链的两端贴紧约束，不会展开
-  &lt;/li&gt;
-  &lt;li&gt;
-    CHAIN_PACKED 将元素们紧紧贴在一起，就是一坨。
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;
-  &lt;img loading=&quot;lazy&quot; class=&quot;size-full wp-image-181 aligncenter&quot; src=&quot;https://aizybb.club/wp-content/uploads/2019/01/chains-styles.png&quot; alt=&quot;&quot; width=&quot;1368&quot; height=&quot;616&quot; srcset=&quot;https://xmcf.me/wp-content/uploads/2019/01/chains-styles.png 1368w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-300x135.png 300w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-768x346.png 768w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-1024x461.png 1024w, https://xmcf.me/wp-content/uploads/2019/01/chains-styles-430x194.png 430w&quot; sizes=&quot;(max-width: 1368px) 100vw, 1368px&quot; /&gt;
-&lt;/p&gt;
-</code></pre>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;p&gt;
-  就是当控件中使用了0dp的宽或者高的时候会进行2次测量，这时候就需要优化，不过我感觉真不知道怎么用，还需要多看看
-&lt;/p&gt;
-
-&lt;p&gt;
-  &lt;i&gt;layout_optimizationLevel&lt;/i&gt;
-&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;b&gt;none&lt;/b&gt; : no optimizations are applied
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;b&gt;standard&lt;/b&gt; : Default. Optimize direct and barrier constraints only
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;b&gt;direct&lt;/b&gt; : optimize direct constraints
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;b&gt;barrier&lt;/b&gt; : optimize barrier constraints
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;b&gt;chain&lt;/b&gt; : optimize chain constraints (experimental)
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;b&gt;dimensions&lt;/b&gt; : optimize dimensions measures (experimental), reducing the number of measures of match constraints elements
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h6&gt;
-  8、Barrier 屏障
-&lt;/h6&gt;
-
-&lt;p&gt;
-  当我们有ABC三个控件，C在AB的右边，但AB的宽度不一样，我们要让C永远都在A或者B的右边怎么办
-&lt;/p&gt;
-
-&lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;TextView
-    android:id=&quot;@+id/TextView1&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot; /&amp;gt;
-
-&amp;lt;TextView
-    android:id=&quot;@+id/TextView2&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    app:layout_constraintTop_toBottomOf=&quot;@+id/TextView1&quot; /&amp;gt;
-
-&amp;lt;android.support.constraint.Barrier
-    android:id=&quot;@+id/barrier&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    app:barrierDirection=&quot;right&quot;
-    app:constraint_referenced_ids=&quot;TextView1,TextView2&quot; /&amp;gt;
-
-&amp;lt;TextView
-    android:id=&quot;@+id/TextView3&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    app:layout_constraintLeft_toRightOf=&quot;@+id/barrier&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-  app:barrierDirection为屏障所在的位置，可设置的值有：bottom、end、left、right、start、top app:constraint_referenced_ids为屏障引用的控件，可设置多个(用“,”隔开)
-&lt;/p&gt;
-
-&lt;h6&gt;
-  9、group组
-&lt;/h6&gt;
-
-&lt;pre class=&quot;pure-highlightjs&quot;&gt;&lt;code class=&quot;xml&quot;&gt;   &amp;lt;android.support.constraint.Group
-    android:id=&quot;@+id/group&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    android:visibility=&quot;invisible&quot;
-    app:constraint_referenced_ids=&quot;TextView1,TextView3&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-  我们可以将控件归类，统一的隐藏显示和改变颜色等等。
-&lt;/p&gt;
-
-&lt;h6&gt;
-  10、占位符
-&lt;/h6&gt;
-
-&lt;p&gt;
-  我们通过Placeholder控件，将其中其他一个控件进行绑定，转移到这里来，通过content属性
-&lt;/p&gt;
-
-&lt;h6&gt;
-  11、Guideline 辅助线
-&lt;/h6&gt;
-
-&lt;p&gt;
-  通过guideline可以实现较为复杂的布局，并且这个不会显示在屏幕上。主要属性是
-&lt;/p&gt;
-
-&lt;p&gt;
-  android:orientation
-&lt;/p&gt;
-
-&lt;p&gt;
-  layout_constraintGuide_begin
-&lt;/p&gt;
-
-&lt;p&gt;
-  layout_constraintGuide_end
-&lt;/p&gt;
-
-&lt;p&gt;
-  layout_constraintGuide_percent
-&lt;/p&gt;
-</code></pre>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p> </p>
-<p> </p>
-<p> </p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;div class=&quot;devsite-table-wrapper&quot;&gt;
-  &lt;p&gt;
-    &amp;nbsp;
-  &lt;/p&gt;
-  
-  &lt;p&gt;
-    &amp;nbsp;
-  &lt;/p&gt;
-&lt;/div&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+<div class="post-content mb-3"><blockquote>
+<p>今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">getDisplay</span><span class="o">(</span><span class="n">String</span> <span class="n">data</span><span class="o">,</span> <span class="kt">int</span> <span class="n">maxLength</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 2</span>    <span class="k">if</span> <span class="o">(</span><span class="n">TextUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">data</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln"> 3</span>        <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
+<span class="ln"> 4</span>    <span class="o">}</span>
+<span class="ln"> 5</span>    <span class="k">if</span> <span class="o">(</span><span class="n">CheckUtil</span><span class="o">.</span><span class="na">isStringLength</span><span class="o">(</span><span class="n">data</span><span class="o">)</span> <span class="o">&lt;=</span> <span class="n">maxLength</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 6</span>        <span class="k">return</span> <span class="n">data</span><span class="o">;</span>
+<span class="ln"> 7</span>    <span class="o">}</span>
+<span class="ln"> 8</span>    <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln"> 9</span>    <span class="n">StringBuilder</span> <span class="n">stringBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+<span class="ln">10</span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data</span><span class="o">.</span><span class="na">length</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">11</span>        <span class="k">if</span> <span class="o">(</span><span class="n">length</span> <span class="o">&gt;=</span> <span class="n">maxLength</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">12</span>            <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&#34;...&#34;</span><span class="o">);</span>
+<span class="ln">13</span>            <span class="k">break</span><span class="o">;</span>
+<span class="ln">14</span>        <span class="o">}</span>
+<span class="ln">15</span>        <span class="n">String</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">i</span> <span class="o">+</span> <span class="n">1</span><span class="o">);</span>
+<span class="ln">16</span>        <span class="k">if</span> <span class="o">(</span><span class="n">temp</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="s">&#34;[\u4e00-\u9fa5]&#34;</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">17</span>            <span class="n">length</span> <span class="o">+=</span> <span class="n">2</span><span class="o">;</span>
+<span class="ln">18</span>            <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+<span class="ln">19</span>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln">20</span>            <span class="n">length</span> <span class="o">+=</span> <span class="n">1</span><span class="o">;</span>
+<span class="ln">21</span>            <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+<span class="ln">22</span>        <span class="o">}</span>
+<span class="ln">23</span>    <span class="o">}</span>
+<span class="ln">24</span>    <span class="k">return</span> <span class="n">stringBuilder</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+<span class="ln">25</span>
+<span class="ln">26</span><span class="o">}</span>
+<span class="ln">27</span>
+</code></pre></div><p>结果测试加入了emoji表情，直接截取0-7会在部分手机上出现？等无法识别的情况，然后是查了查emoji是基于Unicode编码来的，也就是说随便一个emoji组成的字符长度最少是两位,所以我直接截取了表情的一半那肯定就是不行了，然后具体查了查编码的历史从ascii到utf-8等等，这里<a href="https://www.cnblogs.com/gavin-num1/p/5170247.html" target="_blank" rel="noopener noreferrer">https://www.cnblogs.com/gavin-num1/p/5170247.html</a>
+。</p>
+<p>然后找到了java的api主要关于unicode有以下几个方法</p>
+<hr>
+<blockquote>
+<p><code>int	codePointAt(int index)</code><br>
+返回指定索引处的字符（Unicode 代码点）。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><code>int	codePointBefore(int index)</code><br>
+返回指定索引之前的字符（Unicode 代码点）。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><code>int codePointCount(int beginIndex, int endIndex)</code><br>
+返回此 String 的指定文本范围中的 Unicode 代码点数。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><code>int	offsetByCodePoints(int index, int codePointOffset)</code><br>
+返回此 String 中从给定的 index 处偏移 codePointOffset 个代码点的索引。</p>
+</blockquote>
+<hr>
+<p>我们现在截取的字符数量是8位，然后我们就找到在0到7位中的unicode编码，这样汉字和emoji就一起解决了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln">1</span><span class="n">String</span> <span class="n">newString</span> <span class="o">=</span> <span class="s">&#34;1??1??&#34;</span><span class="o">;</span>
+<span class="ln">2</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">newString</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">newString</span><span class="o">.</span><span class="na">offsetByCodePoints</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">newString</span><span class="o">.</span><span class="na">codePointCount</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">7</span><span class="o">))));</span>
+<span class="ln">3</span>
+<span class="ln">4</span><span class="c1">//print: 1??1?
+</span></code></pre></div><p>是不是比上一个代码实现的简单的多。</p>
 </div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content surface">
@@ -707,19 +306,19 @@ BOOTSTRAP
   </div>
 </div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
   <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
-    <a href="https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/">Centos开启bbr
+    <a href="https://helixs.github.io/posts/android/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/">Android项目引入kotlin包冲突问题
 </a>
   </div><div class="post-nav post-next">
-    <a href="https://helixs.github.io/posts/2019-01-28-java%E5%92%8Ckotlin%E4%B8%AD%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6%E8%8D%89%E7%A8%BF/">Java和kotlin中泛型通配符（草稿）
+    <a href="https://helixs.github.io/posts/android/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/">Idea显示kotlin的推断类型
 </a>
     <i class="fas fa-fw fa-chevron-right"></i>
   </div></div><section class="related-posts-wrapper">
     <h3>相关文章</h3>
-    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/">Centos开启bbr
-</a></li><li><a href="https://helixs.github.io/posts/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/">Idea显示kotlin的推断类型
-</a></li><li><a href="https://helixs.github.io/posts/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/">Java关于判断emoji位数和截取的一些处理
-</a></li><li><a href="https://helixs.github.io/posts/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/">Android项目引入kotlin包冲突问题
-</a></li><li><a href="https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/">Glide在共享元素动画时会gif会停止播放
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/android/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/">Android项目引入kotlin包冲突问题
+</a></li><li><a href="https://helixs.github.io/posts/android/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/">Android Recyclerview点击跳转到viewpager共享元素动画
+</a></li><li><a href="https://helixs.github.io/posts/linux/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/">Git 配置代理 解决访问github等访问过慢的问题
+</a></li><li><a href="https://helixs.github.io/posts/linux/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Centos7 Aria2 安装配置
+</a></li><li><a href="https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/">WordPress&#43;Nginx搭建全过程
 </a></li></ul>
   </section></div>
     </article><div class="card component row post-comments">
@@ -737,11 +336,11 @@ BOOTSTRAP
     
     <section class="card row text-center profile component">
   <div class="card-body">
-    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Razon Yang" src="https://helixs.github.io/images/profile.webp" loading="lazy"
-   width="400" height="400"
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
    />
 </div>
-    <div class="col-12 profile-meta"><div class="profile-name">Razon Yang</div><div class="profile-bio">Gopher, PHPer, Full Stack Engineer.</div><div class="profile-company"><i class="fas fa-fw fa-building"></i>Company</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>Earth</div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
   </div>
 </section>
   <section class="featured-posts row card component">

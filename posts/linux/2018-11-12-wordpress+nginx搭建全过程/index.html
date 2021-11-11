@@ -3,26 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>git 配置代理 解决访问github等访问过慢的问题 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+    <title>WordPress&#43;Nginx搭建全过程 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
 <link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
 <meta name="keywords" content="" />
-<meta name="description" content="" /><meta itemprop="name" content="git 配置代理 解决访问github等访问过慢的问题">
-<meta itemprop="description" content="最近不知道怎么的从git上下来代码好慢，访问github没啥问题，找了一下原来是http://github.global.ssl.fastl"><meta itemprop="datePublished" content="2018-11-30T06:52:25+00:00" />
-<meta itemprop="dateModified" content="2018-11-30T06:52:25+00:00" />
-<meta itemprop="wordCount" content="315">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="git 配置代理 解决访问github等访问过慢的问题" />
-<meta property="og:description" content="最近不知道怎么的从git上下来代码好慢，访问github没啥问题，找了一下原来是http://github.global.ssl.fastl" />
+<meta name="description" content="" /><meta itemprop="name" content="WordPress&#43;Nginx搭建全过程">
+<meta itemprop="description" content="最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M"><meta itemprop="datePublished" content="2018-11-12T10:24:15+00:00" />
+<meta itemprop="dateModified" content="2018-11-12T10:24:15+00:00" />
+<meta itemprop="wordCount" content="2566">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="WordPress&#43;Nginx搭建全过程" />
+<meta property="og:description" content="最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://helixs.github.io/posts/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2018-11-30T06:52:25+00:00" />
-<meta property="article:modified_time" content="2018-11-30T06:52:25+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+<meta property="og:url" content="https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-11-12T10:24:15+00:00" />
+<meta property="article:modified_time" content="2018-11-12T10:24:15+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="git 配置代理 解决访问github等访问过慢的问题"/>
-<meta name="twitter:description" content="最近不知道怎么的从git上下来代码好慢，访问github没啥问题，找了一下原来是http://github.global.ssl.fastl"/>
+<meta name="twitter:title" content="WordPress&#43;Nginx搭建全过程"/>
+<meta name="twitter:description" content="最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M"/>
 <meta name="twitter:site" content="@yourtwitterusername"/>
 <link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
@@ -50,11 +50,11 @@ BOOTSTRAP
   </div>
   <div class="offcanvas-body">
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
-      target="_blank" href="https://twitter.com/intent/tweet?title=git%20%e9%85%8d%e7%bd%ae%e4%bb%a3%e7%90%86%20%e8%a7%a3%e5%86%b3%e8%ae%bf%e9%97%aegithub%e7%ad%89%e8%ae%bf%e9%97%ae%e8%bf%87%e6%85%a2%e7%9a%84%e9%97%ae%e9%a2%98&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2018-11-30-git-%25E9%2585%258D%25E7%25BD%25AE%25E4%25BB%25A3%25E7%2590%2586-%25E8%25A7%25A3%25E5%2586%25B3%25E8%25AE%25BF%25E9%2597%25AEgithub%25E7%25AD%2589%25E8%25AE%25BF%25E9%2597%25AE%25E8%25BF%2587%25E6%2585%25A2%25E7%259A%2584%25E9%2597%25AE%25E9%25A2%2598%2f">
+      target="_blank" href="https://twitter.com/intent/tweet?title=WordPress%2bNginx%e6%90%ad%e5%bb%ba%e5%85%a8%e8%bf%87%e7%a8%8b&url=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2018-11-12-wordpress%2bnginx%25E6%2590%25AD%25E5%25BB%25BA%25E5%2585%25A8%25E8%25BF%2587%25E7%25A8%258B%2f">
       <i class="fab fa-fw fa-twitter"></i> Twitter
     </a>
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
-      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2018-11-30-git-%25E9%2585%258D%25E7%25BD%25AE%25E4%25BB%25A3%25E7%2590%2586-%25E8%25A7%25A3%25E5%2586%25B3%25E8%25AE%25BF%25E9%2597%25AEgithub%25E7%25AD%2589%25E8%25AE%25BF%25E9%2597%25AE%25E8%25BF%2587%25E6%2585%25A2%25E7%259A%2584%25E9%2597%25AE%25E9%25A2%2598%2f">
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2018-11-12-wordpress%2bnginx%25E6%2590%25AD%25E5%25BB%25BA%25E5%2585%25A8%25E8%25BF%2587%25E7%25A8%258B%2f">
       <i class="fab fa-fw fa-facebook-f"></i> Facebook
     </a>
   </div>
@@ -188,7 +188,7 @@ BOOTSTRAP
 <div class="col-lg-8">
   <div class="container"><nav class="row card component" aria-label="breadcrumb">
   <div class="card-body">
-    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Git 配置代理 解决访问github等访问过慢的问题</li></ol>
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">WordPress&#43;Nginx搭建全过程</li></ol>
   </div>
 </nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
   <div class="d-flex flex-column component rounded post-panel">
@@ -208,35 +208,185 @@ BOOTSTRAP
 ">
   <i class="fas fa-fw fa-copyright"></i>
 </a>
-    
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
     
   </div>
 </div>
 <div class="card-body">
-        <h1 class="card-title my-3">Git 配置代理 解决访问github等访问过慢的问题
+        <h1 class="card-title my-3">WordPress&#43;Nginx搭建全过程
 </h1><div class="post-meta"><span class="post-date" title="created on">
-    <i class="fas fa-fw fa-calendar-alt"></i>2018-11-30
+    <i class="fas fa-fw fa-calendar-alt"></i>2018-11-12
   </span><span class="post-reading-time" title="reading time">
-    <i class="fas fa-fw fa-coffee"></i>1 分钟阅读
-  </span><a href="https://helixs.github.io/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="badge rounded-pill text-white bg-primary post-taxonomy">开发环境</a></div>
-<div class="post-content mb-3"><p>最近不知道怎么的从git上下来代码好慢，访问github没啥问题，找了一下原来是http://github.global.ssl.fastly.Net这个被我们伟大的墙把限制邪恶的资本主义限制了。</p>
-<p>前提是你要开代理，正常情况下ss for windows的http和socks5都是共用的1080端口，mac 版本的ng要设置http端口，这里以1080为例。网上基本上都是全局的设置</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>果然是立竿见影，可是如果是访问内网或者国内的git仓局要么找不到要么就很慢，这个可是不行的，所以我们只能针对github进行代理</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>上面是走http代理，下面是走sock5代理</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p> </p>
-<p>取消代理如下</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>我们也可以进行再git配置文件下，默认在用户目录.gitconfig</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>感谢 https://www.zhihu.com/question/27159393</p>
+    <i class="fas fa-fw fa-coffee"></i>6 分钟阅读
+  </span><a href="https://helixs.github.io/categories/wordpress/" class="badge rounded-pill text-white bg-primary post-taxonomy">wordpress</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1安装php-7x">1、安装php 7.x</a></li>
+        <li><a href="#2安装数据库">2、安装数据库</a></li>
+        <li><a href="#3配置wordpressnginxphp-fpm">3、配置wordpress+nginx+php-fpm</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><p>最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价</p>
+<blockquote>
+<p>(PS：国内环境太差了，1Mbps还贵的不行，还要传身份证备案，当初在百度云和华为云注册了一下，隔三差五给我来个电话，发营销短信，我也是受不了了。虽然我不是做WF的事情，国内的隐私已经不是隐私了)。</p>
+</blockquote>
+<hr>
+<p>我装的系统是centos7，vps内存就那么点，就打算使用nginx替代apache了。又得知nginx主要是用来处理静态网页比较给力，对用php开发的wordpress是天生的不支持。所以就要通过nginx将php的动态请求转发到php-fpm解析器，处理完成后再通过nginx回馈给client，大概就是这个过程。</p>
+<p>看看<a href="https://wordpress.org/download/" target="_blank" rel="noopener noreferrer">wordpress官网</a>
+的最新版本，我下载的是4.9.8版本。然后开看看这个版本的<a href="https://wordpress.org/about/requirements/" target="_blank" rel="noopener noreferrer">最低环境要求</a>
+:</p>
+<ul>
+<li><a href="http://www.php.net/" target="_blank" rel="noopener noreferrer">PHP</a>
+ 7.2或更高版本。</li>
+<li><a href="https://www.mysql.com/" target="_blank" rel="noopener noreferrer">MySQL</a>
+ 5.6或更高版本_或_ <a href="https://mariadb.org/" target="_blank" rel="noopener noreferrer">MariaDB</a>
+版本10.0或更高版本(内存怪兽)。</li>
+<li><a href="https://wordpress.org/news/2016/12/moving-toward-ssl/" target="_blank" rel="noopener noreferrer">HTTPS</a>
+支持(这个看自己需求了)</li>
+</ul>
+<h3 id="1安装php-7x">1、安装php 7.x</h3>
+<p>安装phpCentos7仓库默认的版本还是php5.6，所有我们要找到php的最新源。 删除老的php版本</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ yum remove php*
+<span class="ln"> 2</span>CentOS/RHEL 7.x:
+<span class="ln"> 3</span>$ rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+<span class="ln"> 4</span>$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+<span class="ln"> 5</span>$ yum install php70w
+<span class="ln"> 6</span>$ yum install php70w php70w-fpm php70w-bcmath php70w-gd php70w-mbstring php70w-mcrypt php70w-mysql
+<span class="ln"> 7</span>...
+<span class="ln"> 8</span>软件包：php70w-mcrypt-7.0.32-1.w7.x86_64 <span class="o">(</span>webtatic<span class="o">)</span>
+<span class="ln"> 9</span>需要：libmcrypt.so.4<span class="o">()(</span>64bit<span class="o">)</span>
+<span class="ln">10</span>...
+</code></pre></div><p>突然mcrypt属啥玩意儿不关，主要是libmcrypt.so.4()(64bit)这个玩意儿应该就是本机缺少了这个函数库了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ yum install libmcrypt libmcrypt-devel
+<span class="ln"> 2</span>没有可用软件包 libmcrypt libmcrypt-devel。
+<span class="ln"> 3</span>
+<span class="ln"> 4</span><span class="c1">#搜索一下：基本都是复制粘贴一个东西：来安装epel源</span>
+<span class="ln"> 5</span>$ yum -y install epel-release
+<span class="ln"> 6</span>Loading mirror speeds from cached hostfile
+<span class="ln"> 7</span>* base: mirror.fileplanet.com
+<span class="ln"> 8</span>* elrepo-kernel: repos.lax-noc.com
+<span class="ln"> 9</span>* extras: mirror.fileplanet.com
+<span class="ln">10</span>* updates: mirror.fileplanet.com
+<span class="ln">11</span>* webtatic: us-east.repo.webtatic.com
+<span class="ln">12</span>软件包 epel-release-7-11.noarch 已安装并且是最新版本
+<span class="ln">13</span>无须任何处理
+</code></pre></div><p>WTF，怎么这样。再搜索都是一样的爬虫复制粘贴结果。都是指向的
+<a href="http://mirrors.hust.edu.cn/" target="_blank" rel="noopener noreferrer">华中科技大学开源镜像站</a>
+
+网上基本都是找的5.x的源，然后翻翻翻找了epel-release-latest.rpm源</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ wget http://mirrors.hust.edu.cn/epel/epel-release-latest-7.noarch.rpm
+<span class="ln"> 2</span>$ rpm -ivh epel-release-latest-7.noarch.rpm
+<span class="ln"> 3</span>$ yum update
+<span class="ln"> 4</span>$ yum install epel-release
+<span class="ln"> 5</span><span class="c1">#MMP:软件包 epel-release-7-11.noarch 已安装并且是最新版本</span>
+<span class="ln"> 6</span><span class="c1">#怪事，可能是我新手吧，不懂这些依赖关系，干脆卸载重装</span>
+<span class="ln"> 7</span>$ yum remove epel-release
+<span class="ln"> 8</span>$ yum install epel-release
+<span class="ln"> 9</span><span class="c1">#再来</span>
+<span class="ln">10</span>$ yum install libmcrypt libmcrypt-devel
+<span class="ln">11</span><span class="c1">#靠居然可以了。</span>
+<span class="ln">12</span>$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+<span class="ln">13</span>$ yum install php70w php70w-fpm php70w-bcmath php70w-gd php70w-mbstring php70w-mcrypt php70w-mysql
+</code></pre></div><p>php组件基本安装完成。</p>
+<h3 id="2安装数据库">2、安装数据库</h3>
+<p>我选择<a href="https://mariadb.org/" target="_blank" rel="noopener noreferrer">MariaDB</a>
+和MySql差不多的用法。和php一样。MariaDB在centos7中的默认源是与MySql(5.5)一致的5.5版本，看来我们又要添加新的源了。 MariaDB做的很好，很方便的把源信息分享出来，我们选择centos7(x86_64)的版本。 新建文件MariaDB.repo或者相似的，放入/etc/yum.repos.d/下面。然后使用vi粘贴源信息，如下面</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-vim" data-lang="vim"><span class="ln">1</span># <span class="nx">MariaDB</span> <span class="m">10</span>.<span class="m">1</span> <span class="nx">CentOS</span> <span class="nx">repository</span> <span class="nx">list</span> – <span class="nx">created</span> <span class="m">2018-11-12</span> <span class="m">10</span>:<span class="m">07</span> <span class="nx">UTC</span><span class="err">
+</span><span class="ln">2</span><span class="err"></span># <span class="nx">http</span>:<span class="sr">//</span><span class="nx">downloads</span>.<span class="nx">mariadb</span>.<span class="nx">org</span><span class="sr">/mariadb/</span><span class="nx">repositories</span>/<span class="err">
+</span><span class="ln">3</span><span class="err"></span>[<span class="nx">mariadb</span>] <span class="nx">name</span> <span class="p">=</span> <span class="nx">MariaDB</span><span class="err">
+</span><span class="ln">4</span><span class="err"></span><span class="nx">baseurl</span> <span class="p">=</span> <span class="nx">http</span>:<span class="sr">//</span><span class="nx">yum</span>.<span class="nx">mariadb</span>.<span class="nx">org</span><span class="sr">/10.1/</span><span class="nx">centos7</span><span class="p">-</span><span class="nx">amd64</span><span class="err">
+</span><span class="ln">5</span><span class="err"></span><span class="nx">gpgkey</span><span class="p">=</span><span class="nx">https</span>:<span class="sr">//</span><span class="nx">yum</span>.<span class="nx">mariadb</span>.<span class="nx">org</span>/<span class="nx">RPM</span><span class="p">-</span><span class="nx">GPG</span><span class="p">-</span><span class="nx">KEY</span><span class="p">-</span><span class="nx">MariaDB</span><span class="err">
+</span><span class="ln">6</span><span class="err"></span><span class="nx">gpgcheck</span><span class="p">=</span><span class="m">1</span><span class="err">
+</span></code></pre></div><p>修改完成后</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>$ yum install MariaDB-server MariaDB-client
+<span class="ln">2</span>$ systemctl start mariadb
+</code></pre></div><p><strong>设置数据库</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ mysql<span class="se">\_</span>secure<span class="se">\_</span>installation  
+<span class="ln"> 2</span><span class="c1"># Enter current password for root (enter for none): 输入当前的root密码(默认空)，直接回车</span>
+<span class="ln"> 3</span><span class="c1"># Set root password? [Y/n] 设置新密码，y</span>
+<span class="ln"> 4</span><span class="c1"># Remove anonymous users? [Y/n] 移除匿名用户，y</span>
+<span class="ln"> 5</span><span class="c1"># Disallow root login remotely? [Y/n] 禁止root用户远程登录，y</span>
+<span class="ln"> 6</span><span class="c1"># Remove test database and access to it? [Y/n] 移除测试数据库，y</span>
+<span class="ln"> 7</span><span class="c1"># Reload privilege tables now? [Y/n] y</span>
+<span class="ln"> 8</span>$ mysql -u ‘数据库用户’ -p
+<span class="ln"> 9</span><span class="c1">#因为是我用的是root所以就填的root了，然后输入数据库用户的密码就是你刚才设置的</span>
+<span class="ln">10</span>$ CREATE DATABASE wordpress <span class="o">(</span>名字随意，初始化进入wordpress的时候是要选择这个的<span class="o">)</span>
+<span class="ln">11</span>$ <span class="nb">exit</span>
+</code></pre></div><p>这样我们的数据库配置基本上就完成了</p>
+<h3 id="3配置wordpressnginxphp-fpm">3、配置wordpress+nginx+php-fpm</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>$ yum install nginx
+<span class="ln">2</span><span class="c1">#(版本自己选择)</span>
+<span class="ln">3</span>$ weget https://wordpress.org/latest.zip 
+<span class="ln">4</span>$ unzip wordpress-xxxxx.zip 
+<span class="ln">5</span>$ mv wordpress/* /usr/share/nginx/html/
+<span class="ln">6</span><span class="c1">#我放的是默认的nginx的html目录，其他的可以自己行放入</span>
+<span class="ln">7</span><span class="c1">#配置nginx </span>
+<span class="ln">8</span><span class="nv">$vi</span> /etc/nginx/nginx.conf
+</code></pre></div><p><strong>配置nginx</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-vim" data-lang="vim"><span class="ln"> 1</span><span class="nx">server</span>{<span class="err">
+</span><span class="ln"> 2</span><span class="err"></span>   <span class="nx">listen</span>       <span class="m">80</span> <span class="nx">default_server</span>;<span class="err">
+</span><span class="ln"> 3</span><span class="err"></span>   <span class="nx">listen</span>       [::]:<span class="m">80</span> <span class="nx">default_server</span>;<span class="err">
+</span><span class="ln"> 4</span><span class="err"></span>   <span class="nx">server_name</span>  <span class="nx">_</span>;<span class="err">
+</span><span class="ln"> 5</span><span class="err"></span>   <span class="nx">root</span>         <span class="sr">/usr/</span><span class="nx">share</span><span class="sr">/nginx/</span><span class="nx">html</span><span class="err">
+</span><span class="ln"> 6</span><span class="err"></span>   <span class="nx">index</span> <span class="nx">index</span>.<span class="nx">php</span> <span class="nx">index</span>.<span class="nx">html</span> <span class="nx">index</span>.<span class="nx">htm</span>;<span class="err">
+</span><span class="ln"> 7</span><span class="err"></span>   # <span class="nx">Load</span> <span class="nx">configuration</span> <span class="nx">files</span> <span class="nx">for</span> <span class="nx">the</span> <span class="nx">default</span> <span class="nx">server</span> <span class="nx">block</span>.<span class="err">
+</span><span class="ln"> 8</span><span class="err"></span>   <span class="nx">include</span> <span class="sr">/etc/</span><span class="nx">nginx</span><span class="sr">/default.d/</span>*.<span class="nx">conf</span>;<span class="err">
+</span><span class="ln"> 9</span><span class="err"></span>   <span class="nx">location</span> <span class="p">~</span> \.<span class="nx">php</span>$ {<span class="err">
+</span><span class="ln">10</span><span class="err"></span>      <span class="nx">try_files</span> $<span class="nx">uri</span> <span class="p">=</span><span class="m">404</span>;<span class="err">
+</span><span class="ln">11</span><span class="err"></span>      <span class="nx">fastcgi_pass</span> <span class="m">127</span>.<span class="m">0</span>.<span class="m">0</span>.<span class="m">1</span>:<span class="m">9000</span>;#<span class="nx">主要是这个是php</span><span class="p">-</span><span class="nx">fpm的默认端口地址</span><span class="err">
+</span><span class="ln">12</span><span class="err"></span>      <span class="nx">fastcgi_index</span> <span class="nx">index</span>.<span class="nx">php</span>;<span class="err">
+</span><span class="ln">13</span><span class="err"></span>      <span class="nx">fastcgi_param</span> <span class="nx">SCRIPT_FILENAME</span> $<span class="nx">document_root</span>$<span class="nx">fastcgi_script_name</span>;<span class="err">
+</span><span class="ln">14</span><span class="err"></span>      <span class="nx">include</span> <span class="nx">fastcgi_params</span>;<span class="err">
+</span><span class="ln">15</span><span class="err"></span>   }<span class="err">
+</span><span class="ln">16</span><span class="err"></span>}<span class="err">
+</span></code></pre></div><p>wq保存</p>
+<p><strong>配置php-fpm</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>
+<span class="ln"> 2</span>$ <span class="nb">cd</span> /etc/php-fpm.d/
+<span class="ln"> 3</span>$ vi www.conf
+<span class="ln"> 4</span><span class="c1">#我们找到user和group，默认是apache，所以我们改成nginx，以及lisen就用默认的</span>
+<span class="ln"> 5</span>:wq
+<span class="ln"> 6</span>$ systemctl restart php-fpm
+<span class="ln"> 7</span>$ systemctl restart nginx
+<span class="ln"> 8</span><span class="c1">#如果都成功了我们就打开浏览器输入ip回车，没啥问题的话我们就可以看到wordpress的初始化配置，其主要的就是配置数据库，数据库名称就是我们刚才建立的数据库名称wordpress,用户名和密码是数据库的用户名和密码，我这里用的是root密码就是自己设置的密码。</span>
+<span class="ln"> 9</span><span class="c1">#如果出问题请检查数据库名称是否创建，数据库名称对应是否正确，用户名密码是否正确。</span>
+<span class="ln">10</span><span class="c1">#一切就绪之后我们创建了管理员账号和密码就一切OK了。</span>
+<span class="ln">11</span><span class="c1">#玩几下的时候发现更换出题或者写入文件的时候</span>
+<span class="ln">12</span><span class="c1">#wordpress 需要访问您网页服务器的权限。 请输入您的 FTP 登录XXXX</span>
+<span class="ln">13</span><span class="c1">#晕，怎么会这样，不会真的还要我创建ftp服务吧。不行google一下</span>
+<span class="ln">14</span>清一色的
+<span class="ln">15</span><span class="c1">#1、chmod-R777</span>
+<span class="ln">16</span><span class="c1">#2、wp-config.php里加入下面代码:</span>
+<span class="ln">17</span><span class="c1">#   define(“FS_METHOD”, “direct”);</span>
+<span class="ln">18</span><span class="c1">#   define(“FS_CHMOD_DIR”, 0777);</span>
+<span class="ln">19</span><span class="c1">#   define(“FS_CHMOD_FILE”, 0777);</span>
+<span class="ln">20</span><span class="c1">#才不行，想一下，wordpress没有写入权限，就说明wordpress网站目录的所有者不给予运行wordpress的php-fpm权限。</span>
+<span class="ln">21</span>$ ll /usr/share/nginx/html/
+<span class="ln">22</span><span class="c1">#目录的所有者是root，因为对linux的权限不是很清楚，所以我以为既然启动的nginx的用户是root，启动php-fpm的用户也是root，不会出现这个问题啊。那么我们还是查看进程吧</span>
+<span class="ln">23</span>$ ps aux<span class="p">|</span>grep nginx
+<span class="ln">24</span>$ ps aux<span class="p">|</span>grep php-fpm
+<span class="ln">25</span><span class="c1">#他们的主进程用户的确是root</span>
+<span class="ln">26</span><span class="c1">#然后发现php-fpm子进程中多了很多的nginx用户，对了。我们不是在www.conf中指定用户和用户组是nginx吗，那么网站的目录的所有者是root，nginx用户子进程的确是写入root用户的目录的，所以我们把目录所有者指定给nginx</span>
+<span class="ln">27</span>$ chown -R nginx /usr/share/nginx/html
+<span class="ln">28</span><span class="c1">#对我一个小白来说一个wordpress网站基本就搭完成了。</span>
+</code></pre></div><p>对我一个小白来说一个wordpress网站基本就搭完成了。</p>
+<p>感谢 <a href="https://blog.csdn.net/notebook034/article/details/51584993" target="_blank" rel="noopener noreferrer">https://blog.csdn.net/notebook034/article/details/51584993</a>
+</p>
 </div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content surface">
@@ -264,17 +414,15 @@ BOOTSTRAP
   </div>
 </div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
   <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
-    <a href="https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Centos7 Aria2 安装配置
+    <a href="https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/">Centos7 防火墙端口配置和SSH端口配置
 </a>
   </div><div class="post-nav post-next">
-    <a href="https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/">Android Recyclerview点击跳转到viewpager共享元素动画
+    <a href="https://helixs.github.io/posts/linux/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Centos7 Aria2 安装配置
 </a>
     <i class="fas fa-fw fa-chevron-right"></i>
   </div></div><section class="related-posts-wrapper">
     <h3>相关文章</h3>
-    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Centos7 Aria2 安装配置
-</a></li><li><a href="https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/">WordPress&#43;Nginx搭建全过程
-</a></li><li><a href="https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/">Centos7 防火墙端口配置和SSH端口配置
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/">Centos7 防火墙端口配置和SSH端口配置
 </a></li><li><a href="https://helixs.github.io/contact/">联系我们
 </a></li></ul>
   </section></div>
@@ -293,11 +441,11 @@ BOOTSTRAP
     
     <section class="card row text-center profile component">
   <div class="card-body">
-    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Razon Yang" src="https://helixs.github.io/images/profile.webp" loading="lazy"
-   width="400" height="400"
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
    />
 </div>
-    <div class="col-12 profile-meta"><div class="profile-name">Razon Yang</div><div class="profile-bio">Gopher, PHPer, Full Stack Engineer.</div><div class="profile-company"><i class="fas fa-fw fa-building"></i>Company</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>Earth</div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
   </div>
 </section>
   <section class="featured-posts row card component">

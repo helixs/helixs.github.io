@@ -3,26 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>android项目引入kotlin包冲突问题 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+    <title>centos开启bbr - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
 <link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
 <meta name="keywords" content="" />
-<meta name="description" content="" /><meta itemprop="name" content="android项目引入kotlin包冲突问题">
-<meta itemprop="description" content="今天在android项目中导入了kotlin的支持，可是怎么运行也运行不起来 Program type already present: javax.annotation.CheckReturnValue 等等 包冲突了，检查不同的library的版本，然后清空"><meta itemprop="datePublished" content="2018-12-26T08:46:59+00:00" />
-<meta itemprop="dateModified" content="2018-12-26T08:46:59+00:00" />
-<meta itemprop="wordCount" content="74">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="android项目引入kotlin包冲突问题" />
-<meta property="og:description" content="今天在android项目中导入了kotlin的支持，可是怎么运行也运行不起来 Program type already present: javax.annotation.CheckReturnValue 等等 包冲突了，检查不同的library的版本，然后清空" />
+<meta name="description" content="" /><meta itemprop="name" content="centos开启bbr">
+<meta itemprop="description" content="什么是BBR： TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接"><meta itemprop="datePublished" content="2019-01-16T06:29:02+00:00" />
+<meta itemprop="dateModified" content="2019-01-16T06:29:02+00:00" />
+<meta itemprop="wordCount" content="917">
+<meta itemprop="keywords" content="bbr,centos," /><meta property="og:title" content="centos开启bbr" />
+<meta property="og:description" content="什么是BBR： TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://helixs.github.io/posts/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2018-12-26T08:46:59+00:00" />
-<meta property="article:modified_time" content="2018-12-26T08:46:59+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+<meta property="og:url" content="https://helixs.github.io/posts/linux/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-01-16T06:29:02+00:00" />
+<meta property="article:modified_time" content="2019-01-16T06:29:02+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="android项目引入kotlin包冲突问题"/>
-<meta name="twitter:description" content="今天在android项目中导入了kotlin的支持，可是怎么运行也运行不起来 Program type already present: javax.annotation.CheckReturnValue 等等 包冲突了，检查不同的library的版本，然后清空"/>
+<meta name="twitter:title" content="centos开启bbr"/>
+<meta name="twitter:description" content="什么是BBR： TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接"/>
 <meta name="twitter:site" content="@yourtwitterusername"/>
 <link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
@@ -50,11 +50,11 @@ BOOTSTRAP
   </div>
   <div class="offcanvas-body">
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
-      target="_blank" href="https://twitter.com/intent/tweet?title=android%e9%a1%b9%e7%9b%ae%e5%bc%95%e5%85%a5kotlin%e5%8c%85%e5%86%b2%e7%aa%81%e9%97%ae%e9%a2%98&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2018-12-26-android%25E9%25A1%25B9%25E7%259B%25AE%25E5%25BC%2595%25E5%2585%25A5kotlin%25E5%258C%2585%25E5%2586%25B2%25E7%25AA%2581%25E9%2597%25AE%25E9%25A2%2598%2f">
+      target="_blank" href="https://twitter.com/intent/tweet?title=centos%e5%bc%80%e5%90%afbbr&url=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2019-01-16-centos%25E5%25BC%2580%25E5%2590%25AFbbr%2f">
       <i class="fab fa-fw fa-twitter"></i> Twitter
     </a>
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
-      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2018-12-26-android%25E9%25A1%25B9%25E7%259B%25AE%25E5%25BC%2595%25E5%2585%25A5kotlin%25E5%258C%2585%25E5%2586%25B2%25E7%25AA%2581%25E9%2597%25AE%25E9%25A2%2598%2f">
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2019-01-16-centos%25E5%25BC%2580%25E5%2590%25AFbbr%2f">
       <i class="fab fa-fw fa-facebook-f"></i> Facebook
     </a>
   </div>
@@ -188,7 +188,7 @@ BOOTSTRAP
 <div class="col-lg-8">
   <div class="container"><nav class="row card component" aria-label="breadcrumb">
   <div class="card-body">
-    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Android项目引入kotlin包冲突问题</li></ol>
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Centos开启bbr</li></ol>
   </div>
 </nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
   <div class="d-flex flex-column component rounded post-panel">
@@ -208,20 +208,99 @@ BOOTSTRAP
 ">
   <i class="fas fa-fw fa-copyright"></i>
 </a>
-    
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
     
   </div>
 </div>
 <div class="card-body">
-        <h1 class="card-title my-3">Android项目引入kotlin包冲突问题
+        <h1 class="card-title my-3">Centos开启bbr
 </h1><div class="post-meta"><span class="post-date" title="created on">
-    <i class="fas fa-fw fa-calendar-alt"></i>2018-12-26
+    <i class="fas fa-fw fa-calendar-alt"></i>2019-01-16
   </span><span class="post-reading-time" title="reading time">
-    <i class="fas fa-fw fa-coffee"></i>1 分钟阅读
-  </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a></div>
-<div class="post-content mb-3"><p>今天在android项目中导入了kotlin的支持，可是怎么运行也运行不起来</p>
-<p>Program type already present: javax.annotation.CheckReturnValue</p>
-<p>等等 包冲突了，检查不同的library的版本，然后清空缓存重试</p>
+    <i class="fas fa-fw fa-coffee"></i>2 分钟阅读
+  </span><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge rounded-pill text-white bg-primary post-taxonomy">vps工具</a><a href="https://helixs.github.io/tags/bbr/" class="badge rounded-pill text-white bg-primary post-taxonomy">bbr</a><a href="https://helixs.github.io/tags/centos/" class="badge rounded-pill text-white bg-primary post-taxonomy">centos</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#什么是bbr">什么是BBR：</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><h3 id="什么是bbr">什么是BBR：</h3>
+<blockquote>
+<p>TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接的效果。</p>
+</blockquote>
+<blockquote>
+<p>Google提交到Linux主线并发表在ACM queue期刊上的TCP-BBR拥塞控制算法。继承了Google“先在生产环境上部署，再开源和发论文”的研究传统。TCP-BBR已经再YouTube服务器和Google跨数据中心的内部广域网(B4)上部署。由此可见出该算法的前途。</p>
+</blockquote>
+<blockquote>
+<p>TCP-BBR的目标就是最大化利用网络上瓶颈链路的带宽。一条网络链路就像一条水管，要想最大化利用这条水管，最好的办法就是给这跟水管灌满水。</p>
+</blockquote>
+<p>BBR解决了两个问题：</p>
+<ul>
+<li>在有一定丢包率的网络链路上充分利用带宽。非常适合高延迟，高带宽的网络链路。</li>
+<li>降低网络链路上的buffer占用率，从而降低延迟。非常适合慢速接入网络的用户。</li>
+</ul>
+<p>以上来自<a href="http://blog.51cto.com/zero01/2064660" target="_blank" rel="noopener noreferrer">http://blog.51cto.com/zero01/2064660</a>
+</p>
+<hr>
+<p>通过上面我们大概知道bbr就是想办法给你加大带宽流量的和速锐那种暴力发包是两回事。google的这个bbr算法已经集成到linux4.9内核以上，即便你的系统是最新版但是大多数情况下云服务厂商默认都还是使用的3.x，所以我们要升级内核并且切换到该内核上面，最后再开启bbr。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span><span class="c1">#查看使用的内核版本，如果是4.9+的话就可以跳过了</span>
+<span class="ln">2</span>uname -a
+</code></pre></div><p>然后我们进入<a href="http://elrepo.org/tiki/tiki-index.php" target="_blank" rel="noopener noreferrer">http://elrepo.org/tiki/tiki-index.php</a>
+查看最新的rpm源，按照上面的方法进行源设置</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span><span class="c1">#导入源</span>
+<span class="ln">2</span>rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+<span class="ln">3</span><span class="c1">#设置源</span>
+<span class="ln">4</span>rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+</code></pre></div><p>最新的教程已经不需要上面的这样了直接install</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>yum install https://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+</code></pre></div><p>然后，进入<a href="http://elrepo.org/tiki/kernel-ml" target="_blank" rel="noopener noreferrer">http://elrepo.org/tiki/kernel-ml</a>
+查看安装方法</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>yum --enablerepo<span class="o">=</span>elrepo-kernel install kernel-ml
+<span class="ln">2</span><span class="c1">#使用这个看不懂的命令进入查看已经安装的内核</span>
+<span class="ln">3</span>egrep ^menuentry /etc/grub2.cfg <span class="p">|</span> cut -f <span class="m">2</span> -d <span class="se">\&#39;</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>0 : CentOS Linux (4.20.2-1.el7.elrepo.x86_64) 7 (Core)
+<span class="ln">2</span>1 : CentOS Linux 7 Rescue 22d9950eefb24f96aca762064cd277d2 (3.10.0-957.1.3.el7.x86_64)
+<span class="ln">3</span>2 : CentOS Linux (3.10.0-957.1.3.el7.x86_64) 7 (Core)
+<span class="ln">4</span>3 : CentOS Linux (3.10.0-693.11.6.el7.x86_64) 7 (Core)
+<span class="ln">5</span>4 : CentOS Linux (3.10.0-693.el7.x86_64) 7 (Core)
+<span class="ln">6</span>5 : CentOS Linux (0-rescue-00a62363617944e08db8db894ba6145e) 7 (Core)
+</code></pre></div><p>我这里已经安装了4.20的内核版本了，还得切换到这个内核</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span><span class="c1">#因为是第0个所以是0</span>
+<span class="ln">2</span>grub2-set-default <span class="m">0</span>
+<span class="ln">3</span><span class="c1">#重启</span>
+<span class="ln">4</span>reboot
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>//查看内核版本
+<span class="ln"> 2</span>uname - r
+<span class="ln"> 3</span>4.20.2-1.el7.elrepo.x86_64
+<span class="ln"> 4</span><span class="c1">#没问题</span>
+<span class="ln"> 5</span>vim /etc/sysctl.conf
+<span class="ln"> 6</span><span class="c1">#最后一行加入</span>
+<span class="ln"> 7</span>net.core.default_qdisc <span class="o">=</span> fq
+<span class="ln"> 8</span>net.ipv4.tcp_congestion_control <span class="o">=</span> bbr
+<span class="ln"> 9</span><span class="c1">#wq</span>
+<span class="ln">10</span>sysctl -p
+<span class="ln">11</span><span class="c1">#net.core.default_qdisc = fq</span>
+<span class="ln">12</span><span class="c1">#net.ipv4.tcp_congestion_control = bbr</span>
+<span class="ln">13</span>sysctl net.ipv4.tcp_available_congestion_control
+<span class="ln">14</span><span class="c1">#net.ipv4.tcp_available_congestion_control = reno cubic bbr</span>
+<span class="ln">15</span>lsmod <span class="p">|</span> grep bbr
+<span class="ln">16</span><span class="c1">#tcp_bbr                20480  1 </span>
+</code></pre></div><p>基本上就成功啦。</p>
 </div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content surface">
@@ -249,19 +328,19 @@ BOOTSTRAP
   </div>
 </div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
   <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
-    <a href="https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/">Glide在共享元素动画时会gif会停止播放
+    <a href="https://helixs.github.io/posts/android/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/">Idea显示kotlin的推断类型
 </a>
   </div><div class="post-nav post-next">
-    <a href="https://helixs.github.io/posts/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/">Java关于判断emoji位数和截取的一些处理
+    <a href="https://helixs.github.io/posts/android/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/">Android布局之ConstraintLayout的一些特性
 </a>
     <i class="fas fa-fw fa-chevron-right"></i>
   </div></div><section class="related-posts-wrapper">
     <h3>相关文章</h3>
-    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/">Glide在共享元素动画时会gif会停止播放
-</a></li><li><a href="https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/">Android Recyclerview点击跳转到viewpager共享元素动画
-</a></li><li><a href="https://helixs.github.io/posts/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/">Git 配置代理 解决访问github等访问过慢的问题
-</a></li><li><a href="https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Centos7 Aria2 安装配置
-</a></li><li><a href="https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/">WordPress&#43;Nginx搭建全过程
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/android/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/">Idea显示kotlin的推断类型
+</a></li><li><a href="https://helixs.github.io/posts/android/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/">Java关于判断emoji位数和截取的一些处理
+</a></li><li><a href="https://helixs.github.io/posts/android/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/">Android项目引入kotlin包冲突问题
+</a></li><li><a href="https://helixs.github.io/posts/android/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/">Android Recyclerview点击跳转到viewpager共享元素动画
+</a></li><li><a href="https://helixs.github.io/posts/linux/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/">Git 配置代理 解决访问github等访问过慢的问题
 </a></li></ul>
   </section></div>
     </article><div class="card component row post-comments">
@@ -279,11 +358,11 @@ BOOTSTRAP
     
     <section class="card row text-center profile component">
   <div class="card-body">
-    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Razon Yang" src="https://helixs.github.io/images/profile.webp" loading="lazy"
-   width="400" height="400"
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
    />
 </div>
-    <div class="col-12 profile-meta"><div class="profile-name">Razon Yang</div><div class="profile-bio">Gopher, PHPer, Full Stack Engineer.</div><div class="profile-company"><i class="fas fa-fw fa-building"></i>Company</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>Earth</div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
   </div>
 </section>
   <section class="featured-posts row card component">

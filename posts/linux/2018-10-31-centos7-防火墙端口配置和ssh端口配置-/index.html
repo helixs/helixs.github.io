@@ -3,26 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Glide在共享元素动画时会gif会停止播放 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+    <title>centos7 防火墙端口配置和SSH端口配置 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
 <link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
 <link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
 <meta name="keywords" content="" />
-<meta name="description" content="" /><meta itemprop="name" content="Glide在共享元素动画时会gif会停止播放">
-<meta itemprop="description" content="在上一篇文章中我们实现了recyclerView到viewpager的转换，用glide加载gif，viewpager中并不能正常播放，把动"><meta itemprop="datePublished" content="2018-12-19T07:29:46+00:00" />
-<meta itemprop="dateModified" content="2018-12-19T07:29:46+00:00" />
-<meta itemprop="wordCount" content="198">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="Glide在共享元素动画时会gif会停止播放" />
-<meta property="og:description" content="在上一篇文章中我们实现了recyclerView到viewpager的转换，用glide加载gif，viewpager中并不能正常播放，把动" />
+<meta name="description" content="" /><meta itemprop="name" content="centos7 防火墙端口配置和SSH端口配置">
+<meta itemprop="description" content="防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld 开机禁用防火墙 1systemctl disable firewalld 开机启用防火墙 1systemctl enable firewalld 开放指定端口 1firewall-cmd --zone=public --add-port=80/tcp --permanent 关闭指定端口 1firewall-cmd --zone=public --remove-port=80/tcp --permanent"><meta itemprop="datePublished" content="2018-10-30T21:36:03+00:00" />
+<meta itemprop="dateModified" content="2018-10-30T21:36:03+00:00" />
+<meta itemprop="wordCount" content="439">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="centos7 防火墙端口配置和SSH端口配置" />
+<meta property="og:description" content="防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld 开机禁用防火墙 1systemctl disable firewalld 开机启用防火墙 1systemctl enable firewalld 开放指定端口 1firewall-cmd --zone=public --add-port=80/tcp --permanent 关闭指定端口 1firewall-cmd --zone=public --remove-port=80/tcp --permanent" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2018-12-19T07:29:46+00:00" />
-<meta property="article:modified_time" content="2018-12-19T07:29:46+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+<meta property="og:url" content="https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-10-30T21:36:03+00:00" />
+<meta property="article:modified_time" content="2018-10-30T21:36:03+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Glide在共享元素动画时会gif会停止播放"/>
-<meta name="twitter:description" content="在上一篇文章中我们实现了recyclerView到viewpager的转换，用glide加载gif，viewpager中并不能正常播放，把动"/>
+<meta name="twitter:title" content="centos7 防火墙端口配置和SSH端口配置"/>
+<meta name="twitter:description" content="防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld 开机禁用防火墙 1systemctl disable firewalld 开机启用防火墙 1systemctl enable firewalld 开放指定端口 1firewall-cmd --zone=public --add-port=80/tcp --permanent 关闭指定端口 1firewall-cmd --zone=public --remove-port=80/tcp --permanent"/>
 <meta name="twitter:site" content="@yourtwitterusername"/>
 <link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
@@ -50,11 +50,11 @@ BOOTSTRAP
   </div>
   <div class="offcanvas-body">
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
-      target="_blank" href="https://twitter.com/intent/tweet?title=Glide%e5%9c%a8%e5%85%b1%e4%ba%ab%e5%85%83%e7%b4%a0%e5%8a%a8%e7%94%bb%e6%97%b6%e4%bc%9agif%e4%bc%9a%e5%81%9c%e6%ad%a2%e6%92%ad%e6%94%be&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2018-12-19-glide%25E5%259C%25A8%25E5%2585%25B1%25E4%25BA%25AB%25E5%2585%2583%25E7%25B4%25A0%25E5%258A%25A8%25E7%2594%25BB%25E6%2597%25B6%25E4%25BC%259Agif%25E4%25BC%259A%25E5%2581%259C%25E6%25AD%25A2%25E6%2592%25AD%25E6%2594%25BE%2f">
+      target="_blank" href="https://twitter.com/intent/tweet?title=centos7%20%e9%98%b2%e7%81%ab%e5%a2%99%e7%ab%af%e5%8f%a3%e9%85%8d%e7%bd%ae%e5%92%8cSSH%e7%ab%af%e5%8f%a3%e9%85%8d%e7%bd%ae&url=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2018-10-31-centos7-%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599%25E7%25AB%25AF%25E5%258F%25A3%25E9%2585%258D%25E7%25BD%25AE%25E5%2592%258Cssh%25E7%25AB%25AF%25E5%258F%25A3%25E9%2585%258D%25E7%25BD%25AE-%2f">
       <i class="fab fa-fw fa-twitter"></i> Twitter
     </a>
     <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
-      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2018-12-19-glide%25E5%259C%25A8%25E5%2585%25B1%25E4%25BA%25AB%25E5%2585%2583%25E7%25B4%25A0%25E5%258A%25A8%25E7%2594%25BB%25E6%2597%25B6%25E4%25BC%259Agif%25E4%25BC%259A%25E5%2581%259C%25E6%25AD%25A2%25E6%2592%25AD%25E6%2594%25BE%2f">
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2018-10-31-centos7-%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599%25E7%25AB%25AF%25E5%258F%25A3%25E9%2585%258D%25E7%25BD%25AE%25E5%2592%258Cssh%25E7%25AB%25AF%25E5%258F%25A3%25E9%2585%258D%25E7%25BD%25AE-%2f">
       <i class="fab fa-fw fa-facebook-f"></i> Facebook
     </a>
   </div>
@@ -188,7 +188,7 @@ BOOTSTRAP
 <div class="col-lg-8">
   <div class="container"><nav class="row card component" aria-label="breadcrumb">
   <div class="card-body">
-    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Glide在共享元素动画时会gif会停止播放</li></ol>
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Centos7 防火墙端口配置和SSH端口配置</li></ol>
   </div>
 </nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
   <div class="d-flex flex-column component rounded post-panel">
@@ -208,19 +208,91 @@ BOOTSTRAP
 ">
   <i class="fas fa-fw fa-copyright"></i>
 </a>
-    
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
     
   </div>
 </div>
 <div class="card-body">
-        <h1 class="card-title my-3">Glide在共享元素动画时会gif会停止播放
+        <h1 class="card-title my-3">Centos7 防火墙端口配置和SSH端口配置
 </h1><div class="post-meta"><span class="post-date" title="created on">
-    <i class="fas fa-fw fa-calendar-alt"></i>2018-12-19
+    <i class="fas fa-fw fa-calendar-alt"></i>2018-10-30
   </span><span class="post-reading-time" title="reading time">
     <i class="fas fa-fw fa-coffee"></i>1 分钟阅读
-  </span><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge rounded-pill text-white bg-primary post-taxonomy">未分类</a></div>
-<div class="post-content mb-3"><p>在<!-- raw HTML omitted -->上一篇<!-- raw HTML omitted -->文章中我们实现了recyclerView到viewpager的转换，用glide加载gif，viewpager中并不能正常播放，把动画关了就可以，初步猜想是因为，我们在viewpager的istantiateItem中用glide直接去into了，此时共享元素动画是处于暂停状态，所以我们的gif也被迫暂停，当然我这只是猜想。可以等viewpager加载完成之后再into，或者延迟加载。</p>
-</div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  </span><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge rounded-pill text-white bg-primary post-taxonomy">linux常用配置</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#防火墙">防火墙</a></li>
+        <li><a href="#ssh">SSH</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><h3 id="防火墙">防火墙</h3>
+<p>启动防火墙</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span> systemctl start firewalld
+</code></pre></div><p>关闭防火墙</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>systemctl stop firewalld
+</code></pre></div><p>查看防火墙状态</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>systemctl status firewalld
+</code></pre></div><p>开机禁用防火墙</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>systemctl disable firewalld
+</code></pre></div><p>开机启用防火墙</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>systemctl <span class="nb">enable</span> firewalld
+</code></pre></div><p>开放指定端口  </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">=</span>80/tcp --permanent
+</code></pre></div><p>关闭指定端口</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>firewall-cmd --zone<span class="o">=</span>public --remove-port<span class="o">=</span>80/tcp --permanent
+</code></pre></div><p>重启防火墙 </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>firewall-cmd --reload
+</code></pre></div><p><code>–zone</code>  作用域</p>
+<p><code>–add-port=80/tcp</code>  添加端口，格式为：端口/通讯协议</p>
+<p><code>–permanent</code>  永久生效，没有此参数重启后失效</p>
+<p>查看防火墙规则 </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>firewall-cmd --list-all
+</code></pre></div><p>查看开放端口</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>firewall-cmd --list-ports
+</code></pre></div><hr>
+<h3 id="ssh">SSH</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>vim /etc/ssh/sshd_config
+</code></pre></div><p>找到下面 <code>Port</code> 大部分默认端口为<code>22</code> 改成你想要的端口如 <code>1234</code></p>
+<p>保存
+<code>:wq</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>systemctl restart sshd
+</code></pre></div><p>部分云机器上会出现下面这种错误</p>
+<p><code>Job for sshd.service failed because the control process exited with error code. See &quot;systemctl status sshd.service&quot; and &quot;journalctl -xe&quot; for details.</code></p>
+<p>执行</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>journalctl -xe
+</code></pre></div><p>可能会出现 <code>error: Bind to port 1234 on 0.0.0.0 failed: Permission denied. May 29 11:06:10 MyCloudServer sshd[8742]: error: Bind to port 1234 on :: failed: Permission denied.</code></p>
+<p>搜了一下是selinux安全策略搞鬼，可能是限制了ssh的端口号</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>semanage port -l <span class="p">|</span> grep ssh
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>#得到了限制的ssh端口号是22 果然没错
+<span class="ln">2</span>ssh_port_t      tcp    22
+</code></pre></div><p>将端口号添加到selinux规则里面</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>semanage port -a -t ssh_port_t -p tcp <span class="m">1234</span>
+<span class="ln">2</span>semanage port -l <span class="p">|</span> grep ssh
+</code></pre></div><p><code>ssh_port_t                     tcp      1234, 22</code></p>
+<p>重启sshd</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>systemctl restart sshd
+</code></pre></div><p>看看是不是成功了呢。</p>
+<p>如果找不到semanager执行下面后，在进行上面的操作</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>yum provides semanage
+<span class="ln">2</span>yum install policycoreutils-python.x86_64
+<span class="ln">3</span><span class="c1">#查询selinux是否是enable的状态</span>
+<span class="ln">4</span>/usr/sbin/sestatus -v 
+</code></pre></div></div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content surface">
       <div class="modal-header">
@@ -247,19 +319,15 @@ BOOTSTRAP
   </div>
 </div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
   <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
-    <a href="https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/">Android Recyclerview点击跳转到viewpager共享元素动画
+    <a href="https://helixs.github.io/contact/">联系我们
 </a>
   </div><div class="post-nav post-next">
-    <a href="https://helixs.github.io/posts/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/">Android项目引入kotlin包冲突问题
+    <a href="https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/">WordPress&#43;Nginx搭建全过程
 </a>
     <i class="fas fa-fw fa-chevron-right"></i>
   </div></div><section class="related-posts-wrapper">
     <h3>相关文章</h3>
-    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/">Android Recyclerview点击跳转到viewpager共享元素动画
-</a></li><li><a href="https://helixs.github.io/posts/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/">Git 配置代理 解决访问github等访问过慢的问题
-</a></li><li><a href="https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Centos7 Aria2 安装配置
-</a></li><li><a href="https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/">WordPress&#43;Nginx搭建全过程
-</a></li><li><a href="https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/">Centos7 防火墙端口配置和SSH端口配置
+    <ul class="related-posts"><li><a href="https://helixs.github.io/contact/">联系我们
 </a></li></ul>
   </section></div>
     </article><div class="card component row post-comments">
@@ -277,11 +345,11 @@ BOOTSTRAP
     
     <section class="card row text-center profile component">
   <div class="card-body">
-    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Razon Yang" src="https://helixs.github.io/images/profile.webp" loading="lazy"
-   width="400" height="400"
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
    />
 </div>
-    <div class="col-12 profile-meta"><div class="profile-name">Razon Yang</div><div class="profile-bio">Gopher, PHPer, Full Stack Engineer.</div><div class="profile-company"><i class="fas fa-fw fa-building"></i>Company</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>Earth</div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
   </div>
 </section>
   <section class="featured-posts row card component">

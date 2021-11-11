@@ -558,101 +558,92 @@
     
     <item>
       <title>android布局之ConstraintLayout的一些特性</title>
-      <link>https://helixs.github.io/posts/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/</link>
+      <link>https://helixs.github.io/posts/android/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/</link>
       <pubDate>Tue, 22 Jan 2019 08:43:57 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/</guid>
-      <description>前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。 &amp;lt;ol&amp;gt; &amp;lt;li&amp;gt; 解决复杂布</description>
+      <guid>https://helixs.github.io/posts/android/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/</guid>
+      <description>前前后后google不知道每年推出N中新东西，每次看了看就忘记了，还是回忆一下ConstraintLayout这个约束布局了。 布局在2016</description>
     </item>
     
     <item>
       <title>centos开启bbr</title>
-      <link>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</link>
+      <link>https://helixs.github.io/posts/linux/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</link>
       <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</guid>
-      <description>TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接的效果。 Goo</description>
+      <guid>https://helixs.github.io/posts/linux/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</guid>
+      <description>什么是BBR： TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接</description>
     </item>
     
     <item>
       <title>idea显示kotlin的推断类型</title>
-      <link>https://helixs.github.io/posts/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/</link>
+      <link>https://helixs.github.io/posts/android/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/</link>
       <pubDate>Tue, 15 Jan 2019 07:58:09 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/</guid>
+      <guid>https://helixs.github.io/posts/android/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/</guid>
       <description>我们使用idea写kotlin代码的时候有很多类型都是自己判断了，不用像java一样强制定义类型，可是当我们写了一个变量或者赋值变量的时候能</description>
     </item>
     
     <item>
       <title>java关于判断emoji位数和截取的一些处理</title>
-      <link>https://helixs.github.io/posts/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/</link>
+      <link>https://helixs.github.io/posts/android/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/</link>
       <pubDate>Mon, 14 Jan 2019 08:18:11 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/</guid>
-      <description>今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了 结果测试</description>
+      <guid>https://helixs.github.io/posts/android/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/</guid>
+      <description>今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了 1public static String getDisplay(String</description>
     </item>
     
     <item>
       <title>android项目引入kotlin包冲突问题</title>
-      <link>https://helixs.github.io/posts/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/</link>
+      <link>https://helixs.github.io/posts/android/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/</link>
       <pubDate>Wed, 26 Dec 2018 08:46:59 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://helixs.github.io/posts/android/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/</guid>
       <description>今天在android项目中导入了kotlin的支持，可是怎么运行也运行不起来 Program type already present: javax.annotation.CheckReturnValue 等等 包冲突了，检查不同的library的版本，然后清空</description>
     </item>
     
     <item>
-      <title>Glide在共享元素动画时会gif会停止播放</title>
-      <link>https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/</link>
-      <pubDate>Wed, 19 Dec 2018 07:29:46 +0000</pubDate>
-      
-      <guid>https://helixs.github.io/posts/2018-12-19-glide%E5%9C%A8%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB%E6%97%B6%E4%BC%9Agif%E4%BC%9A%E5%81%9C%E6%AD%A2%E6%92%AD%E6%94%BE/</guid>
-      <description>在上一篇文章中我们实现了recyclerView到viewpager的转换，用glide加载gif，viewpager中并不能正常播放，把动</description>
-    </item>
-    
-    <item>
       <title>android recyclerview点击跳转到viewpager共享元素动画</title>
-      <link>https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/</link>
+      <link>https://helixs.github.io/posts/android/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/</link>
       <pubDate>Tue, 11 Dec 2018 06:35:19 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/</guid>
+      <guid>https://helixs.github.io/posts/android/2018-12-11-android-recyclerview%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC%E5%88%B0viewpager%E5%85%B1%E4%BA%AB%E5%85%83%E7%B4%A0%E5%8A%A8%E7%94%BB/</guid>
       <description>今天做项目的时候用到了Transition动画。也就是android5.0中出现的。基本的使用方式我们都知道是用TransitionName</description>
     </item>
     
     <item>
       <title>git 配置代理 解决访问github等访问过慢的问题</title>
-      <link>https://helixs.github.io/posts/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <link>https://helixs.github.io/posts/linux/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/</link>
       <pubDate>Fri, 30 Nov 2018 06:52:25 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://helixs.github.io/posts/linux/2018-11-30-git-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86-%E8%A7%A3%E5%86%B3%E8%AE%BF%E9%97%AEgithub%E7%AD%89%E8%AE%BF%E9%97%AE%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
       <description>最近不知道怎么的从git上下来代码好慢，访问github没啥问题，找了一下原来是http://github.global.ssl.fastl</description>
     </item>
     
     <item>
       <title>centos7 aria2 安装配置</title>
-      <link>https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</link>
+      <link>https://helixs.github.io/posts/linux/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</link>
       <pubDate>Wed, 21 Nov 2018 07:45:05 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</guid>
-      <description>下载并编译aria2 最新版本新建aria2.conf配置文件 vi /etc/aria2/aria2.conf 测试 配置www权限：&amp;lt;span class=&amp;ldquo;hljs-attribute&amp;rdquo;&amp;gt;vi&amp;lt;/span&amp;gt; /etc/sudoers按“i”进入编</description>
+      <guid>https://helixs.github.io/posts/linux/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</guid>
+      <description>下载并编译aria2 最新版本 1wget https://github.com/aria2/aria2/releases/download/release-1.34.0/aria2-1.34.0.tar.gz 2tar -zxvf aria2-1.34.0.tar.gz 3cd aria2-1.34.0 4 #安装GNU编译器套件 5yum install gcc* 6./configure 7make 8make install 9cd src 10cd src cp aria2c /usr/bin 新建aria2.conf配置文件 1vim /etc/aria2/aria2.conf 1# 文件的保</description>
     </item>
     
     <item>
       <title>WordPress&#43;Nginx搭建全过程</title>
-      <link>https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/</link>
+      <link>https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/</link>
       <pubDate>Mon, 12 Nov 2018 10:24:15 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/</guid>
-      <description>最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价(PS：国内环境太差了，1M</description>
+      <guid>https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/</guid>
+      <description>最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M</description>
     </item>
     
     <item>
       <title>centos7 防火墙端口配置和SSH端口配置</title>
-      <link>https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</link>
+      <link>https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</link>
       <pubDate>Tue, 30 Oct 2018 21:36:03 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</guid>
-      <description>防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld CRLF will be replaced by LF in blog/content/posts/2018-11-21-ari</description>
+      <guid>https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</guid>
+      <description>防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld 开机禁用防火墙 1systemctl disable firewalld 开机启用防火墙 1systemctl enable firewalld 开放指定端口 1firewall-cmd --zone=public --add-port=80/tcp --permanent 关闭指定端口 1firewall-cmd --zone=public --remove-port=80/tcp --permanent</description>
     </item>
     
     <item>

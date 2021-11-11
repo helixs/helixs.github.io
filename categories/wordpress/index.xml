@@ -9,11 +9,11 @@
     <lastBuildDate>Mon, 12 Nov 2018 10:24:15 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/wordpress/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>WordPress&#43;Nginx搭建全过程</title>
-      <link>https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/</link>
+      <link>https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/</link>
       <pubDate>Mon, 12 Nov 2018 10:24:15 +0000</pubDate>
       
-      <guid>https://helixs.github.io/posts/2018-11-12-wordpressnginx%E6%90%AD%E5%BB%BA/</guid>
-      <description>最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价(PS：国内环境太差了，1M</description>
+      <guid>https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/</guid>
+      <description>最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M</description>
     </item>
     
   </channel>
