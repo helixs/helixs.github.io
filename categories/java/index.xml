@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>java on Hugo Bootstrap</title>
+    <link>https://helixs.github.io/categories/java/</link>
+    <description>Recent content in java on Hugo Bootstrap</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} Helixs. All Rights Reserved.</copyright>
+    <lastBuildDate>Fri, 27 Sep 2019 06:30:21 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue</title>
+      <link>https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</link>
+      <pubDate>Fri, 27 Sep 2019 06:30:21 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/</guid>
+      <description>作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯</description>
+    </item>
+    
+  </channel>
+</rss>

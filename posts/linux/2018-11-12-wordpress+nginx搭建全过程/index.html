@@ -1,0 +1,598 @@
+<!doctype html><html lang="zh-cn"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WordPress&#43;Nginx搭建全过程 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="WordPress&#43;Nginx搭建全过程">
+<meta itemprop="description" content="最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M"><meta itemprop="datePublished" content="2018-11-12T10:24:15+00:00" />
+<meta itemprop="dateModified" content="2018-11-12T10:24:15+00:00" />
+<meta itemprop="wordCount" content="2566">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="WordPress&#43;Nginx搭建全过程" />
+<meta property="og:description" content="最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/linux/2018-11-12-wordpress&#43;nginx%E6%90%AD%E5%BB%BA%E5%85%A8%E8%BF%87%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-11-12T10:24:15+00:00" />
+<meta property="article:modified_time" content="2018-11-12T10:24:15+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="WordPress&#43;Nginx搭建全过程"/>
+<meta name="twitter:description" content="最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价 (PS：国内环境太差了，1M"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=WordPress%2bNginx%e6%90%ad%e5%bb%ba%e5%85%a8%e8%bf%87%e7%a8%8b&url=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2018-11-12-wordpress%2bnginx%25E6%2590%25AD%25E5%25BB%25BA%25E5%2585%25A8%25E8%25BF%2587%25E7%25A8%258B%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2flinux%2f2018-11-12-wordpress%2bnginx%25E6%2590%25AD%25E5%25BB%25BA%25E5%2585%25A8%25E8%25BF%2587%25E7%25A8%258B%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">设置</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="棕色"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="青色"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="绿色"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="橙色"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="粉色"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="紫色"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="红色"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="https://helixs.github.io/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">WordPress&#43;Nginx搭建全过程</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">WordPress&#43;Nginx搭建全过程
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2018-11-12
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>6 分钟阅读
+  </span><a href="https://helixs.github.io/categories/wordpress/" class="badge rounded-pill text-white bg-primary post-taxonomy">wordpress</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1安装php-7x">1、安装php 7.x</a></li>
+        <li><a href="#2安装数据库">2、安装数据库</a></li>
+        <li><a href="#3配置wordpressnginxphp-fpm">3、配置wordpress+nginx+php-fpm</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><p>最近在学习linux基础，打算搭个blog做个笔记。因为练手的需要，在瓦工上租借了一年的VPS，毕竟是双十一特价</p>
+<blockquote>
+<p>(PS：国内环境太差了，1Mbps还贵的不行，还要传身份证备案，当初在百度云和华为云注册了一下，隔三差五给我来个电话，发营销短信，我也是受不了了。虽然我不是做WF的事情，国内的隐私已经不是隐私了)。</p>
+</blockquote>
+<hr>
+<p>我装的系统是centos7，vps内存就那么点，就打算使用nginx替代apache了。又得知nginx主要是用来处理静态网页比较给力，对用php开发的wordpress是天生的不支持。所以就要通过nginx将php的动态请求转发到php-fpm解析器，处理完成后再通过nginx回馈给client，大概就是这个过程。</p>
+<p>看看<a href="https://wordpress.org/download/" target="_blank" rel="noopener noreferrer">wordpress官网</a>
+的最新版本，我下载的是4.9.8版本。然后开看看这个版本的<a href="https://wordpress.org/about/requirements/" target="_blank" rel="noopener noreferrer">最低环境要求</a>
+:</p>
+<ul>
+<li><a href="http://www.php.net/" target="_blank" rel="noopener noreferrer">PHP</a>
+ 7.2或更高版本。</li>
+<li><a href="https://www.mysql.com/" target="_blank" rel="noopener noreferrer">MySQL</a>
+ 5.6或更高版本_或_ <a href="https://mariadb.org/" target="_blank" rel="noopener noreferrer">MariaDB</a>
+版本10.0或更高版本(内存怪兽)。</li>
+<li><a href="https://wordpress.org/news/2016/12/moving-toward-ssl/" target="_blank" rel="noopener noreferrer">HTTPS</a>
+支持(这个看自己需求了)</li>
+</ul>
+<h3 id="1安装php-7x">1、安装php 7.x</h3>
+<p>安装phpCentos7仓库默认的版本还是php5.6，所有我们要找到php的最新源。 删除老的php版本</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ yum remove php*
+<span class="ln"> 2</span>CentOS/RHEL 7.x:
+<span class="ln"> 3</span>$ rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+<span class="ln"> 4</span>$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+<span class="ln"> 5</span>$ yum install php70w
+<span class="ln"> 6</span>$ yum install php70w php70w-fpm php70w-bcmath php70w-gd php70w-mbstring php70w-mcrypt php70w-mysql
+<span class="ln"> 7</span>...
+<span class="ln"> 8</span>软件包：php70w-mcrypt-7.0.32-1.w7.x86_64 <span class="o">(</span>webtatic<span class="o">)</span>
+<span class="ln"> 9</span>需要：libmcrypt.so.4<span class="o">()(</span>64bit<span class="o">)</span>
+<span class="ln">10</span>...
+</code></pre></div><p>突然mcrypt属啥玩意儿不关，主要是libmcrypt.so.4()(64bit)这个玩意儿应该就是本机缺少了这个函数库了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ yum install libmcrypt libmcrypt-devel
+<span class="ln"> 2</span>没有可用软件包 libmcrypt libmcrypt-devel。
+<span class="ln"> 3</span>
+<span class="ln"> 4</span><span class="c1">#搜索一下：基本都是复制粘贴一个东西：来安装epel源</span>
+<span class="ln"> 5</span>$ yum -y install epel-release
+<span class="ln"> 6</span>Loading mirror speeds from cached hostfile
+<span class="ln"> 7</span>* base: mirror.fileplanet.com
+<span class="ln"> 8</span>* elrepo-kernel: repos.lax-noc.com
+<span class="ln"> 9</span>* extras: mirror.fileplanet.com
+<span class="ln">10</span>* updates: mirror.fileplanet.com
+<span class="ln">11</span>* webtatic: us-east.repo.webtatic.com
+<span class="ln">12</span>软件包 epel-release-7-11.noarch 已安装并且是最新版本
+<span class="ln">13</span>无须任何处理
+</code></pre></div><p>WTF，怎么这样。再搜索都是一样的爬虫复制粘贴结果。都是指向的
+<a href="http://mirrors.hust.edu.cn/" target="_blank" rel="noopener noreferrer">华中科技大学开源镜像站</a>
+
+网上基本都是找的5.x的源，然后翻翻翻找了epel-release-latest.rpm源</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ wget http://mirrors.hust.edu.cn/epel/epel-release-latest-7.noarch.rpm
+<span class="ln"> 2</span>$ rpm -ivh epel-release-latest-7.noarch.rpm
+<span class="ln"> 3</span>$ yum update
+<span class="ln"> 4</span>$ yum install epel-release
+<span class="ln"> 5</span><span class="c1">#MMP:软件包 epel-release-7-11.noarch 已安装并且是最新版本</span>
+<span class="ln"> 6</span><span class="c1">#怪事，可能是我新手吧，不懂这些依赖关系，干脆卸载重装</span>
+<span class="ln"> 7</span>$ yum remove epel-release
+<span class="ln"> 8</span>$ yum install epel-release
+<span class="ln"> 9</span><span class="c1">#再来</span>
+<span class="ln">10</span>$ yum install libmcrypt libmcrypt-devel
+<span class="ln">11</span><span class="c1">#靠居然可以了。</span>
+<span class="ln">12</span>$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+<span class="ln">13</span>$ yum install php70w php70w-fpm php70w-bcmath php70w-gd php70w-mbstring php70w-mcrypt php70w-mysql
+</code></pre></div><p>php组件基本安装完成。</p>
+<h3 id="2安装数据库">2、安装数据库</h3>
+<p>我选择<a href="https://mariadb.org/" target="_blank" rel="noopener noreferrer">MariaDB</a>
+和MySql差不多的用法。和php一样。MariaDB在centos7中的默认源是与MySql(5.5)一致的5.5版本，看来我们又要添加新的源了。 MariaDB做的很好，很方便的把源信息分享出来，我们选择centos7(x86_64)的版本。 新建文件MariaDB.repo或者相似的，放入/etc/yum.repos.d/下面。然后使用vi粘贴源信息，如下面</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-vim" data-lang="vim"><span class="ln">1</span># <span class="nx">MariaDB</span> <span class="m">10</span>.<span class="m">1</span> <span class="nx">CentOS</span> <span class="nx">repository</span> <span class="nx">list</span> – <span class="nx">created</span> <span class="m">2018-11-12</span> <span class="m">10</span>:<span class="m">07</span> <span class="nx">UTC</span><span class="err">
+</span><span class="ln">2</span><span class="err"></span># <span class="nx">http</span>:<span class="sr">//</span><span class="nx">downloads</span>.<span class="nx">mariadb</span>.<span class="nx">org</span><span class="sr">/mariadb/</span><span class="nx">repositories</span>/<span class="err">
+</span><span class="ln">3</span><span class="err"></span>[<span class="nx">mariadb</span>] <span class="nx">name</span> <span class="p">=</span> <span class="nx">MariaDB</span><span class="err">
+</span><span class="ln">4</span><span class="err"></span><span class="nx">baseurl</span> <span class="p">=</span> <span class="nx">http</span>:<span class="sr">//</span><span class="nx">yum</span>.<span class="nx">mariadb</span>.<span class="nx">org</span><span class="sr">/10.1/</span><span class="nx">centos7</span><span class="p">-</span><span class="nx">amd64</span><span class="err">
+</span><span class="ln">5</span><span class="err"></span><span class="nx">gpgkey</span><span class="p">=</span><span class="nx">https</span>:<span class="sr">//</span><span class="nx">yum</span>.<span class="nx">mariadb</span>.<span class="nx">org</span>/<span class="nx">RPM</span><span class="p">-</span><span class="nx">GPG</span><span class="p">-</span><span class="nx">KEY</span><span class="p">-</span><span class="nx">MariaDB</span><span class="err">
+</span><span class="ln">6</span><span class="err"></span><span class="nx">gpgcheck</span><span class="p">=</span><span class="m">1</span><span class="err">
+</span></code></pre></div><p>修改完成后</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>$ yum install MariaDB-server MariaDB-client
+<span class="ln">2</span>$ systemctl start mariadb
+</code></pre></div><p><strong>设置数据库</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>$ mysql<span class="se">\_</span>secure<span class="se">\_</span>installation  
+<span class="ln"> 2</span><span class="c1"># Enter current password for root (enter for none): 输入当前的root密码(默认空)，直接回车</span>
+<span class="ln"> 3</span><span class="c1"># Set root password? [Y/n] 设置新密码，y</span>
+<span class="ln"> 4</span><span class="c1"># Remove anonymous users? [Y/n] 移除匿名用户，y</span>
+<span class="ln"> 5</span><span class="c1"># Disallow root login remotely? [Y/n] 禁止root用户远程登录，y</span>
+<span class="ln"> 6</span><span class="c1"># Remove test database and access to it? [Y/n] 移除测试数据库，y</span>
+<span class="ln"> 7</span><span class="c1"># Reload privilege tables now? [Y/n] y</span>
+<span class="ln"> 8</span>$ mysql -u ‘数据库用户’ -p
+<span class="ln"> 9</span><span class="c1">#因为是我用的是root所以就填的root了，然后输入数据库用户的密码就是你刚才设置的</span>
+<span class="ln">10</span>$ CREATE DATABASE wordpress <span class="o">(</span>名字随意，初始化进入wordpress的时候是要选择这个的<span class="o">)</span>
+<span class="ln">11</span>$ <span class="nb">exit</span>
+</code></pre></div><p>这样我们的数据库配置基本上就完成了</p>
+<h3 id="3配置wordpressnginxphp-fpm">3、配置wordpress+nginx+php-fpm</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>$ yum install nginx
+<span class="ln">2</span><span class="c1">#(版本自己选择)</span>
+<span class="ln">3</span>$ weget https://wordpress.org/latest.zip 
+<span class="ln">4</span>$ unzip wordpress-xxxxx.zip 
+<span class="ln">5</span>$ mv wordpress/* /usr/share/nginx/html/
+<span class="ln">6</span><span class="c1">#我放的是默认的nginx的html目录，其他的可以自己行放入</span>
+<span class="ln">7</span><span class="c1">#配置nginx </span>
+<span class="ln">8</span><span class="nv">$vi</span> /etc/nginx/nginx.conf
+</code></pre></div><p><strong>配置nginx</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-vim" data-lang="vim"><span class="ln"> 1</span><span class="nx">server</span>{<span class="err">
+</span><span class="ln"> 2</span><span class="err"></span>   <span class="nx">listen</span>       <span class="m">80</span> <span class="nx">default_server</span>;<span class="err">
+</span><span class="ln"> 3</span><span class="err"></span>   <span class="nx">listen</span>       [::]:<span class="m">80</span> <span class="nx">default_server</span>;<span class="err">
+</span><span class="ln"> 4</span><span class="err"></span>   <span class="nx">server_name</span>  <span class="nx">_</span>;<span class="err">
+</span><span class="ln"> 5</span><span class="err"></span>   <span class="nx">root</span>         <span class="sr">/usr/</span><span class="nx">share</span><span class="sr">/nginx/</span><span class="nx">html</span><span class="err">
+</span><span class="ln"> 6</span><span class="err"></span>   <span class="nx">index</span> <span class="nx">index</span>.<span class="nx">php</span> <span class="nx">index</span>.<span class="nx">html</span> <span class="nx">index</span>.<span class="nx">htm</span>;<span class="err">
+</span><span class="ln"> 7</span><span class="err"></span>   # <span class="nx">Load</span> <span class="nx">configuration</span> <span class="nx">files</span> <span class="nx">for</span> <span class="nx">the</span> <span class="nx">default</span> <span class="nx">server</span> <span class="nx">block</span>.<span class="err">
+</span><span class="ln"> 8</span><span class="err"></span>   <span class="nx">include</span> <span class="sr">/etc/</span><span class="nx">nginx</span><span class="sr">/default.d/</span>*.<span class="nx">conf</span>;<span class="err">
+</span><span class="ln"> 9</span><span class="err"></span>   <span class="nx">location</span> <span class="p">~</span> \.<span class="nx">php</span>$ {<span class="err">
+</span><span class="ln">10</span><span class="err"></span>      <span class="nx">try_files</span> $<span class="nx">uri</span> <span class="p">=</span><span class="m">404</span>;<span class="err">
+</span><span class="ln">11</span><span class="err"></span>      <span class="nx">fastcgi_pass</span> <span class="m">127</span>.<span class="m">0</span>.<span class="m">0</span>.<span class="m">1</span>:<span class="m">9000</span>;#<span class="nx">主要是这个是php</span><span class="p">-</span><span class="nx">fpm的默认端口地址</span><span class="err">
+</span><span class="ln">12</span><span class="err"></span>      <span class="nx">fastcgi_index</span> <span class="nx">index</span>.<span class="nx">php</span>;<span class="err">
+</span><span class="ln">13</span><span class="err"></span>      <span class="nx">fastcgi_param</span> <span class="nx">SCRIPT_FILENAME</span> $<span class="nx">document_root</span>$<span class="nx">fastcgi_script_name</span>;<span class="err">
+</span><span class="ln">14</span><span class="err"></span>      <span class="nx">include</span> <span class="nx">fastcgi_params</span>;<span class="err">
+</span><span class="ln">15</span><span class="err"></span>   }<span class="err">
+</span><span class="ln">16</span><span class="err"></span>}<span class="err">
+</span></code></pre></div><p>wq保存</p>
+<p><strong>配置php-fpm</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln"> 1</span>
+<span class="ln"> 2</span>$ <span class="nb">cd</span> /etc/php-fpm.d/
+<span class="ln"> 3</span>$ vi www.conf
+<span class="ln"> 4</span><span class="c1">#我们找到user和group，默认是apache，所以我们改成nginx，以及lisen就用默认的</span>
+<span class="ln"> 5</span>:wq
+<span class="ln"> 6</span>$ systemctl restart php-fpm
+<span class="ln"> 7</span>$ systemctl restart nginx
+<span class="ln"> 8</span><span class="c1">#如果都成功了我们就打开浏览器输入ip回车，没啥问题的话我们就可以看到wordpress的初始化配置，其主要的就是配置数据库，数据库名称就是我们刚才建立的数据库名称wordpress,用户名和密码是数据库的用户名和密码，我这里用的是root密码就是自己设置的密码。</span>
+<span class="ln"> 9</span><span class="c1">#如果出问题请检查数据库名称是否创建，数据库名称对应是否正确，用户名密码是否正确。</span>
+<span class="ln">10</span><span class="c1">#一切就绪之后我们创建了管理员账号和密码就一切OK了。</span>
+<span class="ln">11</span><span class="c1">#玩几下的时候发现更换出题或者写入文件的时候</span>
+<span class="ln">12</span><span class="c1">#wordpress 需要访问您网页服务器的权限。 请输入您的 FTP 登录XXXX</span>
+<span class="ln">13</span><span class="c1">#晕，怎么会这样，不会真的还要我创建ftp服务吧。不行google一下</span>
+<span class="ln">14</span>清一色的
+<span class="ln">15</span><span class="c1">#1、chmod-R777</span>
+<span class="ln">16</span><span class="c1">#2、wp-config.php里加入下面代码:</span>
+<span class="ln">17</span><span class="c1">#   define(“FS_METHOD”, “direct”);</span>
+<span class="ln">18</span><span class="c1">#   define(“FS_CHMOD_DIR”, 0777);</span>
+<span class="ln">19</span><span class="c1">#   define(“FS_CHMOD_FILE”, 0777);</span>
+<span class="ln">20</span><span class="c1">#才不行，想一下，wordpress没有写入权限，就说明wordpress网站目录的所有者不给予运行wordpress的php-fpm权限。</span>
+<span class="ln">21</span>$ ll /usr/share/nginx/html/
+<span class="ln">22</span><span class="c1">#目录的所有者是root，因为对linux的权限不是很清楚，所以我以为既然启动的nginx的用户是root，启动php-fpm的用户也是root，不会出现这个问题啊。那么我们还是查看进程吧</span>
+<span class="ln">23</span>$ ps aux<span class="p">|</span>grep nginx
+<span class="ln">24</span>$ ps aux<span class="p">|</span>grep php-fpm
+<span class="ln">25</span><span class="c1">#他们的主进程用户的确是root</span>
+<span class="ln">26</span><span class="c1">#然后发现php-fpm子进程中多了很多的nginx用户，对了。我们不是在www.conf中指定用户和用户组是nginx吗，那么网站的目录的所有者是root，nginx用户子进程的确是写入root用户的目录的，所以我们把目录所有者指定给nginx</span>
+<span class="ln">27</span>$ chown -R nginx /usr/share/nginx/html
+<span class="ln">28</span><span class="c1">#对我一个小白来说一个wordpress网站基本就搭完成了。</span>
+</code></pre></div><p>对我一个小白来说一个wordpress网站基本就搭完成了。</p>
+<p>感谢 <a href="https://blog.csdn.net/notebook034/article/details/51584993" target="_blank" rel="noopener noreferrer">https://blog.csdn.net/notebook034/article/details/51584993</a>
+</p>
+</div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/">Centos7 防火墙端口配置和SSH端口配置
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/linux/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Centos7 Aria2 安装配置
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/">Centos7 防火墙端口配置和SSH端口配置
+</a></li><li><a href="https://helixs.github.io/contact/">联系我们
+</a></li></ul>
+  </section></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="card row text-center profile component">
+  <div class="card-body">
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="https://helixs.github.io/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">分类</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="badge bg-primary text-white rounded post-taxonomy" title="数据库">
+            数据库
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/series">专栏</a>
+        </h2>
+        <div><a href="https://helixs.github.io/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">标签</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="https://helixs.github.io/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 Helixs. All Rights Reserved.
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

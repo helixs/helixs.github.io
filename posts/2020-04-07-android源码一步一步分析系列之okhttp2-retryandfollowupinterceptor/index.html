@@ -1,0 +1,789 @@
+<!doctype html><html lang="zh-cn"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor">
+<meta itemprop="description" content="可以看一下上一篇文章 Android源码一步一步分析系列之OkHttp(1)——揭开面纱 RetryAndFollowUpInterceptor"><meta itemprop="datePublished" content="2020-04-07T05:38:46+00:00" />
+<meta itemprop="dateModified" content="2020-04-07T05:38:46+00:00" />
+<meta itemprop="wordCount" content="2757">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor" />
+<meta property="og:description" content="可以看一下上一篇文章 Android源码一步一步分析系列之OkHttp(1)——揭开面纱 RetryAndFollowUpInterceptor" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp2-retryandfollowupinterceptor/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-07T05:38:46+00:00" />
+<meta property="article:modified_time" content="2020-04-07T05:38:46+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor"/>
+<meta name="twitter:description" content="可以看一下上一篇文章 Android源码一步一步分析系列之OkHttp(1)——揭开面纱 RetryAndFollowUpInterceptor"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=Android%e6%ba%90%e7%a0%81%e4%b8%80%e6%ad%a5%e4%b8%80%e6%ad%a5%e5%88%86%e6%9e%90%e7%b3%bb%e5%88%97%e4%b9%8bOkHttp%282%29%e2%80%94%e2%80%94RetryAndFollowUpInterceptor&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-07-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp2-retryandfollowupinterceptor%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-07-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp2-retryandfollowupinterceptor%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">设置</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="棕色"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="青色"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="绿色"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="橙色"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="粉色"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="紫色"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="红色"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="https://helixs.github.io/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2020-04-07
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>6 分钟阅读
+  </span><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge rounded-pill text-white bg-primary post-taxonomy">源码分析</a></div>
+<div class="post-content mb-3"><p>可以看一下上一篇文章</p>
+<p><a href="https://xmcf.me/?p=451" target="_blank" rel="noopener noreferrer">Android源码一步一步分析系列之OkHttp(1)——揭开面纱</a>
+</p>
+<p>RetryAndFollowUpInterceptor拦截器是满足一定条件下用来处理失败重试和重定向的一些操作。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln">  1</span><span class="cm">/*
+</span><span class="ln">  2</span><span class="cm"> * Copyright (C) 2016 Square, Inc.
+</span><span class="ln">  3</span><span class="cm"> *
+</span><span class="ln">  4</span><span class="cm"> * Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+</span><span class="ln">  5</span><span class="cm"> * you may not use this file except in compliance with the License.
+</span><span class="ln">  6</span><span class="cm"> * You may obtain a copy of the License at
+</span><span class="ln">  7</span><span class="cm"> *
+</span><span class="ln">  8</span><span class="cm"> *      http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ln">  9</span><span class="cm"> *
+</span><span class="ln"> 10</span><span class="cm"> * Unless required by applicable law or agreed to in writing, software
+</span><span class="ln"> 11</span><span class="cm"> * distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+</span><span class="ln"> 12</span><span class="cm"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ln"> 13</span><span class="cm"> * See the License for the specific language governing permissions and
+</span><span class="ln"> 14</span><span class="cm"> * limitations under the License.
+</span><span class="ln"> 15</span><span class="cm"> */</span>
+<span class="ln"> 16</span><span class="kn">package</span> <span class="nn">com.rta.rts.login.ui</span><span class="o">;</span>
+<span class="ln"> 17</span><span class="kn">import</span> <span class="nn">java.io.FileNotFoundException</span><span class="o">;</span>
+<span class="ln"> 18</span><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="ln"> 19</span><span class="kn">import</span> <span class="nn">java.io.InterruptedIOException</span><span class="o">;</span>
+<span class="ln"> 20</span><span class="kn">import</span> <span class="nn">java.net.ProtocolException</span><span class="o">;</span>
+<span class="ln"> 21</span><span class="kn">import</span> <span class="nn">java.net.Proxy</span><span class="o">;</span>
+<span class="ln"> 22</span><span class="kn">import</span> <span class="nn">java.net.SocketTimeoutException</span><span class="o">;</span>
+<span class="ln"> 23</span><span class="kn">import</span> <span class="nn">java.security.cert.CertificateException</span><span class="o">;</span>
+<span class="ln"> 24</span><span class="kn">import</span> <span class="nn">javax.annotation.Nullable</span><span class="o">;</span>
+<span class="ln"> 25</span><span class="kn">import</span> <span class="nn">javax.net.ssl.SSLHandshakeException</span><span class="o">;</span>
+<span class="ln"> 26</span><span class="kn">import</span> <span class="nn">javax.net.ssl.SSLPeerUnverifiedException</span><span class="o">;</span>
+<span class="ln"> 27</span><span class="kn">import</span> <span class="nn">okhttp3.HttpUrl</span><span class="o">;</span>
+<span class="ln"> 28</span><span class="kn">import</span> <span class="nn">okhttp3.Interceptor</span><span class="o">;</span>
+<span class="ln"> 29</span><span class="kn">import</span> <span class="nn">okhttp3.OkHttpClient</span><span class="o">;</span>
+<span class="ln"> 30</span><span class="kn">import</span> <span class="nn">okhttp3.Request</span><span class="o">;</span>
+<span class="ln"> 31</span><span class="kn">import</span> <span class="nn">okhttp3.RequestBody</span><span class="o">;</span>
+<span class="ln"> 32</span><span class="kn">import</span> <span class="nn">okhttp3.Response</span><span class="o">;</span>
+<span class="ln"> 33</span><span class="kn">import</span> <span class="nn">okhttp3.Route</span><span class="o">;</span>
+<span class="ln"> 34</span><span class="kn">import</span> <span class="nn">okhttp3.internal.Internal</span><span class="o">;</span>
+<span class="ln"> 35</span><span class="kn">import</span> <span class="nn">okhttp3.internal.connection.Exchange</span><span class="o">;</span>
+<span class="ln"> 36</span><span class="kn">import</span> <span class="nn">okhttp3.internal.connection.RouteException</span><span class="o">;</span>
+<span class="ln"> 37</span><span class="kn">import</span> <span class="nn">okhttp3.internal.connection.Transmitter</span><span class="o">;</span>
+<span class="ln"> 38</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http.HttpMethod</span><span class="o">;</span>
+<span class="ln"> 39</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http.RealInterceptorChain</span><span class="o">;</span>
+<span class="ln"> 40</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http2.ConnectionShutdownException</span><span class="o">;</span>
+<span class="ln"> 41</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT</span><span class="o">;</span>
+<span class="ln"> 42</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_MOVED_PERM</span><span class="o">;</span>
+<span class="ln"> 43</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_MOVED_TEMP</span><span class="o">;</span>
+<span class="ln"> 44</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_MULT_CHOICE</span><span class="o">;</span>
+<span class="ln"> 45</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_PROXY_AUTH</span><span class="o">;</span>
+<span class="ln"> 46</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_SEE_OTHER</span><span class="o">;</span>
+<span class="ln"> 47</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_UNAUTHORIZED</span><span class="o">;</span>
+<span class="ln"> 48</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_UNAVAILABLE</span><span class="o">;</span>
+<span class="ln"> 49</span><span class="kn">import static</span> <span class="nn">okhttp3.internal.Util.closeQuietly</span><span class="o">;</span>
+<span class="ln"> 50</span><span class="kn">import static</span> <span class="nn">okhttp3.internal.Util.sameConnection</span><span class="o">;</span>
+<span class="ln"> 51</span><span class="kn">import static</span> <span class="nn">okhttp3.internal.http.StatusLine.HTTP_PERM_REDIRECT</span><span class="o">;</span>
+<span class="ln"> 52</span><span class="kn">import static</span> <span class="nn">okhttp3.internal.http.StatusLine.HTTP_TEMP_REDIRECT</span><span class="o">;</span>
+<span class="ln"> 53</span><span class="cm">/**
+</span><span class="ln"> 54</span><span class="cm"> * This interceptor recovers from failures and follows redirects as necessary. It may throw an
+</span><span class="ln"> 55</span><span class="cm"> * {@link IOException} if the call was canceled.
+</span><span class="ln"> 56</span><span class="cm"> * 该拦截器从失败中恢复，并根据需要进行重定向。如果调用者被取消，则可能会抛出一个IO异常。
+</span><span class="ln"> 57</span><span class="cm"> */</span>
+<span class="ln"> 58</span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">RetryAndFollowUpInterceptor</span> <span class="kd">implements</span> <span class="n">Interceptor</span> <span class="o">{</span>
+<span class="ln"> 59</span>    <span class="cm">/**
+</span><span class="ln"> 60</span><span class="cm">     * How many redirects and auth challenges should we attempt? Chrome follows 21 redirects; Firefox,
+</span><span class="ln"> 61</span><span class="cm">     * curl, and wget follow 20; Safari follows 16; and HTTP/1.0 recommends 5.
+</span><span class="ln"> 62</span><span class="cm">     * 最大重定向的次数 chrome21次 firefox curl和wget两个命令为21次 safari 21次 http1.0为5次
+</span><span class="ln"> 63</span><span class="cm">     */</span>
+<span class="ln"> 64</span>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">MAX_FOLLOW_UPS</span> <span class="o">=</span> <span class="n">20</span><span class="o">;</span>
+<span class="ln"> 65</span>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">OkHttpClient</span> <span class="n">client</span><span class="o">;</span>
+<span class="ln"> 66</span>    <span class="kd">public</span> <span class="nf">RetryAndFollowUpInterceptor</span><span class="o">(</span><span class="n">OkHttpClient</span> <span class="n">client</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 67</span>        <span class="k">this</span><span class="o">.</span><span class="na">client</span> <span class="o">=</span> <span class="n">client</span><span class="o">;</span>
+<span class="ln"> 68</span>    <span class="o">}</span>
+<span class="ln"> 69</span>    <span class="nd">@Override</span>
+<span class="ln"> 70</span>    <span class="kd">public</span> <span class="n">Response</span> <span class="nf">intercept</span><span class="o">(</span><span class="n">Chain</span> <span class="n">chain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln"> 71</span>        <span class="n">Request</span> <span class="n">request</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="na">request</span><span class="o">();</span>
+<span class="ln"> 72</span>        <span class="n">RealInterceptorChain</span> <span class="n">realChain</span> <span class="o">=</span> <span class="o">(</span><span class="n">RealInterceptorChain</span><span class="o">)</span> <span class="n">chain</span><span class="o">;</span>
+<span class="ln"> 73</span>        <span class="cm">/*
+</span><span class="ln"> 74</span><span class="cm">         * Transmitter类是OkHttp的应用层和网络层的一个桥梁类
+</span><span class="ln"> 75</span><span class="cm">         *这个类包含了更高级的应用层原函数
+</span><span class="ln"> 76</span><span class="cm">         * 连接、请求、响应、流
+</span><span class="ln"> 77</span><span class="cm">         * public Transmitter(OkHttpClient client, Call call) {
+</span><span class="ln"> 78</span><span class="cm">         *  this.client = client;
+</span><span class="ln"> 79</span><span class="cm">         *  设置连接池，其实最终调用的还是OkHttpClient中通过Builder设置的连接池对象
+</span><span class="ln"> 80</span><span class="cm">         *  如果外部没有设置自定义的连接池，会默认使用系统设置的连接池，可参见【ConnectionPool】类
+</span><span class="ln"> 81</span><span class="cm">         *  this.connectionPool = Internal.instance.realConnectionPool(client.connectionPool());
+</span><span class="ln"> 82</span><span class="cm">         *  this.call = call;
+</span><span class="ln"> 83</span><span class="cm">         *  设置相关指标的监听器。我们可以通过扩展这个类来监听程序的HTTP的调用数量、大小和持续时间
+</span><span class="ln"> 84</span><span class="cm">         *  设置的监听器最终还是调用的OkHttpClient中通过Builder设置的监听对象
+</span><span class="ln"> 85</span><span class="cm">         *  this.eventListener = client.eventListenerFactory().create(call);
+</span><span class="ln"> 86</span><span class="cm">         *  this.timeout.timeout(client.callTimeoutMillis(), MILLISECONDS);
+</span><span class="ln"> 87</span><span class="cm">         * }
+</span><span class="ln"> 88</span><span class="cm">         * 在上一篇文章中 我们说看到newRealCall方法中实例化了
+</span><span class="ln"> 89</span><span class="cm">         *  call.transmitter = new Transmitter(client, call);
+</span><span class="ln"> 90</span><span class="cm">         * 我们可以看到了他把client和call都传入进去了
+</span><span class="ln"> 91</span><span class="cm">         *
+</span><span class="ln"> 92</span><span class="cm">         */</span>
+<span class="ln"> 93</span>        <span class="n">Transmitter</span> <span class="n">transmitter</span> <span class="o">=</span> <span class="n">realChain</span><span class="o">.</span><span class="na">transmitter</span><span class="o">();</span>
+<span class="ln"> 94</span>        <span class="kt">int</span> <span class="n">followUpCount</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln"> 95</span>        <span class="n">Response</span> <span class="n">priorResponse</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 96</span>        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 97</span>            <span class="c1">//准备连接  transmitter 如果scheme host port 是一样的那么就重用上一次的交换器和request，第一次这两个都没有
+</span><span class="ln"> 98</span><span class="c1"></span>            <span class="n">transmitter</span><span class="o">.</span><span class="na">prepareToConnect</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+<span class="ln"> 99</span>            <span class="c1">// 如果请求被cancel掉了 那么就抛出io异常
+</span><span class="ln">100</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">transmitter</span><span class="o">.</span><span class="na">isCanceled</span><span class="o">())</span> <span class="o">{</span>
+<span class="ln">101</span>                <span class="k">throw</span> <span class="k">new</span> <span class="n">IOException</span><span class="o">(</span><span class="s">&#34;Canceled&#34;</span><span class="o">);</span>
+<span class="ln">102</span>            <span class="o">}</span>
+<span class="ln">103</span>            <span class="n">Response</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">104</span>            <span class="kt">boolean</span> <span class="n">success</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">105</span>            <span class="k">try</span> <span class="o">{</span>
+<span class="ln">106</span>                <span class="c1">//调用下一个拦截器之下一个拦截器.....返回-返回-返回到这个拦截器结果
+</span><span class="ln">107</span><span class="c1"></span>                <span class="n">response</span> <span class="o">=</span> <span class="n">realChain</span><span class="o">.</span><span class="na">proceed</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">transmitter</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+<span class="ln">108</span>                <span class="c1">//到了这里 这次请求算是成功了
+</span><span class="ln">109</span><span class="c1"></span>                <span class="n">success</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">110</span>            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">RouteException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">111</span>                <span class="c1">// The attempt to connect via a route failed. The request will not have been sent.
+</span><span class="ln">112</span><span class="c1"></span>                <span class="c1">//路由异常，请求是不会被发送到服务器的
+</span><span class="ln">113</span><span class="c1"></span>                <span class="c1">// 试图恢复连接，如果无法恢复则 抛出第一次路由异常
+</span><span class="ln">114</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(!</span><span class="n">recover</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getLastConnectException</span><span class="o">(),</span> <span class="n">transmitter</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="n">request</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">115</span>                    <span class="k">throw</span> <span class="n">e</span><span class="o">.</span><span class="na">getFirstConnectException</span><span class="o">();</span>
+<span class="ln">116</span>                <span class="o">}</span>
+<span class="ln">117</span>                <span class="k">continue</span><span class="o">;</span>
+<span class="ln">118</span>            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">119</span>                <span class="c1">// An attempt to communicate with a server failed. The request may have been sent.
+</span><span class="ln">120</span><span class="c1"></span>                <span class="c1">//IO异常 ，这个请求可能已经被发送了
+</span><span class="ln">121</span><span class="c1"></span>                <span class="c1">//如果无法恢复则抛出异常
+</span><span class="ln">122</span><span class="c1"></span>                <span class="kt">boolean</span> <span class="n">requestSendStarted</span> <span class="o">=</span> <span class="o">!(</span><span class="n">e</span> <span class="k">instanceof</span> <span class="n">ConnectionShutdownException</span><span class="o">);</span>
+<span class="ln">123</span>                <span class="k">if</span> <span class="o">(!</span><span class="n">recover</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">transmitter</span><span class="o">,</span> <span class="n">requestSendStarted</span><span class="o">,</span> <span class="n">request</span><span class="o">))</span> <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
+<span class="ln">124</span>                <span class="k">continue</span><span class="o">;</span>
+<span class="ln">125</span>            <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+<span class="ln">126</span>                <span class="c1">// The network call threw an exception. Release any resources.
+</span><span class="ln">127</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(!</span><span class="n">success</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">128</span>                    <span class="c1">//如果没有成功就跑出IllegalStateException异常
+</span><span class="ln">129</span><span class="c1"></span>                    <span class="n">transmitter</span><span class="o">.</span><span class="na">exchangeDoneDueToException</span><span class="o">();</span>
+<span class="ln">130</span>                <span class="o">}</span>
+<span class="ln">131</span>            <span class="o">}</span>
+<span class="ln">132</span>            <span class="c1">// Attach the prior response if it exists. Such responses never have a body.
+</span><span class="ln">133</span><span class="c1"></span>            <span class="c1">//priorResponse 是用来保存前一个 Response 的，当发现需要重定向，则将当前 Response 设置给 priorResponse，再执行一遍流程，
+</span><span class="ln">134</span><span class="c1"></span>            <span class="c1">// 这里可以看到将前一个 Response 和当前的 Response 结合在一起了，
+</span><span class="ln">135</span><span class="c1"></span>            <span class="c1">// 直到不需要重定向了则将 priorResponse 和 Response 结合起来。
+</span><span class="ln">136</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">priorResponse</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">137</span>                <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+<span class="ln">138</span>                        <span class="o">.</span><span class="na">priorResponse</span><span class="o">(</span><span class="n">priorResponse</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+<span class="ln">139</span>                                <span class="o">.</span><span class="na">body</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span>
+<span class="ln">140</span>                                <span class="o">.</span><span class="na">build</span><span class="o">())</span>
+<span class="ln">141</span>                        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="ln">142</span>            <span class="o">}</span>
+<span class="ln">143</span>            <span class="n">Exchange</span> <span class="n">exchange</span> <span class="o">=</span> <span class="n">Internal</span><span class="o">.</span><span class="na">instance</span><span class="o">.</span><span class="na">exchange</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+<span class="ln">144</span>            <span class="n">Route</span> <span class="n">route</span> <span class="o">=</span> <span class="n">exchange</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">exchange</span><span class="o">.</span><span class="na">connection</span><span class="o">().</span><span class="na">route</span><span class="o">()</span> <span class="o">:</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">145</span>            <span class="c1">// 判断是否需要重定向,如果需要重定向则返回一个重定向的 Request，没有则为 null
+</span><span class="ln">146</span><span class="c1"></span>            <span class="n">Request</span> <span class="n">followUp</span> <span class="o">=</span> <span class="n">followUpRequest</span><span class="o">(</span><span class="n">response</span><span class="o">,</span> <span class="n">route</span><span class="o">);</span>
+<span class="ln">147</span>            <span class="k">if</span> <span class="o">(</span><span class="n">followUp</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">148</span>                <span class="c1">// 不需要重定向
+</span><span class="ln">149</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">exchange</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">exchange</span><span class="o">.</span><span class="na">isDuplex</span><span class="o">())</span> <span class="o">{</span>
+<span class="ln">150</span>                    <span class="n">transmitter</span><span class="o">.</span><span class="na">timeoutEarlyExit</span><span class="o">();</span>
+<span class="ln">151</span>                <span class="o">}</span>
+<span class="ln">152</span>                <span class="c1">//成功返回请求
+</span><span class="ln">153</span><span class="c1"></span>                <span class="k">return</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">154</span>            <span class="o">}</span>
+<span class="ln">155</span>            <span class="c1">// 需要重定向
+</span><span class="ln">156</span><span class="c1"></span>            <span class="n">RequestBody</span> <span class="n">followUpBody</span> <span class="o">=</span> <span class="n">followUp</span><span class="o">.</span><span class="na">body</span><span class="o">();</span>
+<span class="ln">157</span>            <span class="k">if</span> <span class="o">(</span><span class="n">followUpBody</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">followUpBody</span><span class="o">.</span><span class="na">isOneShot</span><span class="o">())</span> <span class="o">{</span>
+<span class="ln">158</span>                <span class="k">return</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">159</span>            <span class="o">}</span>
+<span class="ln">160</span>            <span class="c1">// 关闭buffer响应流
+</span><span class="ln">161</span><span class="c1"></span>            <span class="n">closeQuietly</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">body</span><span class="o">());</span>
+<span class="ln">162</span>            <span class="k">if</span> <span class="o">(</span><span class="n">transmitter</span><span class="o">.</span><span class="na">hasExchange</span><span class="o">())</span> <span class="o">{</span>
+<span class="ln">163</span>                <span class="n">exchange</span><span class="o">.</span><span class="na">detachWithViolence</span><span class="o">();</span>
+<span class="ln">164</span>            <span class="o">}</span>
+<span class="ln">165</span>            <span class="c1">// 重定向次数++,并且小于最大重定向次数MAX_FOLLOW_UPS（20）
+</span><span class="ln">166</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(++</span><span class="n">followUpCount</span> <span class="o">&gt;</span> <span class="n">MAX_FOLLOW_UPS</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">167</span>                <span class="k">throw</span> <span class="k">new</span> <span class="n">ProtocolException</span><span class="o">(</span><span class="s">&#34;Too many follow-up requests: &#34;</span> <span class="o">+</span> <span class="n">followUpCount</span><span class="o">);</span>
+<span class="ln">168</span>            <span class="o">}</span>
+<span class="ln">169</span>            <span class="n">request</span> <span class="o">=</span> <span class="n">followUp</span><span class="o">;</span>
+<span class="ln">170</span>            <span class="n">priorResponse</span> <span class="o">=</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">171</span>        <span class="o">}</span>
+<span class="ln">172</span>    <span class="o">}</span>
+<span class="ln">173</span>    <span class="cm">/**
+</span><span class="ln">174</span><span class="cm">     * RouteException 和 IOException 异常检测都会调用 recover() 方法进行判断重试
+</span><span class="ln">175</span><span class="cm">     *
+</span><span class="ln">176</span><span class="cm">     * Report and attempt to recover from a failure to communicate with a server. Returns true if
+</span><span class="ln">177</span><span class="cm">     * {@code e} is recoverable, or false if the failure is permanent. Requests with a body can only
+</span><span class="ln">178</span><span class="cm">     * be recovered if the body is buffered or if the failure occurred before the request has been
+</span><span class="ln">179</span><span class="cm">     * sent.
+</span><span class="ln">180</span><span class="cm">     */</span>
+<span class="ln">181</span>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">recover</span><span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">,</span> <span class="n">Transmitter</span> <span class="n">transmitter</span><span class="o">,</span>
+<span class="ln">182</span>                            <span class="kt">boolean</span> <span class="n">requestSendStarted</span><span class="o">,</span> <span class="n">Request</span> <span class="n">userRequest</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">183</span>        <span class="c1">// The application layer has forbidden retries.
+</span><span class="ln">184</span><span class="c1"></span>        <span class="c1">// 判断 OkHttpClient 是否开启失败重连的机制
+</span><span class="ln">185</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(!</span><span class="n">client</span><span class="o">.</span><span class="na">retryOnConnectionFailure</span><span class="o">())</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">186</span>        <span class="c1">// We can&#39;t send the request body again.
+</span><span class="ln">187</span><span class="c1"></span>        <span class="c1">// 与之前版本的 UnrepeatableRequestBody 类似，只能请求一次的请求
+</span><span class="ln">188</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">requestSendStarted</span> <span class="o">&amp;&amp;</span> <span class="n">requestIsOneShot</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">userRequest</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">189</span>        <span class="c1">// This exception is fatal.
+</span><span class="ln">190</span><span class="c1"></span>        <span class="c1">//检测该异常是否是致命的
+</span><span class="ln">191</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(!</span><span class="n">isRecoverable</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">requestSendStarted</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">192</span>        <span class="c1">// No more routes to attempt.
+</span><span class="ln">193</span><span class="c1"></span>        <span class="c1">// 是否有更多的路线
+</span><span class="ln">194</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(!</span><span class="n">transmitter</span><span class="o">.</span><span class="na">canRetry</span><span class="o">())</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">195</span>        <span class="c1">// For failure recovery, use the same route selector with a new connection.
+</span><span class="ln">196</span><span class="c1"></span>        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">197</span>    <span class="o">}</span>
+<span class="ln">198</span>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">requestIsOneShot</span><span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">,</span> <span class="n">Request</span> <span class="n">userRequest</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">199</span>        <span class="n">RequestBody</span> <span class="n">requestBody</span> <span class="o">=</span> <span class="n">userRequest</span><span class="o">.</span><span class="na">body</span><span class="o">();</span>
+<span class="ln">200</span>        <span class="k">return</span> <span class="o">(</span><span class="n">requestBody</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">requestBody</span><span class="o">.</span><span class="na">isOneShot</span><span class="o">())</span>
+<span class="ln">201</span>                <span class="o">||</span> <span class="n">e</span> <span class="k">instanceof</span> <span class="n">FileNotFoundException</span><span class="o">;</span>
+<span class="ln">202</span>    <span class="o">}</span>
+<span class="ln">203</span>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isRecoverable</span><span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">requestSendStarted</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">204</span>         <span class="c1">//协议问题，不能重试
+</span><span class="ln">205</span><span class="c1"></span>        <span class="c1">//如果是超时问题，并且请求没有被发送，可以重试，其他的就不要重试了
+</span><span class="ln">206</span><span class="c1"></span>        <span class="c1">//安全问题，不要重试
+</span><span class="ln">207</span><span class="c1"></span>        <span class="c1">// If there was a protocol problem, don&#39;t recover.
+</span><span class="ln">208</span><span class="c1"></span>        <span class="c1">//ProtocolException 属于严重异常，不能进行重新连接
+</span><span class="ln">209</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="k">instanceof</span> <span class="n">ProtocolException</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">210</span>            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">211</span>        <span class="o">}</span>
+<span class="ln">212</span>        <span class="c1">// If there was an interruption don&#39;t recover, but if there was a timeout connecting to a route
+</span><span class="ln">213</span><span class="c1"></span>        <span class="c1">// we should try the next route (if there is one).
+</span><span class="ln">214</span><span class="c1"></span>        <span class="c1">// 当异常为中断异常时
+</span><span class="ln">215</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="k">instanceof</span> <span class="n">InterruptedIOException</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">216</span>            <span class="k">return</span> <span class="n">e</span> <span class="k">instanceof</span> <span class="n">SocketTimeoutException</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">requestSendStarted</span><span class="o">;</span>
+<span class="ln">217</span>        <span class="o">}</span>
+<span class="ln">218</span>        <span class="c1">// Look for known client-side or negotiation errors that are unlikely to be fixed by trying
+</span><span class="ln">219</span><span class="c1"></span>        <span class="c1">// again with a different route.
+</span><span class="ln">220</span><span class="c1"></span>        <span class="c1">//握手异常
+</span><span class="ln">221</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="k">instanceof</span> <span class="n">SSLHandshakeException</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">222</span>            <span class="c1">// If the problem was a CertificateException from the X509TrustManager,
+</span><span class="ln">223</span><span class="c1"></span>            <span class="c1">// do not retry.
+</span><span class="ln">224</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getCause</span><span class="o">()</span> <span class="k">instanceof</span> <span class="n">CertificateException</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">225</span>                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">226</span>            <span class="o">}</span>
+<span class="ln">227</span>        <span class="o">}</span>
+<span class="ln">228</span>        <span class="c1">//验证异常
+</span><span class="ln">229</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="k">instanceof</span> <span class="n">SSLPeerUnverifiedException</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">230</span>            <span class="c1">// e.g. a certificate pinning error.
+</span><span class="ln">231</span><span class="c1"></span>            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">232</span>        <span class="o">}</span>
+<span class="ln">233</span>        <span class="c1">// An example of one we might want to retry with a different route is a problem connecting to a
+</span><span class="ln">234</span><span class="c1"></span>        <span class="c1">// proxy and would manifest as a standard IOException. Unless it is one we know we should not
+</span><span class="ln">235</span><span class="c1"></span>        <span class="c1">// retry, we return true and try a new route.
+</span><span class="ln">236</span><span class="c1"></span>        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">237</span>    <span class="o">}</span>
+<span class="ln">238</span>    <span class="cm">/**
+</span><span class="ln">239</span><span class="cm">     * Figures out the HTTP request to make in response to receiving {@code userResponse}. This will
+</span><span class="ln">240</span><span class="cm">     * either add authentication headers, follow redirects or handle a client request timeout. If a
+</span><span class="ln">241</span><span class="cm">     * follow-up is either unnecessary or not applicable, this returns null.
+</span><span class="ln">242</span><span class="cm">     */</span>
+<span class="ln">243</span>    <span class="kd">private</span> <span class="n">Request</span> <span class="nf">followUpRequest</span><span class="o">(</span><span class="n">Response</span> <span class="n">userResponse</span><span class="o">,</span> <span class="nd">@Nullable</span> <span class="n">Route</span> <span class="n">route</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln">244</span>        <span class="k">if</span> <span class="o">(</span><span class="n">userResponse</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">();</span>
+<span class="ln">245</span>        <span class="kt">int</span> <span class="n">responseCode</span> <span class="o">=</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">code</span><span class="o">();</span>
+<span class="ln">246</span>        <span class="kd">final</span> <span class="n">String</span> <span class="n">method</span> <span class="o">=</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">().</span><span class="na">method</span><span class="o">();</span>
+<span class="ln">247</span>        <span class="k">switch</span> <span class="o">(</span><span class="n">responseCode</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">248</span>            <span class="k">case</span> <span class="n">HTTP_PROXY_AUTH</span><span class="o">:</span>
+<span class="ln">249</span>                <span class="n">Proxy</span> <span class="n">selectedProxy</span> <span class="o">=</span> <span class="n">route</span> <span class="o">!=</span> <span class="kc">null</span>
+<span class="ln">250</span>                        <span class="o">?</span> <span class="n">route</span><span class="o">.</span><span class="na">proxy</span><span class="o">()</span>
+<span class="ln">251</span>                        <span class="o">:</span> <span class="n">client</span><span class="o">.</span><span class="na">proxy</span><span class="o">();</span>
+<span class="ln">252</span>                <span class="k">if</span> <span class="o">(</span><span class="n">selectedProxy</span><span class="o">.</span><span class="na">type</span><span class="o">()</span> <span class="o">!=</span> <span class="n">Proxy</span><span class="o">.</span><span class="na">Type</span><span class="o">.</span><span class="na">HTTP</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">253</span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">ProtocolException</span><span class="o">(</span><span class="s">&#34;Received HTTP_PROXY_AUTH (407) code while not using proxy&#34;</span><span class="o">);</span>
+<span class="ln">254</span>                <span class="o">}</span>
+<span class="ln">255</span>                <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="na">proxyAuthenticator</span><span class="o">().</span><span class="na">authenticate</span><span class="o">(</span><span class="n">route</span><span class="o">,</span> <span class="n">userResponse</span><span class="o">);</span>
+<span class="ln">256</span>            <span class="k">case</span> <span class="n">HTTP_UNAUTHORIZED</span><span class="o">:</span>
+<span class="ln">257</span>                <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="na">authenticator</span><span class="o">().</span><span class="na">authenticate</span><span class="o">(</span><span class="n">route</span><span class="o">,</span> <span class="n">userResponse</span><span class="o">);</span>
+<span class="ln">258</span>            <span class="k">case</span> <span class="n">HTTP_PERM_REDIRECT</span><span class="o">:</span>
+<span class="ln">259</span>            <span class="k">case</span> <span class="n">HTTP_TEMP_REDIRECT</span><span class="o">:</span>
+<span class="ln">260</span>                <span class="c1">// &#34;If the 307 or 308 status code is received in response to a request other than GET
+</span><span class="ln">261</span><span class="c1"></span>                <span class="c1">// or HEAD, the user agent MUST NOT automatically redirect the request&#34;
+</span><span class="ln">262</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(!</span><span class="n">method</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;GET&#34;</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">method</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;HEAD&#34;</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">263</span>                    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">264</span>                <span class="o">}</span>
+<span class="ln">265</span>                <span class="c1">// fall-through
+</span><span class="ln">266</span><span class="c1"></span>            <span class="k">case</span> <span class="n">HTTP_MULT_CHOICE</span><span class="o">:</span>
+<span class="ln">267</span>            <span class="k">case</span> <span class="n">HTTP_MOVED_PERM</span><span class="o">:</span>
+<span class="ln">268</span>            <span class="k">case</span> <span class="n">HTTP_MOVED_TEMP</span><span class="o">:</span>
+<span class="ln">269</span>            <span class="k">case</span> <span class="n">HTTP_SEE_OTHER</span><span class="o">:</span>
+<span class="ln">270</span>                <span class="c1">// Does the client allow redirects?
+</span><span class="ln">271</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(!</span><span class="n">client</span><span class="o">.</span><span class="na">followRedirects</span><span class="o">())</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">272</span>                <span class="n">String</span> <span class="n">location</span> <span class="o">=</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">header</span><span class="o">(</span><span class="s">&#34;Location&#34;</span><span class="o">);</span>
+<span class="ln">273</span>                <span class="k">if</span> <span class="o">(</span><span class="n">location</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">274</span>                <span class="n">HttpUrl</span> <span class="n">url</span> <span class="o">=</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">().</span><span class="na">url</span><span class="o">().</span><span class="na">resolve</span><span class="o">(</span><span class="n">location</span><span class="o">);</span>
+<span class="ln">275</span>                <span class="c1">// Don&#39;t follow redirects to unsupported protocols.
+</span><span class="ln">276</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">url</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">277</span>                <span class="c1">// If configured, don&#39;t follow redirects between SSL and non-SSL.
+</span><span class="ln">278</span><span class="c1"></span>                <span class="kt">boolean</span> <span class="n">sameScheme</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="na">scheme</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">().</span><span class="na">url</span><span class="o">().</span><span class="na">scheme</span><span class="o">());</span>
+<span class="ln">279</span>                <span class="k">if</span> <span class="o">(!</span><span class="n">sameScheme</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">client</span><span class="o">.</span><span class="na">followSslRedirects</span><span class="o">())</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">280</span>                <span class="c1">// Most redirects don&#39;t include a request body.
+</span><span class="ln">281</span><span class="c1"></span>                <span class="n">Request</span><span class="o">.</span><span class="na">Builder</span> <span class="n">requestBuilder</span> <span class="o">=</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">().</span><span class="na">newBuilder</span><span class="o">();</span>
+<span class="ln">282</span>                <span class="k">if</span> <span class="o">(</span><span class="n">HttpMethod</span><span class="o">.</span><span class="na">permitsRequestBody</span><span class="o">(</span><span class="n">method</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">283</span>                    <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">maintainBody</span> <span class="o">=</span> <span class="n">HttpMethod</span><span class="o">.</span><span class="na">redirectsWithBody</span><span class="o">(</span><span class="n">method</span><span class="o">);</span>
+<span class="ln">284</span>                    <span class="k">if</span> <span class="o">(</span><span class="n">HttpMethod</span><span class="o">.</span><span class="na">redirectsToGet</span><span class="o">(</span><span class="n">method</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">285</span>                        <span class="n">requestBuilder</span><span class="o">.</span><span class="na">method</span><span class="o">(</span><span class="s">&#34;GET&#34;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+<span class="ln">286</span>                    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln">287</span>                        <span class="n">RequestBody</span> <span class="n">requestBody</span> <span class="o">=</span> <span class="n">maintainBody</span> <span class="o">?</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">().</span><span class="na">body</span><span class="o">()</span> <span class="o">:</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">288</span>                        <span class="n">requestBuilder</span><span class="o">.</span><span class="na">method</span><span class="o">(</span><span class="n">method</span><span class="o">,</span> <span class="n">requestBody</span><span class="o">);</span>
+<span class="ln">289</span>                    <span class="o">}</span>
+<span class="ln">290</span>                    <span class="k">if</span> <span class="o">(!</span><span class="n">maintainBody</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">291</span>                        <span class="n">requestBuilder</span><span class="o">.</span><span class="na">removeHeader</span><span class="o">(</span><span class="s">&#34;Transfer-Encoding&#34;</span><span class="o">);</span>
+<span class="ln">292</span>                        <span class="n">requestBuilder</span><span class="o">.</span><span class="na">removeHeader</span><span class="o">(</span><span class="s">&#34;Content-Length&#34;</span><span class="o">);</span>
+<span class="ln">293</span>                        <span class="n">requestBuilder</span><span class="o">.</span><span class="na">removeHeader</span><span class="o">(</span><span class="s">&#34;Content-Type&#34;</span><span class="o">);</span>
+<span class="ln">294</span>                    <span class="o">}</span>
+<span class="ln">295</span>                <span class="o">}</span>
+<span class="ln">296</span>                <span class="c1">// When redirecting across hosts, drop all authentication headers. This
+</span><span class="ln">297</span><span class="c1"></span>                <span class="c1">// is potentially annoying to the application layer since they have no
+</span><span class="ln">298</span><span class="c1"></span>                <span class="c1">// way to retain them.
+</span><span class="ln">299</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(!</span><span class="n">sameConnection</span><span class="o">(</span><span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">().</span><span class="na">url</span><span class="o">(),</span> <span class="n">url</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">300</span>                    <span class="n">requestBuilder</span><span class="o">.</span><span class="na">removeHeader</span><span class="o">(</span><span class="s">&#34;Authorization&#34;</span><span class="o">);</span>
+<span class="ln">301</span>                <span class="o">}</span>
+<span class="ln">302</span>                <span class="k">return</span> <span class="n">requestBuilder</span><span class="o">.</span><span class="na">url</span><span class="o">(</span><span class="n">url</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+<span class="ln">303</span>            <span class="k">case</span> <span class="n">HTTP_CLIENT_TIMEOUT</span><span class="o">:</span>
+<span class="ln">304</span>                <span class="c1">// 408&#39;s are rare in practice, but some servers like HAProxy use this response code. The
+</span><span class="ln">305</span><span class="c1"></span>                <span class="c1">// spec says that we may repeat the request without modifications. Modern browsers also
+</span><span class="ln">306</span><span class="c1"></span>                <span class="c1">// repeat the request (even non-idempotent ones.)
+</span><span class="ln">307</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(!</span><span class="n">client</span><span class="o">.</span><span class="na">retryOnConnectionFailure</span><span class="o">())</span> <span class="o">{</span>
+<span class="ln">308</span>                    <span class="c1">// The application layer has directed us not to retry the request.
+</span><span class="ln">309</span><span class="c1"></span>                    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">310</span>                <span class="o">}</span>
+<span class="ln">311</span>                <span class="n">RequestBody</span> <span class="n">requestBody</span> <span class="o">=</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">().</span><span class="na">body</span><span class="o">();</span>
+<span class="ln">312</span>                <span class="k">if</span> <span class="o">(</span><span class="n">requestBody</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">requestBody</span><span class="o">.</span><span class="na">isOneShot</span><span class="o">())</span> <span class="o">{</span>
+<span class="ln">313</span>                    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">314</span>                <span class="o">}</span>
+<span class="ln">315</span>                <span class="k">if</span> <span class="o">(</span><span class="n">userResponse</span><span class="o">.</span><span class="na">priorResponse</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span>
+<span class="ln">316</span>                        <span class="o">&amp;&amp;</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">priorResponse</span><span class="o">().</span><span class="na">code</span><span class="o">()</span> <span class="o">==</span> <span class="n">HTTP_CLIENT_TIMEOUT</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">317</span>                    <span class="c1">// We attempted to retry and got another timeout. Give up.
+</span><span class="ln">318</span><span class="c1"></span>                    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">319</span>                <span class="o">}</span>
+<span class="ln">320</span>                <span class="k">if</span> <span class="o">(</span><span class="n">retryAfter</span><span class="o">(</span><span class="n">userResponse</span><span class="o">,</span> <span class="n">0</span><span class="o">)</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">321</span>                    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">322</span>                <span class="o">}</span>
+<span class="ln">323</span>                <span class="k">return</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">();</span>
+<span class="ln">324</span>            <span class="k">case</span> <span class="n">HTTP_UNAVAILABLE</span><span class="o">:</span>
+<span class="ln">325</span>                <span class="k">if</span> <span class="o">(</span><span class="n">userResponse</span><span class="o">.</span><span class="na">priorResponse</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span>
+<span class="ln">326</span>                        <span class="o">&amp;&amp;</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">priorResponse</span><span class="o">().</span><span class="na">code</span><span class="o">()</span> <span class="o">==</span> <span class="n">HTTP_UNAVAILABLE</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">327</span>                    <span class="c1">// We attempted to retry and got another timeout. Give up.
+</span><span class="ln">328</span><span class="c1"></span>                    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">329</span>                <span class="o">}</span>
+<span class="ln">330</span>                <span class="k">if</span> <span class="o">(</span><span class="n">retryAfter</span><span class="o">(</span><span class="n">userResponse</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">)</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">331</span>                    <span class="c1">// specifically received an instruction to retry without delay
+</span><span class="ln">332</span><span class="c1"></span>                    <span class="k">return</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">request</span><span class="o">();</span>
+<span class="ln">333</span>                <span class="o">}</span>
+<span class="ln">334</span>                <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">335</span>            <span class="k">default</span><span class="o">:</span>
+<span class="ln">336</span>                <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">337</span>        <span class="o">}</span>
+<span class="ln">338</span>    <span class="o">}</span>
+<span class="ln">339</span>    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">retryAfter</span><span class="o">(</span><span class="n">Response</span> <span class="n">userResponse</span><span class="o">,</span> <span class="kt">int</span> <span class="n">defaultDelay</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">340</span>        <span class="n">String</span> <span class="n">header</span> <span class="o">=</span> <span class="n">userResponse</span><span class="o">.</span><span class="na">header</span><span class="o">(</span><span class="s">&#34;Retry-After&#34;</span><span class="o">);</span>
+<span class="ln">341</span>        <span class="k">if</span> <span class="o">(</span><span class="n">header</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">342</span>            <span class="k">return</span> <span class="n">defaultDelay</span><span class="o">;</span>
+<span class="ln">343</span>        <span class="o">}</span>
+<span class="ln">344</span>        <span class="c1">// https://tools.ietf.org/html/rfc7231#section-7.1.3
+</span><span class="ln">345</span><span class="c1"></span>        <span class="c1">// currently ignores a HTTP-date, and assumes any non int 0 is a delay
+</span><span class="ln">346</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">header</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="s">&#34;\\d+&#34;</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">347</span>            <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">header</span><span class="o">);</span>
+<span class="ln">348</span>        <span class="o">}</span>
+<span class="ln">349</span>        <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span>
+<span class="ln">350</span>    <span class="o">}</span>
+<span class="ln">351</span><span class="o">}</span>
+<span class="ln">352</span>
+</code></pre></div></div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/">Android源码一步一步分析系列之OkHttp(1)——揭开面纱
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2020-04-07-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E7%9F%A9%E9%98%B5/">每日一篇leetcode之-矩阵旋转
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/">Android源码一步一步分析系列之OkHttp(1)——揭开面纱
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-30-android-saf%E5%82%A8%E5%AD%98%E8%AE%BF%E9%97%AE%E6%A1%86%E6%9E%B6/">Android SAF储存访问框架
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-24-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E6%8C%89%E6%91%A9%E5%B8%88/">每日一篇leetcode之-按摩师
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-19-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA-ii/">每日一篇leetcode之-买卖股票的最佳时机 II
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-19-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E4%B8%B2/">每日一篇leetcode之-最长回文串
+</a></li></ul>
+  </section></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="card row text-center profile component">
+  <div class="card-body">
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="https://helixs.github.io/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">分类</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="badge bg-primary text-white rounded post-taxonomy" title="数据库">
+            数据库
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/series">专栏</a>
+        </h2>
+        <div><a href="https://helixs.github.io/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">标签</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="https://helixs.github.io/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 Helixs. All Rights Reserved.
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

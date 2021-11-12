@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on Hugo Bootstrap</title>
+    <link>https://helixs.github.io/categories/c/</link>
+    <description>Recent content in C on Hugo Bootstrap</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} Helixs. All Rights Reserved.</copyright>
+    <lastBuildDate>Thu, 30 May 2019 09:01:00 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C语言stdio中fgets和gets、puts的区别</title>
+      <link>https://helixs.github.io/posts/2019-05-30-c%E8%AF%AD%E8%A8%80stdio%E4%B8%ADfgets%E5%92%8Cgetsputs%E7%9A%84%E5%8C%BA%E5%88%AB/</link>
+      <pubDate>Thu, 30 May 2019 09:01:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-05-30-c%E8%AF%AD%E8%A8%80stdio%E4%B8%ADfgets%E5%92%8Cgetsputs%E7%9A%84%E5%8C%BA%E5%88%AB/</guid>
+      <description>1char *__cdecl fgets(char * __restrict__ _Buf,int _MaxCount,FILE * __restrict__ _File); 1char *__cdecl gets(char *_Buffer) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;//编译时会弹出警告 1#include &amp;lt;stdio.h&amp;gt;2#include &amp;lt;string.h&amp;gt;3 4int main() { 5 char inputs[10] = &amp;#34;yes</description>
+    </item>
+    
+  </channel>
+</rss>

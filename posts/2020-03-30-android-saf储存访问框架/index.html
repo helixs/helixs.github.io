@@ -1,0 +1,928 @@
+<!doctype html><html lang="zh-cn"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Android SAF储存访问框架 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="Android SAF储存访问框架">
+<meta itemprop="description" content="Android 4.4（API 级别 19）引入了存储访问框架 (SAF)。借助 SAF，用户可轻松在其所有首选文档存储提供程序中浏览并打开文档、图像及其他文件。"><meta itemprop="datePublished" content="2020-03-30T07:22:04+00:00" />
+<meta itemprop="dateModified" content="2020-03-30T07:22:04+00:00" />
+<meta itemprop="wordCount" content="8290">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="Android SAF储存访问框架" />
+<meta property="og:description" content="Android 4.4（API 级别 19）引入了存储访问框架 (SAF)。借助 SAF，用户可轻松在其所有首选文档存储提供程序中浏览并打开文档、图像及其他文件。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2020-03-30-android-saf%E5%82%A8%E5%AD%98%E8%AE%BF%E9%97%AE%E6%A1%86%E6%9E%B6/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-03-30T07:22:04+00:00" />
+<meta property="article:modified_time" content="2020-03-30T07:22:04+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android SAF储存访问框架"/>
+<meta name="twitter:description" content="Android 4.4（API 级别 19）引入了存储访问框架 (SAF)。借助 SAF，用户可轻松在其所有首选文档存储提供程序中浏览并打开文档、图像及其他文件。"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=Android%20SAF%e5%82%a8%e5%ad%98%e8%ae%bf%e9%97%ae%e6%a1%86%e6%9e%b6&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-03-30-android-saf%25E5%2582%25A8%25E5%25AD%2598%25E8%25AE%25BF%25E9%2597%25AE%25E6%25A1%2586%25E6%259E%25B6%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-03-30-android-saf%25E5%2582%25A8%25E5%25AD%2598%25E8%25AE%25BF%25E9%2597%25AE%25E6%25A1%2586%25E6%259E%25B6%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">设置</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="棕色"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="青色"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="绿色"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="橙色"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="粉色"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="紫色"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="红色"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="https://helixs.github.io/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Android SAF储存访问框架</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Android SAF储存访问框架
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2020-03-30
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>17 分钟阅读
+  </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><blockquote>
+<p>Android 4.4（API 级别 19）引入了存储访问框架 (SAF)。借助 SAF，用户可轻松在其所有首选文档存储提供程序中浏览并打开文档、图像及其他文件。用户可通过易用的标准界面，以统一方式在所有应用和提供程序中浏览文件，以及访问最近使用的文件。
+云存储服务或本地存储服务可实现封装其服务的 ``<a href="https://developer.android.com/reference/android/provider/DocumentsProvider?hl=zh-cn" target="_blank" rel="noopener noreferrer">DocumentsProvider</a>
+，进而参与此生态系统。只需几行代码，便可将需要访问提供程序文档的客户端应用与 SAF 进行集成。 简单的来说，不需要自己主动读取sdcard的媒体和文档，系统给你统一的UI，统一的选择器，让你获取资料。</p>
+</blockquote>
+<p>SAF 包含以下内容：</p>
+<ul>
+<li><strong>文档提供程序</strong> — 一种内容提供程序，可让存储服务（如 Google Drive）显示其管理的文件。文档提供程序以<a href="https://developer.android.com/reference/android/provider/DocumentsProvider?hl=zh-cn" target="_blank" rel="noopener noreferrer">DocumentsProvider</a>
+ 类的子类形式实现。文档提供程序的架构基于传统的文件层次结构，但其实际的数据存储方式由您决定。Android 平台包含若干内置文档提供程序，如 Downloads、Images 和 Videos。</li>
+<li><strong>客户端应用</strong> — 一种自定义应用，它会调用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT</a>
+或<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_CREATE_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_CREATE_DOCUMENT</a>
+ <a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT_TREE" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT_TREE</a>
+ 这三种Intent的Action,来实现打开，创建文档，以及打开文档树。</li>
+<li><strong>选择器</strong> — 一种系统界面，可让用户访问所有满足客户端应用搜索条件的文档提供程序内的文档。
+<img class="img-fluid" alt="saf1" src="https://helixs.github.io/images/uploads/2020/03/saf_storage_dataflow.png" loading="lazy"
+   width="578" height="355"
+   />
+
+</li>
+</ul>
+<p>左边是我们的<strong>客户端</strong>， 中间SystemUI <strong>选择器</strong>， 右边是我们的<strong>文档提供程序</strong> 就是实现了_<a href="https://developer.android.com/reference/android/provider/DocumentsProvider?hl=zh-cn" target="_blank" rel="noopener noreferrer">DocumentsProvider</a>
+的提供方</p>
+<p>在 Android 4.3 及更低版本中，如果您想让应用从其他应用中检索文件，则该应用必须调用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_PICK" target="_blank" rel="noopener noreferrer">ACTION_PICK</a>
+或<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_GET_CONTENT" target="_blank" rel="noopener noreferrer">ACTION_GET_CONTENT</a>
+等 Intent。然后，用户必须选择一个要从中选取文件的应用，并且所选应用必须提供用户界面，以便用户浏览和选取可用文件。</p>
+<p>在 Android 4.4 及更高版本中，您还可选择使用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT</a>
+Intent，此 Intent 会显示由系统控制的选择器界面，以便用户浏览其他应用提供的所有文件。借助此界面，用户便可从任何受支持的应用中选取文件。</p>
+<p><a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT</a>
+并非用于代替<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_GET_CONTENT" target="_blank" rel="noopener noreferrer">ACTION_GET_CONTENT</a>
+。您应根据应用需求选择所使用的 Intent：</p>
+<ul>
+<li>如果您只想让应用读取/导入数据，请使用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_GET_CONTENT" target="_blank" rel="noopener noreferrer">ACTION_GET_CONTENT</a>
+。使用此方法时，应用会导入数据（如图片文件）的副本。</li>
+<li>如果您想让应用获得对文档提供程序所拥有文档的长期、持续性访问权限，请使用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT</a>
+。例如，照片编辑应用可让用户编辑存储在文档提供程序中的图像。</li>
+</ul>
+<p>SAF 所围绕的内容提供程序是<a href="https://developer.android.com/reference/android/provider/DocumentsProvider?hl=zh-cn" target="_blank" rel="noopener noreferrer">DocumentsProvider</a>
+类的一个子类。在文档提供程序内，数据结构采用传统的文件层次结构：
+<img class="img-fluid" alt="saf2" src="https://helixs.github.io/images/uploads/2020/03/saf_storage_datamodel.png" loading="lazy"
+   width="512" height="83"
+   />
+
+</p>
+<ul>
+<li>每个文档提供程序都会报告一个或多个“根目录”（探索文档树的起点）。每个根目录都有唯一的<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Root?hl=zh-cn#COLUMN_ROOT_ID" target="_blank" rel="noopener noreferrer">COLUMN_ROOT_ID</a>
+，并且指向表示该根目录下内容的文档（目录）。根目录采用动态设计，以支持多个帐户、临时 USB 存储设备或用户登录/注销等用例。</li>
+<li>每个根目录下都有一个文档。该文档指向 1 至_N_个文档，其中每个文档又可指向 1 至_N_个文档。</li>
+<li>每个存储后端都会使用唯一的<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#COLUMN_DOCUMENT_ID" target="_blank" rel="noopener noreferrer">COLUMN_DOCUMENT_ID</a>
+引用各个文件和目录，从而将其显示出来。文档 ID 必须具有唯一性，且一经发出便不得更改，因为它们用于所有设备重启过程中的 URI 持久授权。</li>
+<li>文档可以是可打开的文件（具有特定的 MIME类型）或包含附加文档的目录（具有<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#MIME_TYPE_DIR" target="_blank" rel="noopener noreferrer">MIME_TYPE_DIR</a>
+MIME 类型）。</li>
+<li>如<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#COLUMN_FLAGS" target="_blank" rel="noopener noreferrer">COLUMN_FLAGS</a>
+ 所述，每个文档可拥有不同功能。例如，<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#FLAG_SUPPORTS_WRITE" target="_blank" rel="noopener noreferrer">FLAG_SUPPORTS_WRITE</a>
+、<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#FLAG_SUPPORTS_DELETE" target="_blank" rel="noopener noreferrer">FLAG_SUPPORTS_DELETE</a>
+和<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#FLAG_SUPPORTS_THUMBNAIL" target="_blank" rel="noopener noreferrer">FLAG_SUPPORTS_THUMBNAIL</a>
+。多个目录中可包含相同的<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#COLUMN_DOCUMENT_ID" target="_blank" rel="noopener noreferrer">COLUMN_DOCUMENT_ID</a>
+。</li>
+</ul>
+<p>下面是常用的操作类</p>
+<p><img class="img-fluid" alt="saf4" src="https://helixs.github.io/images/uploads/2020/03/saf_class_type.png" loading="lazy"
+   width="1059" height="986"
+   />
+
+</p>
+<ol>
+<li><code>DocumentsContacts</code>：协议类，规范了客户端app和<code>DocumentProvider</code>之间的交互，其子类<code>Root</code>和<code>Document</code>就代表了我们之前介绍的文件结构中的根和文档。该类同时定义了文档的操作，例如删除，新建，重命名等。</li>
+<li><code>DocumentFile</code> : 辅助操作类，直接使用<code>DocumentsContact</code>类比较麻烦，也不符合大家的操作习惯。因此google推出了<code>DocumentFile</code>类来帮助大家进行文档操作，该类的api和File类较为接近。其三个子类，<code>TreeDocumentFile</code>代表了一个文档树，<code>SingleDocumentFile</code>仅仅代表单个文档。<code>RawDocumentFile</code>比较特殊，它代表的是一个普通的文件，而非SAF框架的Document uri</li>
+<li><code>DocumentProvider</code> : 文档提供者，它的各个子类真正提供了文档的内容，例如我们访问外置sd卡，就是其子类<code>ExternalStorageProvider</code>提供的内容。它是真正的数据处理者，我们通过<code>DocumentsContacts</code>发出的各个文件操作，都将由它来实际完成。</li>
+<li><code>PickActivity</code>,<code>OpenExternalDirectoryActivity</code> : DocumentUi提供的页面，可以显示文档树，以及文档操作授权页面。</li>
+</ol>
+<p>以下代码段使用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT</a>
+来搜索包含图片文件的文档提供程序：</p>
+<p><strong>启动</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">const</span> <span class="k">val</span> <span class="py">READ</span><span class="n">_REQUEST_CODE</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="m">42</span>
+<span class="ln"> 2</span><span class="o">..</span><span class="p">.</span>
+<span class="ln"> 3</span><span class="cm">/**
+</span><span class="ln"> 4</span><span class="cm"> * Fires an intent to spin up the &#34;file chooser&#34; UI and select an image.
+</span><span class="ln"> 5</span><span class="cm"> */</span>
+<span class="ln"> 6</span><span class="k">fun</span> <span class="nf">performFileSearch</span><span class="p">()</span> <span class="p">{</span>
+<span class="ln"> 7</span>    <span class="c1">// ACTION_OPEN_DOCUMENT is the intent to choose a file via the system&#39;s file
+</span><span class="ln"> 8</span><span class="c1"></span>    <span class="c1">// browser.
+</span><span class="ln"> 9</span><span class="c1"></span>    <span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">ACTION_OPEN_DOCUMENT</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+<span class="ln">10</span>        <span class="c1">// Filter to only show results that can be &#34;opened&#34;, such as a
+</span><span class="ln">11</span><span class="c1"></span>        <span class="c1">// file (as opposed to a list of contacts or timezones)
+</span><span class="ln">12</span><span class="c1"></span>        <span class="c1">//文档需要是可以打开的
+</span><span class="ln">13</span><span class="c1"></span>        <span class="n">addCategory</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">CATEGORY_OPENABLE</span><span class="p">)</span>
+<span class="ln">14</span>        <span class="c1">//是否支持多选操作
+</span><span class="ln">15</span><span class="c1"></span>        <span class="n">putExtra</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">EXTRA_ALLOW_MULTIPLE</span><span class="p">,</span><span class="k">false</span><span class="p">)</span>
+<span class="ln">16</span>        <span class="c1">// Filter to show only images, using the image MIME data type.
+</span><span class="ln">17</span><span class="c1"></span>        <span class="c1">// If one wanted to search for ogg vorbis files, the type would be &#34;audio/ogg&#34;.
+</span><span class="ln">18</span><span class="c1"></span>        <span class="c1">// To search for all documents available via installed storage providers,
+</span><span class="ln">19</span><span class="c1"></span>        <span class="c1">// it would be &#34;*/*&#34;.
+</span><span class="ln">20</span><span class="c1"></span>        <span class="c1">//指定文档的minitype
+</span><span class="ln">21</span><span class="c1"></span>        <span class="n">type</span> <span class="p">=</span> <span class="s2">&#34;image/*&#34;</span>
+<span class="ln">22</span>    <span class="p">}</span>
+<span class="ln">23</span>    <span class="n">startActivityForResult</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">READ_REQUEST_CODE</span><span class="p">)</span>
+<span class="ln">24</span><span class="p">}</span>
+</code></pre></div><ul>
+<li>当应用触发<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT</a>
+Intent 时，该 Intent 会启动选择器，以显示所有匹配的文档提供程序。</li>
+<li>在 Intent 中添加<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#CATEGORY_OPENABLE" target="_blank" rel="noopener noreferrer">CATEGORY_OPENABLE</a>
+类别可对结果进行过滤，从而只显示可打开的文档（如图片文件）。</li>
+<li><code>intent.setType(&quot;image/*&quot;)</code>语句可做进一步过滤，从而只显示 MIME 数据类型为图像的文档。</li>
+</ul>
+<p>使用比较简单，我们直接构建了一个Intent请求，并调用<code>startActivityForResult</code>方法，请求打开DocumentUi界面，让它提供一个打开文档的视图给我们。我们可以通过设置<code>EXTRA_ALLOW_MULTIPLE</code>来支持多选，其他一些可以选择的EXTRA字段，可以在<code>DocumentsContract</code>类中自行查找。</p>
+<p> </p>
+<p><strong>返回结果</strong></p>
+<p>当用户在选择器中选择文档后，系统会调用 <a href="https://developer.android.com/reference/android/app/Activity?hl=zh-cn#onActivityResult%28int,%20int,%20android.content.Intent%29" target="_blank" rel="noopener noreferrer">onActivityResult()</a>
+。<code>resultData</code>参数包含指向所选文档的 URI。您可以使用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#getData%28%29" target="_blank" rel="noopener noreferrer">getData()</a>
+提取该 URI。获得 URI 后，您可以用它来检索用户所需文档。例如：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">override</span> <span class="k">fun</span> <span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">resultData</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>    <span class="c1">// The ACTION_OPEN_DOCUMENT intent was sent with the request code
+</span><span class="ln"> 3</span><span class="c1"></span>    <span class="c1">// READ_REQUEST_CODE. If the request code seen here doesn&#39;t match, it&#39;s the
+</span><span class="ln"> 4</span><span class="c1"></span>    <span class="c1">// response to some other intent, and the code below shouldn&#39;t run at all.
+</span><span class="ln"> 5</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">requestCode</span> <span class="o">==</span> <span class="n">READ_REQUEST_CODE</span> <span class="o">&amp;&amp;</span> <span class="n">resultCode</span> <span class="o">==</span> <span class="n">Activity</span><span class="p">.</span><span class="n">RESULT_OK</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 6</span>        <span class="c1">// The document selected by the user won&#39;t be returned in the intent.
+</span><span class="ln"> 7</span><span class="c1"></span>        <span class="c1">// Instead, a URI to that document will be contained in the return intent
+</span><span class="ln"> 8</span><span class="c1"></span>        <span class="c1">// provided to this method as a parameter.
+</span><span class="ln"> 9</span><span class="c1"></span>        <span class="c1">// Pull that URI using resultData.getData().
+</span><span class="ln">10</span><span class="c1"></span>        <span class="n">resultData</span><span class="o">?.</span><span class="k">data</span><span class="o">?.</span><span class="n">also</span> <span class="p">{</span> <span class="n">uri</span> <span class="o">-&gt;</span>
+<span class="ln">11</span>            <span class="n">Log</span><span class="p">.</span><span class="n">i</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Uri: </span><span class="si">$uri</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">12</span>            <span class="n">dumpImageMetaData</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+<span class="ln">13</span>        <span class="p">}</span>
+<span class="ln">14</span>    <span class="p">}</span>
+<span class="ln">15</span><span class="p">}</span>
+</code></pre></div><p><strong>检查文档元数据</strong></p>
+<p>获得文档的 URI 后，您可以访问该文档的元数据。以下代码段用于获取 URI 所指定文档的元数据，并将其记入日志：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">fun</span> <span class="nf">dumpImageMetaData</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="n">Uri</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 2</span>    <span class="c1">// The query, since it only applies to a single document, will only return
+</span><span class="ln"> 3</span><span class="c1"></span>    <span class="c1">// one row. There&#39;s no need to filter, sort, or select fields, since we want
+</span><span class="ln"> 4</span><span class="c1"></span>    <span class="c1">// all fields for one document.
+</span><span class="ln"> 5</span><span class="c1"></span>    <span class="k">val</span> <span class="py">cursor</span><span class="p">:</span> <span class="n">Cursor</span><span class="p">?</span> <span class="p">=</span> <span class="n">contentResolver</span><span class="p">.</span><span class="n">query</span><span class="p">(</span> <span class="n">uri</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">)</span>
+<span class="ln"> 6</span>    <span class="n">cursor</span><span class="o">?.</span><span class="n">use</span> <span class="p">{</span>
+<span class="ln"> 7</span>        <span class="c1">// moveToFirst() returns false if the cursor has 0 rows.  Very handy for
+</span><span class="ln"> 8</span><span class="c1"></span>        <span class="c1">// &#34;if there&#39;s anything to look at, look at it&#34; conditionals.
+</span><span class="ln"> 9</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="k">it</span><span class="p">.</span><span class="n">moveToFirst</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">10</span>            <span class="c1">// Note it&#39;s called &#34;Display Name&#34;.  This is
+</span><span class="ln">11</span><span class="c1"></span>            <span class="c1">// provider-specific, and might not necessarily be the file name.
+</span><span class="ln">12</span><span class="c1"></span>            <span class="c1">//开打开的文档必须支持OpenableColumns的列
+</span><span class="ln">13</span><span class="c1"></span>            <span class="k">val</span> <span class="py">displayName</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span>
+<span class="ln">14</span>                    <span class="k">it</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="k">it</span><span class="p">.</span><span class="n">getColumnIndex</span><span class="p">(</span><span class="n">OpenableColumns</span><span class="p">.</span><span class="n">DISPLAY_NAME</span><span class="p">))</span>
+<span class="ln">15</span>            <span class="n">Log</span><span class="p">.</span><span class="n">i</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Display Name: </span><span class="si">$displayName</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">16</span>            <span class="k">val</span> <span class="py">sizeIndex</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="k">it</span><span class="p">.</span><span class="n">getColumnIndex</span><span class="p">(</span><span class="n">OpenableColumns</span><span class="p">.</span><span class="n">SIZE</span><span class="p">)</span>
+<span class="ln">17</span>            <span class="c1">// If the size is unknown, the value stored is null.  But since an
+</span><span class="ln">18</span><span class="c1"></span>            <span class="c1">// int can&#39;t be null in Java, the behavior is implementation-specific,
+</span><span class="ln">19</span><span class="c1"></span>            <span class="c1">// which is just a fancy term for &#34;unpredictable&#34;.  So as
+</span><span class="ln">20</span><span class="c1"></span>            <span class="c1">// a rule, check if it&#39;s null before assigning to an int.  This will
+</span><span class="ln">21</span><span class="c1"></span>            <span class="c1">// happen often:  The storage API allows for remote files, whose
+</span><span class="ln">22</span><span class="c1"></span>            <span class="c1">// size might not be locally known.
+</span><span class="ln">23</span><span class="c1"></span>            <span class="k">val</span> <span class="py">size</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(!</span><span class="k">it</span><span class="p">.</span><span class="n">isNull</span><span class="p">(</span><span class="n">sizeIndex</span><span class="p">))</span> <span class="p">{</span>
+<span class="ln">24</span>                <span class="c1">// Technically the column stores an int, but cursor.getString()
+</span><span class="ln">25</span><span class="c1"></span>                <span class="c1">// will do the conversion automatically.
+</span><span class="ln">26</span><span class="c1"></span>                <span class="k">it</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="n">sizeIndex</span><span class="p">)</span>
+<span class="ln">27</span>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="ln">28</span>                <span class="s2">&#34;Unknown&#34;</span>
+<span class="ln">29</span>            <span class="p">}</span>
+<span class="ln">30</span>            <span class="n">Log</span><span class="p">.</span><span class="n">i</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Size: </span><span class="si">$size</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">31</span>        <span class="p">}</span>
+<span class="ln">32</span>    <span class="p">}</span>
+<span class="ln">33</span><span class="p">}</span>
+</code></pre></div><p><strong>打开文档</strong></p>
+<p>获得文档的 URI 后，您可以打开文档，或随意对其执行任何其他操作。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="c1">//以下为直接从该uri中获取InputSteam，并读取出文本的内容的操作，这个是纯粹的java流操作，大家应该已经很熟悉了
+</span><span class="ln"> 2</span><span class="c1"></span>  <span class="c1">//我就不多解释了。另外这里也可以直接使用OutputSteam，向文档中写入数据。
+</span><span class="ln"> 3</span><span class="c1"></span>       <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 4</span>       <span class="k">try</span> <span class="o">{</span>
+<span class="ln"> 5</span>           <span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="n">getContentResolver</span><span class="o">().</span><span class="na">openInputStream</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
+<span class="ln"> 6</span>           <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">is</span><span class="o">));</span>
+<span class="ln"> 7</span>           <span class="n">String</span> <span class="n">line</span><span class="o">;</span>
+<span class="ln"> 8</span>           <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&#34;\r\n content : &#34;</span><span class="o">);</span>
+<span class="ln"> 9</span>           <span class="k">while</span><span class="o">((</span><span class="n">line</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">())!=</span><span class="kc">null</span><span class="o">){</span>
+<span class="ln">10</span>               <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+<span class="ln">11</span>           <span class="o">}</span>
+<span class="ln">12</span>           <span class="n">showToast</span><span class="o">(</span><span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+<span class="ln">13</span>       <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">14</span>           <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="ln">15</span>       <span class="o">}</span><span class="k">finally</span> <span class="o">{</span>
+<span class="ln">16</span>           <span class="n">closeSafe</span><span class="o">(</span><span class="n">br</span><span class="o">);</span>
+<span class="ln">17</span>       <span class="o">}</span>
+<span class="ln">18</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="nd">@Throws</span><span class="p">(</span><span class="n">IOException</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+<span class="ln"> 2</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">getBitmapFromUri</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="n">Uri</span><span class="p">):</span> <span class="n">Bitmap</span> <span class="p">{</span>
+<span class="ln"> 3</span>    <span class="k">val</span> <span class="py">parcelFileDescriptor</span><span class="p">:</span> <span class="n">ParcelFileDescriptor</span> <span class="p">=</span> <span class="n">contentResolver</span><span class="p">.</span><span class="n">openFileDescriptor</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="s2">&#34;r&#34;</span><span class="p">)</span>
+<span class="ln"> 4</span>    <span class="k">val</span> <span class="py">fileDescriptor</span><span class="p">:</span> <span class="n">FileDescriptor</span> <span class="p">=</span> <span class="n">parcelFileDescriptor</span><span class="p">.</span><span class="n">fileDescriptor</span>
+<span class="ln"> 5</span>    <span class="c1">//val fileOutputStream =FileOutputStream(fd.getFileDescriptor());
+</span><span class="ln"> 6</span><span class="c1"></span>    <span class="k">val</span> <span class="py">image</span><span class="p">:</span> <span class="n">Bitmap</span> <span class="p">=</span> <span class="n">BitmapFactory</span><span class="p">.</span><span class="n">decodeFileDescriptor</span><span class="p">(</span><span class="n">fileDescriptor</span><span class="p">)</span>
+<span class="ln"> 7</span>    <span class="n">parcelFileDescriptor</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+<span class="ln"> 8</span>    <span class="k">return</span> <span class="n">image</span>
+<span class="ln"> 9</span><span class="p">}</span>
+<span class="ln">10</span>
+</code></pre></div><p><strong>获取 InputStream</strong></p>
+<p>以下示例展示了如何从 URI 中获取 InputStream。在此代码段中，系统会将文件行读取到字符串中：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="nd">@Throws</span><span class="p">(</span><span class="n">IOException</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+<span class="ln"> 2</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">readTextFromUri</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="n">Uri</span><span class="p">):</span> <span class="n">String</span> <span class="p">{</span>
+<span class="ln"> 3</span>    <span class="k">val</span> <span class="py">stringBuilder</span> <span class="p">=</span> <span class="n">StringBuilder</span><span class="p">()</span>
+<span class="ln"> 4</span>    <span class="n">contentResolver</span><span class="p">.</span><span class="n">openInputStream</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span><span class="o">?.</span><span class="n">use</span> <span class="p">{</span> <span class="n">inputStream</span> <span class="o">-&gt;</span>
+<span class="ln"> 5</span>        <span class="n">BufferedReader</span><span class="p">(</span><span class="n">InputStreamReader</span><span class="p">(</span><span class="n">inputStream</span><span class="p">)).</span><span class="n">use</span> <span class="p">{</span> <span class="n">reader</span> <span class="o">-&gt;</span>
+<span class="ln"> 6</span>            <span class="k">var</span> <span class="py">line</span><span class="p">:</span> <span class="n">String</span><span class="p">?</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">readLine</span><span class="p">()</span>
+<span class="ln"> 7</span>            <span class="k">while</span> <span class="p">(</span><span class="n">line</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 8</span>                <span class="n">stringBuilder</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="ln"> 9</span>                <span class="n">line</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">readLine</span><span class="p">()</span>
+<span class="ln">10</span>            <span class="p">}</span>
+<span class="ln">11</span>        <span class="p">}</span>
+<span class="ln">12</span>    <span class="p">}</span>
+<span class="ln">13</span>    <span class="k">return</span> <span class="n">stringBuilder</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
+<span class="ln">14</span><span class="p">}</span>
+</code></pre></div><p><strong>ACTION_OPEN_DOCUMENT_TREE</strong></p>
+<p>上面我们说到了如何打开文档，这个ACTION可以让我们直接打开文档树。类比的话，上面的Action相当于打开一个文件，这个相当于打开一个文件夹，这样大家就知道它们的区别在哪里了。我们依旧看一下示例。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln">1</span><span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">ACTION_OPEN_DOCUMENT_TREE</span><span class="p">)</span>
+<span class="ln">2</span><span class="c1">//....
+</span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleTreeAction</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="k">val</span> <span class="py">treeUri</span><span class="p">:</span> <span class="n">Uri</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="k">data</span>
+<span class="ln"> 3</span>        <span class="c1">//授予打开的文档树永久性的读写权限
+</span><span class="ln"> 4</span><span class="c1"></span>        <span class="k">val</span> <span class="py">takeFlags</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="p">(</span><span class="n">intent</span><span class="p">.</span><span class="n">getFlags</span><span class="p">()</span>
+<span class="ln"> 5</span>                <span class="n">and</span> <span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_GRANT_READ_URI_PERMISSION</span>
+<span class="ln"> 6</span>                <span class="n">or</span> <span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_GRANT_WRITE_URI_PERMISSION</span><span class="p">))</span>
+<span class="ln"> 7</span>        <span class="n">getContentResolver</span><span class="p">().</span><span class="n">takePersistableUriPermission</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">takeFlags</span><span class="p">)</span>
+<span class="ln"> 8</span>        <span class="c1">//使用DocumentFile构建一个根文档，之后的操作可以在该文档上进行
+</span><span class="ln"> 9</span><span class="c1"></span>        <span class="n">mRoot</span> <span class="p">=</span> <span class="n">DocumentFile</span><span class="p">.</span><span class="n">fromTreeUri</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">treeUri</span><span class="p">)</span>
+<span class="ln">10</span>        <span class="c1">//显示结果toast
+</span><span class="ln">11</span><span class="c1"></span>        <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; open tree uri </span><span class="si">$treeUri</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">12</span>    <span class="p">}</span>
+</code></pre></div><ul>
+<li>对于我们打开的文档树，系统会赋予我们对该文档树下所有文档的读写权限，因此我们可以自由的使用我们上面介绍的输入输出流或者文件的方式来进行读写，该授权会一直保留到用户重启设备。</li>
+<li>但是有时候，我们需要能够永久性的访问这些文件的权限，而不是重启就需要重新授权，因此我们使用了takePersistableUriPermission方法来保留系统对我们的uri的授权，即使设备重启也不影响。</li>
+<li>我们可能保存了应用最近访问的 URI，但它们可能不再有效 — 另一个应用可能已删除或修改了文档。 因此，应该调用 getContentResolver().takePersistableUriPermission() 以检查有无最新数据。</li>
+<li>拿到了根目录的uri,我们就可用使用DocumentFile辅助类来方便的进行创建，删除文件等操作了，我们之后介绍。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="c1">// Here are some examples of how you might call this method.
+</span><span class="ln"> 2</span><span class="c1">// The first parameter is the MIME type, and the second parameter is the name
+</span><span class="ln"> 3</span><span class="c1">// of the file you are creating:
+</span><span class="ln"> 4</span><span class="c1">//
+</span><span class="ln"> 5</span><span class="c1">// createFile(&#34;text/plain&#34;, &#34;foobar.txt&#34;);
+</span><span class="ln"> 6</span><span class="c1">// createFile(&#34;image/png&#34;, &#34;mypicture.png&#34;);
+</span><span class="ln"> 7</span><span class="c1">// Unique request code.
+</span><span class="ln"> 8</span><span class="c1"></span><span class="k">private</span> <span class="k">const</span> <span class="k">val</span> <span class="py">WRITE</span><span class="n">_REQUEST_CODE</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="m">43</span>
+<span class="ln"> 9</span><span class="o">..</span><span class="p">.</span>
+<span class="ln">10</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">createFile</span><span class="p">(</span><span class="n">mimeType</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="n">fileName</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">11</span>    <span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">ACTION_CREATE_DOCUMENT</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+<span class="ln">12</span>        <span class="c1">// Filter to only show results that can be &#34;opened&#34;, such as
+</span><span class="ln">13</span><span class="c1"></span>        <span class="c1">// a file (as opposed to a list of contacts or timezones).
+</span><span class="ln">14</span><span class="c1"></span>        <span class="n">addCategory</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">CATEGORY_OPENABLE</span><span class="p">)</span>
+<span class="ln">15</span>        <span class="c1">// Create a file with the requested MIME type.
+</span><span class="ln">16</span><span class="c1"></span>        <span class="n">type</span> <span class="p">=</span> <span class="n">mimeType</span>
+<span class="ln">17</span>        <span class="n">putExtra</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">EXTRA_TITLE</span><span class="p">,</span> <span class="n">fileName</span><span class="p">)</span>
+<span class="ln">18</span>    <span class="p">}</span>
+<span class="ln">19</span>    <span class="n">startActivityForResult</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">WRITE_REQUEST_CODE</span><span class="p">)</span>
+<span class="ln">20</span><span class="p">}</span>
+</code></pre></div><p>创建新文档后，您可以在 <code>onActivityResult()</code> 中获取该文档的 URI，以便继续向其写入内容。</p>
+<p><strong>编辑文档</strong></p>
+<p>您可以随时使用 SAF 编辑文本文档。以下代码段会触发<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener noreferrer">ACTION_OPEN_DOCUMENT</a>
+Intent 并使用<a href="https://developer.android.com/reference/android/content/Intent?hl=zh-cn#CATEGORY_OPENABLE" target="_blank" rel="noopener noreferrer">CATEGORY_OPENABLE</a>
+类别，从而只显示可打开的文档。它会进一步过滤，从而只显示文本文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">const</span> <span class="k">val</span> <span class="py">EDIT</span><span class="n">_REQUEST_CODE</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="m">44</span>
+<span class="ln"> 2</span><span class="cm">/**
+</span><span class="ln"> 3</span><span class="cm"> * Open a file for writing and append some text to it.
+</span><span class="ln"> 4</span><span class="cm"> */</span>
+<span class="ln"> 5</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">editDocument</span><span class="p">()</span> <span class="p">{</span>
+<span class="ln"> 6</span>    <span class="c1">// ACTION_OPEN_DOCUMENT is the intent to choose a file via the system&#39;s
+</span><span class="ln"> 7</span><span class="c1"></span>    <span class="c1">// file browser.
+</span><span class="ln"> 8</span><span class="c1"></span>    <span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">ACTION_OPEN_DOCUMENT</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+<span class="ln"> 9</span>        <span class="c1">// Filter to only show results that can be &#34;opened&#34;, such as a
+</span><span class="ln">10</span><span class="c1"></span>        <span class="c1">// file (as opposed to a list of contacts or timezones).
+</span><span class="ln">11</span><span class="c1"></span>        <span class="n">addCategory</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">CATEGORY_OPENABLE</span><span class="p">)</span>
+<span class="ln">12</span>        <span class="c1">// Filter to show only text files.
+</span><span class="ln">13</span><span class="c1"></span>        <span class="n">type</span> <span class="p">=</span> <span class="s2">&#34;text/plain&#34;</span>
+<span class="ln">14</span>    <span class="p">}</span>
+<span class="ln">15</span>    <span class="n">startActivityForResult</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">EDIT_REQUEST_CODE</span><span class="p">)</span>
+<span class="ln">16</span><span class="p">}</span>
+<span class="ln">17</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">alterDocument</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="n">Uri</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">18</span>    <span class="k">try</span> <span class="p">{</span>
+<span class="ln">19</span>        <span class="n">contentResolver</span><span class="p">.</span><span class="n">openFileDescriptor</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span><span class="o">?.</span><span class="n">use</span> <span class="p">{</span>
+<span class="ln">20</span>            <span class="c1">// use{} lets the document provider know you&#39;re done by automatically closing the stream
+</span><span class="ln">21</span><span class="c1"></span>            <span class="n">FileOutputStream</span><span class="p">(</span><span class="k">it</span><span class="p">.</span><span class="n">fileDescriptor</span><span class="p">).</span><span class="n">use</span> <span class="p">{</span>
+<span class="ln">22</span>                <span class="k">it</span><span class="p">.</span><span class="n">write</span><span class="p">(</span>
+<span class="ln">23</span>                    <span class="p">(</span><span class="s2">&#34;Overwritten by MyCloud at </span><span class="si">${System.currentTimeMillis()}</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">).</span><span class="n">toByteArray</span><span class="p">()</span>
+<span class="ln">24</span>                <span class="p">)</span>
+<span class="ln">25</span>            <span class="p">}</span>
+<span class="ln">26</span>        <span class="p">}</span>
+<span class="ln">27</span>    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">FileNotFoundException</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">28</span>        <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">()</span>
+<span class="ln">29</span>    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">IOException</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">30</span>        <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">()</span>
+<span class="ln">31</span>    <span class="p">}</span>
+<span class="ln">32</span><span class="p">}</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleCreateDocumentAction</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="k">if</span> <span class="p">(</span><span class="k">data</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 3</span>            <span class="k">return</span>
+<span class="ln"> 4</span>        <span class="p">}</span>
+<span class="ln"> 5</span>        <span class="k">var</span> <span class="py">bw</span><span class="p">:</span> <span class="n">BufferedWriter</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+<span class="ln"> 6</span>        <span class="k">try</span> <span class="p">{</span>
+<span class="ln"> 7</span>            <span class="k">val</span> <span class="py">os</span><span class="p">:</span> <span class="n">OutputStream</span> <span class="p">=</span> <span class="n">getContentResolver</span><span class="p">().</span><span class="n">openOutputStream</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+<span class="ln"> 8</span>            <span class="n">bw</span> <span class="p">=</span> <span class="n">BufferedWriter</span><span class="p">(</span><span class="n">OutputStreamWriter</span><span class="p">(</span><span class="n">os</span><span class="p">))</span>
+<span class="ln"> 9</span>            <span class="n">bw</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&#34; i am a text &#34;</span><span class="p">)</span>
+<span class="ln">10</span>            <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; create document succeed uri </span><span class="si">$uri</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">11</span>        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">IOException</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">12</span>            <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">()</span>
+<span class="ln">13</span>        <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+<span class="ln">14</span>            <span class="n">closeSafe</span><span class="p">(</span><span class="n">bw</span><span class="p">)</span>
+<span class="ln">15</span>        <span class="p">}</span>
+<span class="ln">16</span>    <span class="p">}</span>
+</code></pre></div><p><strong>保留权限</strong></p>
+<p>当应用打开文件进行读取或写入时，系统会为其提供针对该文件的 URI 授权，有效期直至用户设备重启。但假定您的应用是图像编辑应用，而且您希望用户能直接从应用中访问其编辑的最后 5 张图像。如果用户的设备已重启，则您必须让用户回到系统选择器以查找这些文件，而这显然不是理想的做法。</p>
+<p>为防止出现此情况，您可以保留系统向应用授予的权限。实际上，您的应用是“获取”了系统提供的 URI 持久授权。如此一来，用户便可通过您的应用持续访问文件，即使设备已重启也不受影响：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln">1</span><span class="k">val</span> <span class="py">takeFlags</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="n">intent</span><span class="p">.</span><span class="n">flags</span> <span class="n">and</span>
+<span class="ln">2</span>        <span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_GRANT_READ_URI_PERMISSION</span> <span class="n">or</span> <span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_GRANT_WRITE_URI_PERMISSION</span><span class="p">)</span>
+<span class="ln">3</span><span class="c1">// Check for the freshest data.
+</span><span class="ln">4</span><span class="c1"></span><span class="n">contentResolver</span><span class="p">.</span><span class="n">takePersistableUriPermission</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">takeFlags</span><span class="p">)</span>
+</code></pre></div><p>还有最后一个步骤。应用最近访问的 URI 可能不再有效，原因是另一个应用可能删除或修改了文档。因此，您应始终调用<code>getContentResolver().takePersistableUriPermission()</code>，以检查有无最新数据。</p>
+<p>文件操作<br>
+上面我们提到的三个Action中，<code>ACTION_OPEN_DOCUMENT</code>和<code>ACTION_CREATE_DOCUMENT</code>会返回给我们一个文件对应的uri，而<code>ACTION_OPEN_TREE_CODE</code>返回给我们的则是一个文件夹对应的uri，但是之前我们学习的只是使用输入输出流来读取或者写入文件的内容，如果我们需要对文件执行删除，重命名或者复制等操作要怎么办呢？<br>
+答案就是使用google给我们提供的<code>DocumentsContact</code>以及帮助类<code>DocumentFile</code>,我们可以利用它来方便快捷的完成上述那些文件操作。</p>
+<h5 id="documentfile类介绍">DocumentFile类介绍</h5>
+<p><code>DocumentFile</code>是google为了方便大家使用SAF进行文件操作，而推出的帮助类。它的api和java的File类比较接近，更符合一般用户的习惯，且内部实质都是使用了<code>DocumentsContact</code>类的方法来对文件进行操作。也就是说，我们也可以完全不使用<code>DocumentFile</code>而是使用<code>DocumentsContact</code>来完成SAF框架提供的文件操作，<code>DocumentFile</code>提供了三个静态工厂方法来创建自身。</p>
+<ul>
+<li><code>fromSingleUri</code>,该方法需要传入一个SAF返回的指向单个文件的uri,我们的ACTION_OPEN_DOCUMENT,ACTION_CREATE_DOCUMENT返回的uri就是该类型，其对应的实现类为SingleDocumentFile，代表的是单个的文件。</li>
+<li><code>fromTreeUri</code>，该方法传入指向文件夹的uri,我们的ACTION_OPEN_TREE返回的就是该类型，其对应的实现类为TreeDocumentFile，代表的是一个文件夹。</li>
+<li><code>fromFile</code>，该方法传入普通的File类，是对file类的一个模拟，我们这里不讨论。</li>
+</ul>
+<p>DocumentFile提供了一系列操作文件的便捷方法，主要部分下面表格</p>
+<p><img class="img-fluid" alt="DocumentFile" src="https://helixs.github.io/images/uploads/2020/03/saf_document_file.png" loading="lazy"
+   width="964" height="625"
+   />
+
+</p>
+<p><strong>创建文件夹和文件，并写入数据</strong><br>
+1，根据<code>ACTION_OPEN_TREE</code>返回的文档树uri,创建一个代表它的<code>DocumentFile</code><br>
+2，在该目录下，查找名为<code>handleCreateDocument</code>的子目录。<br>
+3，如果未找到，则使用<code>DocumentFile</code>的<code>createDirectory</code>方法创建该子目录。<br>
+4，在该目录下，使用<code>createFile</code>方法创建文件。注意，如果存在重名文件，则该方法会创建一个 原文件名(n)的文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleCreateDocument</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="k">if</span> <span class="p">(</span><span class="k">data</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 3</span>            <span class="k">return</span>
+<span class="ln"> 4</span>        <span class="p">}</span>
+<span class="ln"> 5</span>        <span class="k">var</span> <span class="py">os</span><span class="p">:</span> <span class="n">OutputStream</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+<span class="ln"> 6</span>        <span class="k">try</span> <span class="p">{</span>
+<span class="ln"> 7</span>            <span class="k">val</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="n">edtName</span><span class="p">.</span><span class="n">getText</span><span class="p">().</span><span class="n">toString</span><span class="p">().</span><span class="n">trim</span><span class="p">()</span>
+<span class="ln"> 8</span>            <span class="k">val</span> <span class="py">text</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="n">edtText</span><span class="p">.</span><span class="n">getText</span><span class="p">().</span><span class="n">toString</span><span class="p">().</span><span class="n">trim</span><span class="p">()</span>
+<span class="ln"> 9</span>            <span class="k">val</span> <span class="py">path</span><span class="p">:</span> <span class="n">Uri</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="k">data</span>
+<span class="ln">10</span>            <span class="c1">//根据SAF返回的文档树uri，创建根Document
+</span><span class="ln">11</span><span class="c1"></span>            <span class="k">val</span> <span class="py">root</span> <span class="p">=</span> <span class="n">DocumentFile</span><span class="p">.</span><span class="n">fromTreeUri</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+<span class="ln">12</span>            <span class="c1">//在根目录下，查找名为handleCreateDocument的子目录
+</span><span class="ln">13</span><span class="c1"></span>            <span class="k">var</span> <span class="py">dpath</span> <span class="p">=</span> <span class="n">root</span><span class="o">!!</span><span class="p">.</span><span class="n">findFile</span><span class="p">(</span><span class="s2">&#34;handleCreateDocument&#34;</span><span class="p">)</span>
+<span class="ln">14</span>            <span class="c1">//如果该子目录不存在，则创建
+</span><span class="ln">15</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">dpath</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">16</span>                <span class="n">dpath</span> <span class="p">=</span> <span class="n">root</span><span class="p">.</span><span class="n">createDirectory</span><span class="p">(</span><span class="s2">&#34;handleCreateDocument&#34;</span><span class="p">)</span>
+<span class="ln">17</span>            <span class="p">}</span>
+<span class="ln">18</span>            <span class="c1">//在handleCreateDocument子目录下，创建一个text类型的Document文件
+</span><span class="ln">19</span><span class="c1"></span>            <span class="k">val</span> <span class="py">dfile</span> <span class="p">=</span> <span class="n">dpath</span><span class="o">!!</span><span class="p">.</span><span class="n">createFile</span><span class="p">(</span><span class="s2">&#34;text/*&#34;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<span class="ln">20</span>            <span class="c1">//获取该Document的输入流，并写入数据
+</span><span class="ln">21</span><span class="c1"></span>            <span class="n">os</span> <span class="p">=</span> <span class="n">getContentResolver</span><span class="p">().</span><span class="n">openOutputStream</span><span class="p">(</span><span class="n">dfile</span><span class="o">!!</span><span class="p">.</span><span class="n">uri</span><span class="p">)</span>
+<span class="ln">22</span>            <span class="n">os</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">.</span><span class="n">toByteArray</span><span class="p">())</span>
+<span class="ln">23</span>            <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; create document succeed &#34;</span> <span class="p">+</span> <span class="n">dfile</span><span class="p">.</span><span class="n">uri</span><span class="p">)</span>
+<span class="ln">24</span>        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">Exception</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">25</span>            <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; create document fail </span><span class="si">$e</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">26</span>        <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+<span class="ln">27</span>            <span class="n">closeSafe</span><span class="p">(</span><span class="n">os</span><span class="p">)</span>
+<span class="ln">28</span>        <span class="p">}</span>
+<span class="ln">29</span>    <span class="p">}</span>
+</code></pre></div><p><strong>删除文档或文件夹</strong></p>
+<p>如果您获得了文档的 URI，并且文档的<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#COLUMN_FLAGS" target="_blank" rel="noopener noreferrer">Document.COLUMN_FLAGS</a>
+ 包含<a href="https://developer.android.com/reference/android/provider/DocumentsContract.Document?hl=zh-cn#FLAG_SUPPORTS_DELETE" target="_blank" rel="noopener noreferrer">SUPPORTS_DELETE</a>
+，则便可删除该文档。</p>
+<p>删除文件夹的操作如下，注意该操作会删除文件夹下所有的文件和文件夹本身，而不像java的File类删除文件夹一样，需要用户手动遍历删除。当然它的内部实现其实也是利用java的File类，遍历文件夹删除，最后删除自身，原理都是一样的，只是写法不同。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleDeletePath</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="k">if</span> <span class="p">(</span><span class="k">data</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 3</span>            <span class="k">return</span>
+<span class="ln"> 4</span>        <span class="p">}</span>
+<span class="ln"> 5</span>        <span class="k">val</span> <span class="py">uri</span><span class="p">:</span> <span class="n">Uri</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="k">data</span>
+<span class="ln"> 6</span>        <span class="k">val</span> <span class="py">root</span> <span class="p">=</span> <span class="n">DocumentFile</span><span class="p">.</span><span class="n">fromTreeUri</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+<span class="ln"> 7</span>        <span class="k">val</span> <span class="py">res</span> <span class="p">=</span> <span class="n">root</span><span class="o">!!</span><span class="p">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="ln"> 8</span>        <span class="k">val</span> <span class="py">str</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="s2">&#34; delete succeed &#34;</span> <span class="k">else</span> <span class="s2">&#34; delete fail &#34;</span>
+<span class="ln"> 9</span>        <span class="n">showToast</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+<span class="ln">10</span>    <span class="p">}</span>
+</code></pre></div><p>实际上也是调用的下面</p>
+<p><code>DocumentsContract.deleteDocument(contentResolver, uri)</code></p>
+<p>删除文件的操作，则只要uri来源于单个文件，并使用DocumentFile.fromTreeUri构造DocumentFile类，其他完成一样即可，这里就不多说了。</p>
+<p><strong>重命名文件和文件夹</strong><br>
+该操作主要是使用了<code>DocumentsContract</code>类的<code>rename</code>方法来完成操作，因为<code>DocumentFile</code>类的<code>delete</code>方法不支持删除单个文件。需要注意的点如下：<br>
+1，这里的uri需要是SAF返回给我们的单个文件的uri<br>
+2，重命名的文件和原文件必须要在同一个文件夹下，重命名的文件名称指定路径是无效的。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleRenameFile</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>       <span class="k">if</span> <span class="p">(</span><span class="k">data</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 3</span>           <span class="k">return</span>
+<span class="ln"> 4</span>       <span class="p">}</span>
+<span class="ln"> 5</span>       <span class="k">val</span> <span class="py">uri</span><span class="p">:</span> <span class="n">Uri</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="k">data</span>
+<span class="ln"> 6</span>       <span class="k">try</span> <span class="p">{</span>
+<span class="ln"> 7</span>           <span class="n">DocumentsContract</span><span class="p">.</span><span class="n">renameDocument</span><span class="p">(</span><span class="n">getContentResolver</span><span class="p">(),</span> <span class="n">uri</span><span class="p">,</span> <span class="s2">&#34;renamefile&#34;</span><span class="p">)</span>
+<span class="ln"> 8</span>           <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; rename file succeed &#34;</span><span class="p">)</span>
+<span class="ln"> 9</span>       <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">FileNotFoundException</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">10</span>           <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; can not rename file &#34;</span><span class="p">)</span>
+<span class="ln">11</span>       <span class="p">}</span>
+<span class="ln">12</span>   <span class="p">}</span>
+</code></pre></div><p>重命名文件夹的操作，除了可以可以使用我们上面的重命名文件的DocumentsContract类外，还可以使用DocumentFile类的方法来完成。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleRenamePath</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="k">if</span> <span class="p">(</span><span class="k">data</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 3</span>            <span class="k">return</span>
+<span class="ln"> 4</span>        <span class="p">}</span>
+<span class="ln"> 5</span>        <span class="k">val</span> <span class="py">strPath</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="n">edtName</span><span class="p">.</span><span class="n">getText</span><span class="p">().</span><span class="n">toString</span><span class="p">().</span><span class="n">trim</span><span class="p">()</span>
+<span class="ln"> 6</span>        <span class="k">val</span> <span class="py">path</span><span class="p">:</span> <span class="n">Uri</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="k">data</span>
+<span class="ln"> 7</span>        <span class="c1">//创建一个代表路径的DocumentFile，注意使用fromTreeUri创建，该uri必须是代表路径的Document uri
+</span><span class="ln"> 8</span><span class="c1"></span>        <span class="k">val</span> <span class="py">dPath</span> <span class="p">=</span> <span class="n">DocumentFile</span><span class="p">.</span><span class="n">fromTreeUri</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+<span class="ln"> 9</span>        <span class="k">val</span> <span class="py">res</span> <span class="p">=</span> <span class="n">dPath</span><span class="o">!!</span><span class="p">.</span><span class="n">renameTo</span><span class="p">(</span><span class="n">strPath</span><span class="p">)</span>
+<span class="ln">10</span>        <span class="c1">//根据bool结果，来显示重命名文件夹是否成功
+</span><span class="ln">11</span><span class="c1"></span>        <span class="k">val</span> <span class="py">strRes</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="s2">&#34; rename path succeed &#34;</span> <span class="k">else</span> <span class="s2">&#34; rename fail &#34;</span>
+<span class="ln">12</span>        <span class="n">showToast</span><span class="p">(</span><span class="n">strRes</span><span class="p">)</span>
+<span class="ln">13</span>    <span class="p">}</span>
+</code></pre></div><p><strong>遍历文件夹下所有文件</strong></p>
+<p>1，根据ACTION_OPEN_TREE返回的文档树uri,创建一个代表它的DocumentFile。<br>
+2，直接调用DocumentFile的listFiles方法，即可返回其包含的所有子文档，注意子文档即可以是文件，也可以是文件夹。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleListAllFile</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="k">if</span> <span class="p">(</span><span class="k">data</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 3</span>            <span class="k">return</span>
+<span class="ln"> 4</span>        <span class="p">}</span>
+<span class="ln"> 5</span>        <span class="k">val</span> <span class="py">uri</span><span class="p">:</span> <span class="n">Uri</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="k">data</span>
+<span class="ln"> 6</span>        <span class="k">val</span> <span class="py">root</span> <span class="p">=</span> <span class="n">DocumentFile</span><span class="p">.</span><span class="n">fromTreeUri</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+<span class="ln"> 7</span>        <span class="k">val</span> <span class="py">files</span> <span class="p">=</span> <span class="n">root</span><span class="o">!!</span><span class="p">.</span><span class="n">listFiles</span><span class="p">()</span>
+<span class="ln"> 8</span>        <span class="k">val</span> <span class="py">sb</span> <span class="p">=</span> <span class="n">StringBuilder</span><span class="p">(</span><span class="s2">&#34; list all files </span><span class="se">\r\n</span><span class="s2"> &#34;</span><span class="p">)</span>
+<span class="ln"> 9</span>        <span class="k">if</span> <span class="p">(</span><span class="n">files</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">10</span>            <span class="k">for</span> <span class="p">(</span><span class="k">file</span> <span class="k">in</span> <span class="n">files</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">11</span>                <span class="n">sb</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">file</span><span class="p">.</span><span class="n">name</span><span class="p">).</span><span class="n">append</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\r\n</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">12</span>            <span class="p">}</span>
+<span class="ln">13</span>        <span class="p">}</span>
+<span class="ln">14</span>        <span class="n">showToast</span><span class="p">(</span><span class="n">sb</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
+<span class="ln">15</span>    <span class="p">}</span>
+</code></pre></div><h5 id="授予权限">授予权限</h5>
+<p>1，通过之前的分析，我们已经知道，通过ACTION_OPEN_DOCUMENT以及ACTION_CREATE_DOCUMENT拿到的单个文件是有读写权限的；而通过ACTION_OPEN_TREE拿到的整个文件夹也是有读写权限的。<br>
+2，现在假设我们有一个需求，要在外置sd卡/DCIM/Text目录下，创建一个1.txt的文件，并向其写入文本，那么我们应该怎么做呢？看了之前的创建文件夹和文件以及写入文件一章，你可能会觉得很简单。不就是先调用ACTION_OPEN_TREE打开sd卡根目录，等用户选择后，我们拿到它的Document uri，之后还不是就是套路了。<br>
+3，但是且慢，ACTION_OPEN_TREE打开的DocumentUi界面，用户是可以选择目录的，用户要是没有选择sd卡根目录而是其他目录，甚至选择了内部存储，那我们的文件写的位置就完全不确定了，这不符合需求啊，那怎么办呢？<br>
+4，办法当然也是有的，经过搜索源码，发现授权访问外置sd卡根目录的方法竟然不在SAF框架相关中，而是存在StorageManager相关中，可以说是很坑爹了。其实例代码如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">sdcardAuth</span><span class="p">()</span> <span class="p">{</span> <span class="c1">//获取存储管理服务
+</span><span class="ln"> 2</span><span class="c1"></span>        <span class="k">val</span> <span class="py">sm</span><span class="p">:</span> <span class="n">StorageManager</span> <span class="p">=</span> <span class="n">getSystemService</span><span class="p">&lt;</span><span class="n">Any</span><span class="p">&gt;(</span><span class="n">Context</span><span class="p">.</span><span class="n">STORAGE_SERVICE</span><span class="p">)</span> <span class="k">as</span> <span class="n">StorageManager</span>
+<span class="ln"> 3</span>        <span class="c1">//获取存储器
+</span><span class="ln"> 4</span><span class="c1"></span>        <span class="k">val</span> <span class="py">list</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">StorageVolume</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">sm</span><span class="p">.</span><span class="n">getStorageVolumes</span><span class="p">()</span>
+<span class="ln"> 5</span>        <span class="k">for</span> <span class="p">(</span><span class="n">sv</span> <span class="k">in</span> <span class="n">list</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//遍历所有存储器，当它是Removable(包含外置sd卡，usb等)且已经装载时
+</span><span class="ln"> 6</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">sv</span><span class="p">.</span><span class="n">isRemovable</span> <span class="o">&amp;&amp;</span> <span class="n">TextUtils</span><span class="p">.</span><span class="n">equals</span><span class="p">(</span><span class="n">sv</span><span class="p">.</span><span class="n">state</span><span class="p">,</span> <span class="n">Environment</span><span class="p">.</span><span class="n">MEDIA_MOUNTED</span><span class="p">))</span> <span class="p">{</span> <span class="c1">//调用StorageVolume的createAccessIntent方法
+</span><span class="ln"> 7</span><span class="c1"></span>                <span class="k">val</span> <span class="py">i</span> <span class="p">=</span> <span class="n">sv</span><span class="p">.</span><span class="n">createAccessIntent</span><span class="p">(</span><span class="k">null</span><span class="p">)</span>
+<span class="ln"> 8</span>                <span class="n">startActivityForResult</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">SDCARD_AUTH_CODE</span><span class="p">)</span>
+<span class="ln"> 9</span>                <span class="k">return</span>
+<span class="ln">10</span>            <span class="p">}</span>
+<span class="ln">11</span>        <span class="p">}</span>
+<span class="ln">12</span>        <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; can not find sdcard &#34;</span><span class="p">)</span>
+<span class="ln">13</span>    <span class="p">}</span>
+</code></pre></div><p>其实现过程分为以下几步：</p>
+<ul>
+<li>1，获取存储管理服务。</li>
+<li>2，获取并遍历所有存储器。</li>
+<li>3，找到Removable（外置sd卡,usb存储等）类型的已经装载好的存储器。</li>
+<li>4，调用StorageVolume的createAccessIntent方法产生一个inent，之后请求DocumentUi对其进行授权，注意该方法的参数为空表示对整个目录进行授权。</li>
+</ul>
+<p>我们来看一些授权界面，看起来和普通的权限弹框类似，我们选择确定后，权限就被授予了。</p>
+<p>我们在来看一些后继的处理，可以看到，也是直接获取sd卡根目录的Uri,之后赋予它永久性的访问权限。然后我们就可以用之前介绍的文件操作来对它进行我们任意操作了，为了方便，我们获取可以把该uri保存下来。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="ln"> 1</span><span class="k">private</span> <span class="k">fun</span> <span class="nf">handleSdCardAuth</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="k">if</span> <span class="p">(</span><span class="k">data</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln"> 3</span>            <span class="k">return</span>
+<span class="ln"> 4</span>        <span class="p">}</span>
+<span class="ln"> 5</span>        <span class="c1">//这里获取外置sd卡根目录的Uri,我们可以将它保存下来，方便以后使用
+</span><span class="ln"> 6</span><span class="c1"></span>        <span class="k">val</span> <span class="py">treeUri</span><span class="p">:</span> <span class="n">Uri</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="k">data</span>
+<span class="ln"> 7</span>        <span class="c1">//赋予它永久性的读写权限
+</span><span class="ln"> 8</span><span class="c1"></span>        <span class="k">val</span> <span class="py">takeFlags</span> <span class="p">=</span> <span class="p">(</span><span class="n">intent</span><span class="p">.</span><span class="n">flags</span>
+<span class="ln"> 9</span>                <span class="n">and</span> <span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_GRANT_READ_URI_PERMISSION</span>
+<span class="ln">10</span>                <span class="n">or</span> <span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_GRANT_WRITE_URI_PERMISSION</span><span class="p">))</span>
+<span class="ln">11</span>        <span class="n">contentResolver</span><span class="p">.</span><span class="n">takePersistableUriPermission</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">takeFlags</span><span class="p">)</span>
+<span class="ln">12</span>        <span class="n">showToast</span><span class="p">(</span><span class="s2">&#34; sdcard auth succeed,uri </span><span class="si">$treeUri</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="ln">13</span>    <span class="p">}</span>
+</code></pre></div><p>所以不一定非要使用READ_EXTERNAL_STORAGE||WRITE_EXTERNAL_STORAGE这两个权限进行目录访问。</p>
+<ul>
+<li>1，SAF框架不仅可以操作外置sd卡，也可以操作其他存储空间。</li>
+<li>2，使用SAF框架操作时，不需要额外的权限，例如使用它操作external storage时，并不需要我们申请WRITE_EXTERNAL_STORAGE权限。</li>
+</ul>
+<p>请注意，您不应在界面线程上执行此操作。请使用 <code>AsyncTask</code> 在后台执行此操作。打开位图后，您可以在 <code>ImageView</code> 中显示该位图。</p>
+<p><a href="https://developer.android.com/guide/topics/providers/document-provider?hl=zh-cn#kotlin" target="_blank" rel="noopener noreferrer">https://developer.android.com/guide/topics/providers/document-provider?hl=zh-cn#kotlin</a>
+<br>
+<a href="https://blog.csdn.net/hyc1988107/article/details/83825237" target="_blank" rel="noopener noreferrer">https://blog.csdn.net/hyc1988107/article/details/83825237</a>
+</p>
+</div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2020-03-24-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E6%8C%89%E6%91%A9%E5%B8%88/">每日一篇leetcode之-按摩师
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/">Android源码一步一步分析系列之OkHttp(1)——揭开面纱
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2020-03-24-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E6%8C%89%E6%91%A9%E5%B8%88/">每日一篇leetcode之-按摩师
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-19-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA-ii/">每日一篇leetcode之-买卖股票的最佳时机 II
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-19-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E4%B8%B2/">每日一篇leetcode之-最长回文串
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-18-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B/">每日一篇leetcode之-矩形重叠
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-17-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B%E6%8B%BC%E5%86%99%E5%8D%95%E8%AF%8D/">每日一篇leetcode之-拼写单词
+</a></li></ul>
+  </section></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="card row text-center profile component">
+  <div class="card-body">
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="https://helixs.github.io/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">分类</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="badge bg-primary text-white rounded post-taxonomy" title="数据库">
+            数据库
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/series">专栏</a>
+        </h2>
+        <div><a href="https://helixs.github.io/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">标签</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="https://helixs.github.io/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 Helixs. All Rights Reserved.
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!doctype html><html lang="zh-cn"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor">
+<meta itemprop="description" content="ConnectInterceptor拦截器里面的东西不多，主要是调用了连接池里面的东西。 为什么需要这个拦截器，当我们每次发送一次Http请求"><meta itemprop="datePublished" content="2020-04-10T06:17:06+00:00" />
+<meta itemprop="dateModified" content="2020-04-10T06:17:06+00:00" />
+<meta itemprop="wordCount" content="3402">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor" />
+<meta property="og:description" content="ConnectInterceptor拦截器里面的东西不多，主要是调用了连接池里面的东西。 为什么需要这个拦截器，当我们每次发送一次Http请求" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp5-connectinterceptor/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-10T06:17:06+00:00" />
+<meta property="article:modified_time" content="2020-04-10T06:17:06+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor"/>
+<meta name="twitter:description" content="ConnectInterceptor拦截器里面的东西不多，主要是调用了连接池里面的东西。 为什么需要这个拦截器，当我们每次发送一次Http请求"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=Android%e6%ba%90%e7%a0%81%e4%b8%80%e6%ad%a5%e4%b8%80%e6%ad%a5%e5%88%86%e6%9e%90%e7%b3%bb%e5%88%97%e4%b9%8bOkHttp%285%29%e2%80%94%e2%80%94ConnectInterceptor&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-10-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp5-connectinterceptor%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-10-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp5-connectinterceptor%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">设置</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="棕色"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="青色"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="绿色"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="橙色"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="粉色"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="紫色"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="红色"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="https://helixs.github.io/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2020-04-10
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>7 分钟阅读
+  </span><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge rounded-pill text-white bg-primary post-taxonomy">源码分析</a></div>
+<div class="post-content mb-3"><p>ConnectInterceptor拦截器里面的东西不多，主要是调用了连接池里面的东西。</p>
+<p>为什么需要这个拦截器，当我们每次发送一次Http请求的时候，如果每次都进行TCP3次握手，耗费的时间和精力是很多的。</p>
+<p>在Http1.1中通过增加了head字段Connection和Keep-Alive来告诉服务器保持一个常在连接通道，那么后面很多的request请求在这个时间范围内都可以用这个连接进行发送。</p>
+<p>这个拦截器就是来干这个事的。</p>
+<p>我们下面来看看</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="cm">/*
+</span><span class="ln"> 2</span><span class="cm"> *  Licensed to the Apache Software Foundation (ASF) under one or more
+</span><span class="ln"> 3</span><span class="cm"> *  contributor license agreements.  See the NOTICE file distributed with
+</span><span class="ln"> 4</span><span class="cm"> *  this work for additional information regarding copyright ownership.
+</span><span class="ln"> 5</span><span class="cm"> *  The ASF licenses this file to You under the Apache License, Version 2.0
+</span><span class="ln"> 6</span><span class="cm"> *  (the &#34;License&#34;); you may not use this file except in compliance with
+</span><span class="ln"> 7</span><span class="cm"> *  the License.  You may obtain a copy of the License at
+</span><span class="ln"> 8</span><span class="cm"> *
+</span><span class="ln"> 9</span><span class="cm"> *     http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ln">10</span><span class="cm"> *
+</span><span class="ln">11</span><span class="cm"> *  Unless required by applicable law or agreed to in writing, software
+</span><span class="ln">12</span><span class="cm"> *  distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+</span><span class="ln">13</span><span class="cm"> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ln">14</span><span class="cm"> *  See the License for the specific language governing permissions and
+</span><span class="ln">15</span><span class="cm"> *  limitations under the License.
+</span><span class="ln">16</span><span class="cm"> */</span>
+<span class="ln">17</span><span class="kn">package</span> <span class="nn">okhttp3.internal.connection</span><span class="o">;</span>
+<span class="ln">18</span><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="ln">19</span><span class="kn">import</span> <span class="nn">okhttp3.Interceptor</span><span class="o">;</span>
+<span class="ln">20</span><span class="kn">import</span> <span class="nn">okhttp3.OkHttpClient</span><span class="o">;</span>
+<span class="ln">21</span><span class="kn">import</span> <span class="nn">okhttp3.Request</span><span class="o">;</span>
+<span class="ln">22</span><span class="kn">import</span> <span class="nn">okhttp3.Response</span><span class="o">;</span>
+<span class="ln">23</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http.RealInterceptorChain</span><span class="o">;</span>
+<span class="ln">24</span><span class="cm">/** Opens a connection to the target server and proceeds to the next interceptor. */</span>
+<span class="ln">25</span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">ConnectInterceptor</span> <span class="kd">implements</span> <span class="n">Interceptor</span> <span class="o">{</span>
+<span class="ln">26</span>  <span class="kd">public</span> <span class="kd">final</span> <span class="n">OkHttpClient</span> <span class="n">client</span><span class="o">;</span>
+<span class="ln">27</span>  <span class="kd">public</span> <span class="nf">ConnectInterceptor</span><span class="o">(</span><span class="n">OkHttpClient</span> <span class="n">client</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">28</span>    <span class="k">this</span><span class="o">.</span><span class="na">client</span> <span class="o">=</span> <span class="n">client</span><span class="o">;</span>
+<span class="ln">29</span>  <span class="o">}</span>
+<span class="ln">30</span>  <span class="nd">@Override</span> <span class="kd">public</span> <span class="n">Response</span> <span class="nf">intercept</span><span class="o">(</span><span class="n">Chain</span> <span class="n">chain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln">31</span>    <span class="n">RealInterceptorChain</span> <span class="n">realChain</span> <span class="o">=</span> <span class="o">(</span><span class="n">RealInterceptorChain</span><span class="o">)</span> <span class="n">chain</span><span class="o">;</span>
+<span class="ln">32</span>    <span class="n">Request</span> <span class="n">request</span> <span class="o">=</span> <span class="n">realChain</span><span class="o">.</span><span class="na">request</span><span class="o">();</span>
+<span class="ln">33</span>    <span class="n">Transmitter</span> <span class="n">transmitter</span> <span class="o">=</span> <span class="n">realChain</span><span class="o">.</span><span class="na">transmitter</span><span class="o">();</span>
+<span class="ln">34</span>    
+<span class="ln">35</span>    <span class="c1">// We need the network to satisfy this request. Possibly for validating a conditional GET.
+</span><span class="ln">36</span><span class="c1"></span>    <span class="kt">boolean</span> <span class="n">doExtensiveHealthChecks</span> <span class="o">=</span> <span class="o">!</span><span class="n">request</span><span class="o">.</span><span class="na">method</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;GET&#34;</span><span class="o">);</span>
+<span class="ln">37</span>    <span class="c1">//返回一个交换器 这个东西主要用在下一个拦截器 CallServerInterceptor 中， 用来传输单个http请求和返回，并且连接和管理实际的IO。
+</span><span class="ln">38</span><span class="c1"></span>    <span class="n">Exchange</span> <span class="n">exchange</span> <span class="o">=</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">newExchange</span><span class="o">(</span><span class="n">chain</span><span class="o">,</span> <span class="n">doExtensiveHealthChecks</span><span class="o">);</span>
+<span class="ln">39</span>    <span class="k">return</span> <span class="n">realChain</span><span class="o">.</span><span class="na">proceed</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">transmitter</span><span class="o">,</span> <span class="n">exchange</span><span class="o">);</span>
+<span class="ln">40</span>  <span class="o">}</span>
+<span class="ln">41</span><span class="o">}</span>
+<span class="ln">42</span>
+</code></pre></div><p>进入newExchange</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="n">Exchange</span> <span class="nf">newExchange</span><span class="o">(</span><span class="n">Interceptor</span><span class="o">.</span><span class="na">Chain</span> <span class="n">chain</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">doExtensiveHealthChecks</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 2</span>  <span class="kd">synchronized</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 3</span>      <span class="c1">//noMoreExchanges 一般情况下是触发异常和返回完成才会当做 true
+</span><span class="ln"> 4</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">noMoreExchanges</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">&#34;released&#34;</span><span class="o">);</span>
+<span class="ln"> 5</span>     <span class="c1">//当前已经存在交换机
+</span><span class="ln"> 6</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">exchange</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">&#34;exchange != null&#34;</span><span class="o">);</span>
+<span class="ln"> 7</span>  <span class="o">}</span>
+<span class="ln"> 8</span>  <span class="c1">//exchangeFinder为查找器 找到一个处理request和response的加解码器
+</span><span class="ln"> 9</span><span class="c1"></span>  <span class="n">ExchangeCodec</span> <span class="n">codec</span> <span class="o">=</span> <span class="n">exchangeFinder</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">client</span><span class="o">,</span> <span class="n">chain</span><span class="o">,</span> <span class="n">doExtensiveHealthChecks</span><span class="o">);</span>
+<span class="ln">10</span>  <span class="c1">//创建一个交换机
+</span><span class="ln">11</span><span class="c1"></span>  <span class="n">Exchange</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Exchange</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">call</span><span class="o">,</span> <span class="n">eventListener</span><span class="o">,</span> <span class="n">exchangeFinder</span><span class="o">,</span> <span class="n">codec</span><span class="o">);</span>
+<span class="ln">12</span>  <span class="kd">synchronized</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">13</span>    <span class="k">this</span><span class="o">.</span><span class="na">exchange</span> <span class="o">=</span> <span class="n">result</span><span class="o">;</span>
+<span class="ln">14</span>    <span class="k">this</span><span class="o">.</span><span class="na">exchangeRequestDone</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">15</span>    <span class="k">this</span><span class="o">.</span><span class="na">exchangeResponseDone</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">16</span>    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="ln">17</span>  <span class="o">}</span>
+<span class="ln">18</span><span class="o">}</span>
+</code></pre></div><p>进入find</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="kd">public</span> <span class="n">ExchangeCodec</span> <span class="nf">find</span><span class="o">(</span>
+<span class="ln"> 2</span>    <span class="n">OkHttpClient</span> <span class="n">client</span><span class="o">,</span> <span class="n">Interceptor</span><span class="o">.</span><span class="na">Chain</span> <span class="n">chain</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">doExtensiveHealthChecks</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 3</span>  <span class="kt">int</span> <span class="n">connectTimeout</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="na">connectTimeoutMillis</span><span class="o">();</span>
+<span class="ln"> 4</span>  <span class="kt">int</span> <span class="n">readTimeout</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="na">readTimeoutMillis</span><span class="o">();</span>
+<span class="ln"> 5</span>  <span class="kt">int</span> <span class="n">writeTimeout</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="na">writeTimeoutMillis</span><span class="o">();</span>
+<span class="ln"> 6</span>  <span class="kt">int</span> <span class="n">pingIntervalMillis</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">pingIntervalMillis</span><span class="o">();</span>
+<span class="ln"> 7</span>  <span class="kt">boolean</span> <span class="n">connectionRetryEnabled</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">retryOnConnectionFailure</span><span class="o">();</span>
+<span class="ln"> 8</span>  <span class="k">try</span> <span class="o">{</span>
+<span class="ln"> 9</span>    <span class="c1">//返回一个真实可用的连接
+</span><span class="ln">10</span><span class="c1"></span>    <span class="n">RealConnection</span> <span class="n">resultConnection</span> <span class="o">=</span> <span class="n">findHealthyConnection</span><span class="o">(</span><span class="n">connectTimeout</span><span class="o">,</span> <span class="n">readTimeout</span><span class="o">,</span>
+<span class="ln">11</span>        <span class="n">writeTimeout</span><span class="o">,</span> <span class="n">pingIntervalMillis</span><span class="o">,</span> <span class="n">connectionRetryEnabled</span><span class="o">,</span> <span class="n">doExtensiveHealthChecks</span><span class="o">);</span>
+<span class="ln">12</span>    <span class="c1">//返回加解码器有两种一种是http1和http2的 具体的可以自己看一下 这里不多说
+</span><span class="ln">13</span><span class="c1"></span>    <span class="k">return</span> <span class="n">resultConnection</span><span class="o">.</span><span class="na">newCodec</span><span class="o">(</span><span class="n">client</span><span class="o">,</span> <span class="n">chain</span><span class="o">);</span>
+<span class="ln">14</span>  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">RouteException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">15</span>    <span class="n">trackFailure</span><span class="o">();</span>
+<span class="ln">16</span>    <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
+<span class="ln">17</span>  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">18</span>    <span class="n">trackFailure</span><span class="o">();</span>
+<span class="ln">19</span>    <span class="k">throw</span> <span class="k">new</span> <span class="n">RouteException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+<span class="ln">20</span>  <span class="o">}</span>
+<span class="ln">21</span><span class="o">}</span>
+</code></pre></div><p>进入findHealthyConnection</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="cm">/**
+</span><span class="ln"> 2</span><span class="cm">  * Finds a connection and returns it if it is healthy. If it is unhealthy the process is repeated
+</span><span class="ln"> 3</span><span class="cm">  * until a healthy connection is found.
+</span><span class="ln"> 4</span><span class="cm">  * 找到一个真实可用的连接，如果没有找到就重复操作，直到找到为止
+</span><span class="ln"> 5</span><span class="cm">  */</span>
+<span class="ln"> 6</span> <span class="kd">private</span> <span class="n">RealConnection</span> <span class="nf">findHealthyConnection</span><span class="o">(</span><span class="kt">int</span> <span class="n">connectTimeout</span><span class="o">,</span> <span class="kt">int</span> <span class="n">readTimeout</span><span class="o">,</span>
+<span class="ln"> 7</span>     <span class="kt">int</span> <span class="n">writeTimeout</span><span class="o">,</span> <span class="kt">int</span> <span class="n">pingIntervalMillis</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">connectionRetryEnabled</span><span class="o">,</span>
+<span class="ln"> 8</span>     <span class="kt">boolean</span> <span class="n">doExtensiveHealthChecks</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln"> 9</span>   <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">10</span>     <span class="n">RealConnection</span> <span class="n">candidate</span> <span class="o">=</span> <span class="n">findConnection</span><span class="o">(</span><span class="n">connectTimeout</span><span class="o">,</span> <span class="n">readTimeout</span><span class="o">,</span> <span class="n">writeTimeout</span><span class="o">,</span>
+<span class="ln">11</span>         <span class="n">pingIntervalMillis</span><span class="o">,</span> <span class="n">connectionRetryEnabled</span><span class="o">);</span>
+<span class="ln">12</span>     <span class="c1">// If this is a brand new connection, we can skip the extensive health checks.
+</span><span class="ln">13</span><span class="c1"></span>     <span class="kd">synchronized</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">14</span>       <span class="c1">// 如果是新链接，跳过 healthy 判断直接返回
+</span><span class="ln">15</span><span class="c1"></span>       <span class="k">if</span> <span class="o">(</span><span class="n">candidate</span><span class="o">.</span><span class="na">successCount</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">16</span>         <span class="k">return</span> <span class="n">candidate</span><span class="o">;</span>
+<span class="ln">17</span>       <span class="o">}</span>
+<span class="ln">18</span>     <span class="o">}</span>
+<span class="ln">19</span>     <span class="c1">// 这条链接是否可用
+</span><span class="ln">20</span><span class="c1"></span>     <span class="c1">// Do a (potentially slow) check to confirm that the pooled connection is still good. If it
+</span><span class="ln">21</span><span class="c1"></span>     <span class="c1">// isn&#39;t, take it out of the pool and start again.
+</span><span class="ln">22</span><span class="c1"></span>     <span class="k">if</span> <span class="o">(!</span><span class="n">candidate</span><span class="o">.</span><span class="na">isHealthy</span><span class="o">(</span><span class="n">doExtensiveHealthChecks</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">23</span>       <span class="n">candidate</span><span class="o">.</span><span class="na">noNewExchanges</span><span class="o">();</span>
+<span class="ln">24</span>       <span class="k">continue</span><span class="o">;</span>
+<span class="ln">25</span>     <span class="o">}</span>
+<span class="ln">26</span>     <span class="k">return</span> <span class="n">candidate</span><span class="o">;</span>
+<span class="ln">27</span>   <span class="o">}</span>
+<span class="ln">28</span> <span class="o">}</span>
+<span class="ln">29</span>
+</code></pre></div><p>进入findConnection</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln">  1</span>
+<span class="ln">  2</span><span class="cm">/**
+</span><span class="ln">  3</span><span class="cm">   * Returns a connection to host a new stream. This prefers the existing connection if it exists,
+</span><span class="ln">  4</span><span class="cm">   * then the pool, finally building a new connection.
+</span><span class="ln">  5</span><span class="cm">   * 返回一个连接，如果连接池中有可用的连接直接返回，如果没有就会重新建立一个连接，当然建立过程是通过socket阻塞的
+</span><span class="ln">  6</span><span class="cm">   */</span>
+<span class="ln">  7</span>  <span class="kd">private</span> <span class="n">RealConnection</span> <span class="nf">findConnection</span><span class="o">(</span><span class="kt">int</span> <span class="n">connectTimeout</span><span class="o">,</span> <span class="kt">int</span> <span class="n">readTimeout</span><span class="o">,</span> <span class="kt">int</span> <span class="n">writeTimeout</span><span class="o">,</span>
+<span class="ln">  8</span>      <span class="kt">int</span> <span class="n">pingIntervalMillis</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">connectionRetryEnabled</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln">  9</span>    <span class="kt">boolean</span> <span class="n">foundPooledConnection</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln"> 10</span>    <span class="n">RealConnection</span> <span class="n">result</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 11</span>    <span class="n">Route</span> <span class="n">selectedRoute</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 12</span>    <span class="n">RealConnection</span> <span class="n">releasedConnection</span><span class="o">;</span>
+<span class="ln"> 13</span>    <span class="n">Socket</span> <span class="n">toClose</span><span class="o">;</span>
+<span class="ln"> 14</span>    <span class="kd">synchronized</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 15</span>      <span class="k">if</span> <span class="o">(</span><span class="n">transmitter</span><span class="o">.</span><span class="na">isCanceled</span><span class="o">())</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">IOException</span><span class="o">(</span><span class="s">&#34;Canceled&#34;</span><span class="o">);</span>
+<span class="ln"> 16</span>      <span class="n">hasStreamFailure</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span> <span class="c1">// This is a fresh attempt.
+</span><span class="ln"> 17</span><span class="c1"></span>      <span class="c1">//尝试使用当前transmitter的连接 如果有效的话
+</span><span class="ln"> 18</span><span class="c1"></span>      <span class="n">Route</span> <span class="n">previousRoute</span> <span class="o">=</span> <span class="n">retryCurrentRoute</span><span class="o">()</span>
+<span class="ln"> 19</span>          <span class="o">?</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span><span class="o">.</span><span class="na">route</span><span class="o">()</span>
+<span class="ln"> 20</span>          <span class="o">:</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 21</span>      <span class="c1">// Attempt to use an already-allocated connection. We need to be careful here because our
+</span><span class="ln"> 22</span><span class="c1"></span>      <span class="c1">// already-allocated connection may have been restricted from creating new exchanges.
+</span><span class="ln"> 23</span><span class="c1"></span>      <span class="n">releasedConnection</span> <span class="o">=</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span><span class="o">;</span>
+<span class="ln"> 24</span>      <span class="c1">// 若不可用了，则关闭
+</span><span class="ln"> 25</span><span class="c1"></span>      <span class="n">toClose</span> <span class="o">=</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span><span class="o">.</span><span class="na">noNewExchanges</span>
+<span class="ln"> 26</span>          <span class="o">?</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">releaseConnectionNoEvents</span><span class="o">()</span>
+<span class="ln"> 27</span>          <span class="o">:</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 28</span>      <span class="k">if</span> <span class="o">(</span><span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 29</span>        <span class="c1">// We had an already-allocated connection and it&#39;s good.
+</span><span class="ln"> 30</span><span class="c1"></span>        <span class="n">result</span> <span class="o">=</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span><span class="o">;</span>
+<span class="ln"> 31</span>        <span class="n">releasedConnection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 32</span>      <span class="o">}</span>
+<span class="ln"> 33</span>      <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 34</span>        <span class="c1">// Attempt to get a connection from the pool.
+</span><span class="ln"> 35</span><span class="c1"></span>        <span class="c1">//如果当前transmitter没有连接 那么就尝试从线程池中获取connection
+</span><span class="ln"> 36</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">.</span><span class="na">transmitterAcquirePooledConnection</span><span class="o">(</span><span class="n">address</span><span class="o">,</span> <span class="n">transmitter</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln"> 37</span>          <span class="n">foundPooledConnection</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln"> 38</span>          <span class="n">result</span> <span class="o">=</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span><span class="o">;</span>
+<span class="ln"> 39</span>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln"> 40</span>          <span class="n">selectedRoute</span> <span class="o">=</span> <span class="n">previousRoute</span><span class="o">;</span>
+<span class="ln"> 41</span>        <span class="o">}</span>
+<span class="ln"> 42</span>      <span class="o">}</span>
+<span class="ln"> 43</span>    <span class="o">}</span>
+<span class="ln"> 44</span>    <span class="c1">// 释放没用的 connection
+</span><span class="ln"> 45</span><span class="c1"></span>    <span class="n">closeQuietly</span><span class="o">(</span><span class="n">toClose</span><span class="o">);</span>
+<span class="ln"> 46</span>    <span class="k">if</span> <span class="o">(</span><span class="n">releasedConnection</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 47</span>      <span class="n">eventListener</span><span class="o">.</span><span class="na">connectionReleased</span><span class="o">(</span><span class="n">call</span><span class="o">,</span> <span class="n">releasedConnection</span><span class="o">);</span>
+<span class="ln"> 48</span>    <span class="o">}</span>
+<span class="ln"> 49</span>    <span class="c1">// 如果找到复用的，则使用这条链接，回调
+</span><span class="ln"> 50</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">foundPooledConnection</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 51</span>      <span class="n">eventListener</span><span class="o">.</span><span class="na">connectionAcquired</span><span class="o">(</span><span class="n">call</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+<span class="ln"> 52</span>    <span class="o">}</span>
+<span class="ln"> 53</span>    <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 54</span>      <span class="c1">// 找到一条可复用的链接
+</span><span class="ln"> 55</span><span class="c1"></span>      <span class="c1">// If we found an already-allocated or pooled connection, we&#39;re done.
+</span><span class="ln"> 56</span><span class="c1"></span>      <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="ln"> 57</span>    <span class="o">}</span>
+<span class="ln"> 58</span>    <span class="c1">//
+</span><span class="ln"> 59</span><span class="c1"></span>    <span class="c1">// If we need a route selection, make one. This is a blocking operation.
+</span><span class="ln"> 60</span><span class="c1"></span>    <span class="c1">//切换路由再在链接池里面找，如果有则返回
+</span><span class="ln"> 61</span><span class="c1"></span>    <span class="kt">boolean</span> <span class="n">newRouteSelection</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln"> 62</span>    <span class="k">if</span> <span class="o">(</span><span class="n">selectedRoute</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">routeSelection</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">routeSelection</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()))</span> <span class="o">{</span>
+<span class="ln"> 63</span>      <span class="n">newRouteSelection</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln"> 64</span>      <span class="n">routeSelection</span> <span class="o">=</span> <span class="n">routeSelector</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+<span class="ln"> 65</span>    <span class="o">}</span>
+<span class="ln"> 66</span>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Route</span><span class="o">&gt;</span> <span class="n">routes</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 67</span>    <span class="kd">synchronized</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 68</span>      <span class="k">if</span> <span class="o">(</span><span class="n">transmitter</span><span class="o">.</span><span class="na">isCanceled</span><span class="o">())</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">IOException</span><span class="o">(</span><span class="s">&#34;Canceled&#34;</span><span class="o">);</span>
+<span class="ln"> 69</span>      <span class="k">if</span> <span class="o">(</span><span class="n">newRouteSelection</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 70</span>        <span class="c1">// Now that we have a set of IP addresses, make another attempt at getting a connection from
+</span><span class="ln"> 71</span><span class="c1"></span>        <span class="c1">// the pool. This could match due to connection coalescing.
+</span><span class="ln"> 72</span><span class="c1"></span>        <span class="n">routes</span> <span class="o">=</span> <span class="n">routeSelection</span><span class="o">.</span><span class="na">getAll</span><span class="o">();</span>
+<span class="ln"> 73</span>        <span class="k">if</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">.</span><span class="na">transmitterAcquirePooledConnection</span><span class="o">(</span>
+<span class="ln"> 74</span>            <span class="n">address</span><span class="o">,</span> <span class="n">transmitter</span><span class="o">,</span> <span class="n">routes</span><span class="o">,</span> <span class="kc">false</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln"> 75</span>          <span class="n">foundPooledConnection</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln"> 76</span>          <span class="n">result</span> <span class="o">=</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span><span class="o">;</span>
+<span class="ln"> 77</span>        <span class="o">}</span>
+<span class="ln"> 78</span>      <span class="o">}</span>
+<span class="ln"> 79</span>      <span class="k">if</span> <span class="o">(!</span><span class="n">foundPooledConnection</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 80</span>        <span class="k">if</span> <span class="o">(</span><span class="n">selectedRoute</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 81</span>          <span class="c1">// 没找到则创建一条
+</span><span class="ln"> 82</span><span class="c1"></span>          <span class="n">selectedRoute</span> <span class="o">=</span> <span class="n">routeSelection</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+<span class="ln"> 83</span>        <span class="o">}</span>
+<span class="ln"> 84</span>        <span class="c1">// Create a connection and assign it to this allocation immediately. This makes it possible
+</span><span class="ln"> 85</span><span class="c1"></span>        <span class="c1">// for an asynchronous cancel() to interrupt the handshake we&#39;re about to do.
+</span><span class="ln"> 86</span><span class="c1"></span>        <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RealConnection</span><span class="o">(</span><span class="n">connectionPool</span><span class="o">,</span> <span class="n">selectedRoute</span><span class="o">);</span>
+<span class="ln"> 87</span>        <span class="n">connectingConnection</span> <span class="o">=</span> <span class="n">result</span><span class="o">;</span>
+<span class="ln"> 88</span>      <span class="o">}</span>
+<span class="ln"> 89</span>    <span class="o">}</span>
+<span class="ln"> 90</span>    <span class="c1">// If we found a pooled connection on the 2nd time around, we&#39;re done.
+</span><span class="ln"> 91</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">foundPooledConnection</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 92</span>      <span class="n">eventListener</span><span class="o">.</span><span class="na">connectionAcquired</span><span class="o">(</span><span class="n">call</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+<span class="ln"> 93</span>      <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="ln"> 94</span>    <span class="o">}</span>
+<span class="ln"> 95</span>    <span class="c1">//建立链接
+</span><span class="ln"> 96</span><span class="c1"></span>    <span class="c1">// Do TCP + TLS handshakes. This is a blocking operation.
+</span><span class="ln"> 97</span><span class="c1"></span>    <span class="n">result</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">connectTimeout</span><span class="o">,</span> <span class="n">readTimeout</span><span class="o">,</span> <span class="n">writeTimeout</span><span class="o">,</span> <span class="n">pingIntervalMillis</span><span class="o">,</span>
+<span class="ln"> 98</span>        <span class="n">connectionRetryEnabled</span><span class="o">,</span> <span class="n">call</span><span class="o">,</span> <span class="n">eventListener</span><span class="o">);</span>
+<span class="ln"> 99</span>    <span class="c1">// 将这条路由从错误缓存中清除
+</span><span class="ln">100</span><span class="c1"></span>    <span class="n">connectionPool</span><span class="o">.</span><span class="na">routeDatabase</span><span class="o">.</span><span class="na">connected</span><span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">route</span><span class="o">());</span>
+<span class="ln">101</span>    <span class="n">Socket</span> <span class="n">socket</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">102</span>    <span class="kd">synchronized</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">103</span>      <span class="n">connectingConnection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">104</span>      <span class="c1">// Last attempt at connection coalescing, which only occurs if we attempted multiple
+</span><span class="ln">105</span><span class="c1"></span>      <span class="c1">// concurrent connections to the same host.
+</span><span class="ln">106</span><span class="c1"></span>      <span class="c1">// 检测一下，若多并发情况下同 address 下导致创建多个，则将当前这个释放掉
+</span><span class="ln">107</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">connectionPool</span><span class="o">.</span><span class="na">transmitterAcquirePooledConnection</span><span class="o">(</span><span class="n">address</span><span class="o">,</span> <span class="n">transmitter</span><span class="o">,</span> <span class="n">routes</span><span class="o">,</span> <span class="kc">true</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">108</span>        <span class="c1">// We lost the race! Close the connection we created and return the pooled connection.
+</span><span class="ln">109</span><span class="c1"></span>        <span class="n">result</span><span class="o">.</span><span class="na">noNewExchanges</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">110</span>        <span class="n">socket</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">socket</span><span class="o">();</span>
+<span class="ln">111</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">transmitter</span><span class="o">.</span><span class="na">connection</span><span class="o">;</span>
+<span class="ln">112</span>      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln">113</span>        <span class="c1">// 将这个请求加入链接池
+</span><span class="ln">114</span><span class="c1"></span>        <span class="n">connectionPool</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+<span class="ln">115</span>        <span class="n">transmitter</span><span class="o">.</span><span class="na">acquireConnectionNoEvents</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+<span class="ln">116</span>      <span class="o">}</span>
+<span class="ln">117</span>    <span class="o">}</span>
+<span class="ln">118</span>    <span class="c1">// 释放掉 socket
+</span><span class="ln">119</span><span class="c1"></span>    <span class="n">closeQuietly</span><span class="o">(</span><span class="n">socket</span><span class="o">);</span>
+<span class="ln">120</span>    <span class="n">eventListener</span><span class="o">.</span><span class="na">connectionAcquired</span><span class="o">(</span><span class="n">call</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+<span class="ln">121</span>    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="ln">122</span>  <span class="o">}</span>
+</code></pre></div><p>进入RealConnectionPool.transmitterAcquirePooledConnection</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span>
+<span class="ln"> 2</span><span class="cm">/**
+</span><span class="ln"> 3</span><span class="cm"> *
+</span><span class="ln"> 4</span><span class="cm"> * #class RealConnectionPool
+</span><span class="ln"> 5</span><span class="cm"> *
+</span><span class="ln"> 6</span><span class="cm"> *遍历 pool 中的 connections(ArrayQueue)，如果链接是可以复用的则将这个连接放到transmitter
+</span><span class="ln"> 7</span><span class="cm"> */</span>
+<span class="ln"> 8</span><span class="kt">boolean</span> <span class="nf">transmitterAcquirePooledConnection</span><span class="o">(</span><span class="n">Address</span> <span class="n">address</span><span class="o">,</span> <span class="n">Transmitter</span> <span class="n">transmitter</span><span class="o">,</span>
+<span class="ln"> 9</span>                                           <span class="nd">@Nullable</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Route</span><span class="o">&gt;</span> <span class="n">routes</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">requireMultiplexed</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">10</span>  <span class="k">assert</span> <span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">holdsLock</span><span class="o">(</span><span class="k">this</span><span class="o">));</span>
+<span class="ln">11</span>  <span class="k">for</span> <span class="o">(</span><span class="n">RealConnection</span> <span class="n">connection</span> <span class="o">:</span> <span class="n">connections</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">12</span>    <span class="k">if</span> <span class="o">(</span><span class="n">requireMultiplexed</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">connection</span><span class="o">.</span><span class="na">isMultiplexed</span><span class="o">())</span> <span class="k">continue</span><span class="o">;</span>
+<span class="ln">13</span>    <span class="k">if</span> <span class="o">(!</span><span class="n">connection</span><span class="o">.</span><span class="na">isEligible</span><span class="o">(</span><span class="n">address</span><span class="o">,</span> <span class="n">routes</span><span class="o">))</span> <span class="k">continue</span><span class="o">;</span>
+<span class="ln">14</span>    <span class="n">transmitter</span><span class="o">.</span><span class="na">acquireConnectionNoEvents</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+<span class="ln">15</span>    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">16</span>  <span class="o">}</span>
+<span class="ln">17</span>  <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">18</span><span class="o">}</span>
+</code></pre></div><p>进入RealConnectionPool.isEligible</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="cm">/**
+</span><span class="ln"> 2</span><span class="cm">   * #class RealConnectionPool
+</span><span class="ln"> 3</span><span class="cm">   * Returns true if this connection can carry a stream allocation to {@code address}. If non-null
+</span><span class="ln"> 4</span><span class="cm">   * {@code route} is the resolved route for a connection.
+</span><span class="ln"> 5</span><span class="cm">   * 这个连接是符合地址和路由要求的
+</span><span class="ln"> 6</span><span class="cm">   */</span>
+<span class="ln"> 7</span>  <span class="kt">boolean</span> <span class="nf">isEligible</span><span class="o">(</span><span class="n">Address</span> <span class="n">address</span><span class="o">,</span> <span class="nd">@Nullable</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Route</span><span class="o">&gt;</span> <span class="n">routes</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 8</span>    <span class="c1">// If this connection is not accepting new exchanges, we&#39;re done.
+</span><span class="ln"> 9</span><span class="c1"></span>    <span class="c1">// 如果当前这次连接的最大并发数达到上限，返回 false
+</span><span class="ln">10</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">transmitters</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="n">allocationLimit</span> <span class="o">||</span> <span class="n">noNewExchanges</span><span class="o">)</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">11</span>    <span class="c1">// If the non-host fields of the address don&#39;t overlap, we&#39;re done.
+</span><span class="ln">12</span><span class="c1"></span>    <span class="c1">//// 如果两个 address 的其他参数不相同，返回 false
+</span><span class="ln">13</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(!</span><span class="n">Internal</span><span class="o">.</span><span class="na">instance</span><span class="o">.</span><span class="na">equalsNonHost</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">route</span><span class="o">.</span><span class="na">address</span><span class="o">(),</span> <span class="n">address</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">14</span>    <span class="c1">// If the host exactly matches, we&#39;re done: this connection can carry the address.
+</span><span class="ln">15</span><span class="c1"></span>    <span class="c1">// 如果两个 address 的 url 的 host 相同，返回 true,
+</span><span class="ln">16</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">address</span><span class="o">.</span><span class="na">url</span><span class="o">().</span><span class="na">host</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">route</span><span class="o">().</span><span class="na">address</span><span class="o">().</span><span class="na">url</span><span class="o">().</span><span class="na">host</span><span class="o">()))</span> <span class="o">{</span>
+<span class="ln">17</span>      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">// This connection is a perfect match.
+</span><span class="ln">18</span><span class="c1"></span>    <span class="o">}</span>
+<span class="ln">19</span>    <span class="c1">// 如果上面的不符合，在下面的情况下可以合并链接
+</span><span class="ln">20</span><span class="c1"></span>    <span class="c1">// At this point we don&#39;t have a hostname match. But we still be able to carry the request if
+</span><span class="ln">21</span><span class="c1"></span>    <span class="c1">// our connection coalescing requirements are met. See also:
+</span><span class="ln">22</span><span class="c1"></span>    <span class="c1">// https://hpbn.co/optimizing-application-delivery/#eliminate-domain-sharding
+</span><span class="ln">23</span><span class="c1"></span>    <span class="c1">// https://daniel.haxx.se/blog/2016/08/18/http2-connection-coalescing/
+</span><span class="ln">24</span><span class="c1"></span>    <span class="c1">// 1. This connection must be HTTP/2.
+</span><span class="ln">25</span><span class="c1"></span>    <span class="c1">//// 首先这个链接需要是 HTTP/2
+</span><span class="ln">26</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">http2Connection</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">27</span>    <span class="c1">//同一 IP
+</span><span class="ln">28</span><span class="c1"></span>    <span class="c1">// 2. The routes must share an IP address.
+</span><span class="ln">29</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">routes</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">routeMatchesAny</span><span class="o">(</span><span class="n">routes</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">30</span>    <span class="c1">// 这个连接的服务器证书必须覆盖新的主机
+</span><span class="ln">31</span><span class="c1"></span>    <span class="c1">// 3. This connection&#39;s server certificate&#39;s must cover the new host.
+</span><span class="ln">32</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">address</span><span class="o">.</span><span class="na">hostnameVerifier</span><span class="o">()</span> <span class="o">!=</span> <span class="n">OkHostnameVerifier</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">)</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">33</span>    <span class="k">if</span> <span class="o">(!</span><span class="n">supportsUrl</span><span class="o">(</span><span class="n">address</span><span class="o">.</span><span class="na">url</span><span class="o">()))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">34</span>    <span class="c1">// 证书将必须匹配主机
+</span><span class="ln">35</span><span class="c1"></span>    <span class="c1">// 4. Certificate pinning must match the host.
+</span><span class="ln">36</span><span class="c1"></span>    <span class="k">try</span> <span class="o">{</span>
+<span class="ln">37</span>      <span class="n">address</span><span class="o">.</span><span class="na">certificatePinner</span><span class="o">().</span><span class="na">check</span><span class="o">(</span><span class="n">address</span><span class="o">.</span><span class="na">url</span><span class="o">().</span><span class="na">host</span><span class="o">(),</span> <span class="n">handshake</span><span class="o">().</span><span class="na">peerCertificates</span><span class="o">());</span>
+<span class="ln">38</span>    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">SSLPeerUnverifiedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">39</span>      <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="ln">40</span>    <span class="o">}</span>
+<span class="ln">41</span>    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">// The caller&#39;s address can be carried by this connection.
+</span><span class="ln">42</span><span class="c1"></span>  <span class="o">}</span>
+</code></pre></div><p>isEligible返回后进入 Transmitter.acquireConnectionNoEvents(connection);</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln">1</span><span class="c1">//将当前的transmitter添加到这个connection的transmitter弱引用集合中 可以用来检查这个连接的transmitter数量
+</span><span class="ln">2</span><span class="c1"></span> <span class="kt">void</span> <span class="nf">acquireConnectionNoEvents</span><span class="o">(</span><span class="n">RealConnection</span> <span class="n">connection</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">3</span>   <span class="k">assert</span> <span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">holdsLock</span><span class="o">(</span><span class="n">connectionPool</span><span class="o">));</span>
+<span class="ln">4</span>   <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">connection</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">();</span>
+<span class="ln">5</span>   <span class="k">this</span><span class="o">.</span><span class="na">connection</span> <span class="o">=</span> <span class="n">connection</span><span class="o">;</span>
+<span class="ln">6</span>   <span class="n">connection</span><span class="o">.</span><span class="na">transmitters</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">TransmitterReference</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">callStackTrace</span><span class="o">));</span>
+<span class="ln">7</span> <span class="o">}</span>
+<span class="ln">8</span>
+</code></pre></div><p>告一段落</p>
+<p> </p>
+<p>在findConnection方法后面，会有一个put方法把创建新的连接加入到连接池connectionPool中，进入put方法</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">RealConnectionPool</span> <span class="o">{</span>
+<span class="ln"> 2</span>  <span class="cm">/**
+</span><span class="ln"> 3</span><span class="cm">   * Background threads are used to cleanup expired connections. There will be at most a single
+</span><span class="ln"> 4</span><span class="cm">   * thread running per connection pool. The thread pool executor permits the pool itself to be
+</span><span class="ln"> 5</span><span class="cm">   * garbage collected.
+</span><span class="ln"> 6</span><span class="cm">   * 线程池，用来清理过期和不符合要求的连接
+</span><span class="ln"> 7</span><span class="cm">   */</span>
+<span class="ln"> 8</span>  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Executor</span> <span class="n">executor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="o">(</span><span class="n">0</span> <span class="cm">/* corePoolSize */</span><span class="o">,</span>
+<span class="ln"> 9</span>      <span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span> <span class="cm">/* maximumPoolSize */</span><span class="o">,</span> <span class="n">60L</span> <span class="cm">/* keepAliveTime */</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">,</span>
+<span class="ln">10</span>      <span class="k">new</span> <span class="n">SynchronousQueue</span><span class="o">&lt;&gt;(),</span> <span class="n">Util</span><span class="o">.</span><span class="na">threadFactory</span><span class="o">(</span><span class="s">&#34;OkHttp ConnectionPool&#34;</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+<span class="ln">11</span>  <span class="cm">/** The maximum number of idle connections for each address. */</span>
+<span class="ln">12</span>  <span class="cm">/**
+</span><span class="ln">13</span><span class="cm">   * 每个地址的最大空闲连接数
+</span><span class="ln">14</span><span class="cm">   * 默认 5个
+</span><span class="ln">15</span><span class="cm">   */</span>
+<span class="ln">16</span>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">maxIdleConnections</span><span class="o">;</span>
+<span class="ln">17</span>  <span class="cm">/**
+</span><span class="ln">18</span><span class="cm">   * 默认5分钟
+</span><span class="ln">19</span><span class="cm">   * 每个连接能维持的时间
+</span><span class="ln">20</span><span class="cm">   */</span>
+<span class="ln">21</span>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">keepAliveDurationNs</span><span class="o">;</span>
+<span class="ln">22</span>  <span class="cm">/**
+</span><span class="ln">23</span><span class="cm">   * 每次有put插入动作的时候都会进行检查清理connection操作
+</span><span class="ln">24</span><span class="cm">   */</span>
+<span class="ln">25</span>  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Runnable</span> <span class="n">cleanupRunnable</span> <span class="o">=</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="ln">26</span>    <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">27</span>      <span class="c1">//cleanup代码就不贴出来了
+</span><span class="ln">28</span><span class="c1"></span>      <span class="c1">// 1、循环遍历connections 找到第一个空闲的连接
+</span><span class="ln">29</span><span class="c1"></span>      <span class="c1">// 2、检查keepAliveDurationNs maxIdleConnections 是否都超过限制
+</span><span class="ln">30</span><span class="c1"></span>      <span class="c1">// 3、如果两者之一超过限制 就直接移除 把它从线程池中移除 并且close它
+</span><span class="ln">31</span><span class="c1"></span>      <span class="c1">// 4、如果没有超过限制，就返回离倒计时的时间 就是下面的waitNanos
+</span><span class="ln">32</span><span class="c1"></span>      <span class="c1">// 5、如果没有空闲的连接 直接跳出
+</span><span class="ln">33</span><span class="c1"></span>      <span class="kt">long</span> <span class="n">waitNanos</span> <span class="o">=</span> <span class="n">cleanup</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">());</span>
+<span class="ln">34</span>      <span class="k">if</span> <span class="o">(</span><span class="n">waitNanos</span> <span class="o">==</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
+<span class="ln">35</span>      <span class="k">if</span> <span class="o">(</span><span class="n">waitNanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">36</span>        <span class="kt">long</span> <span class="n">waitMillis</span> <span class="o">=</span> <span class="n">waitNanos</span> <span class="o">/</span> <span class="n">1000000L</span><span class="o">;</span>
+<span class="ln">37</span>        <span class="n">waitNanos</span> <span class="o">-=</span> <span class="o">(</span><span class="n">waitMillis</span> <span class="o">*</span> <span class="n">1000000L</span><span class="o">);</span>
+<span class="ln">38</span>        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">RealConnectionPool</span><span class="o">.</span><span class="na">this</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">39</span>          <span class="k">try</span> <span class="o">{</span>
+<span class="ln">40</span>            <span class="c1">//等待到waitNanos后才释放这个锁然后再进行cleanup
+</span><span class="ln">41</span><span class="c1"></span>            <span class="n">RealConnectionPool</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">wait</span><span class="o">(</span><span class="n">waitMillis</span><span class="o">,</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">waitNanos</span><span class="o">);</span>
+<span class="ln">42</span>          <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ignored</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">43</span>          <span class="o">}</span>
+<span class="ln">44</span>        <span class="o">}</span>
+<span class="ln">45</span>      <span class="o">}</span>
+<span class="ln">46</span>    <span class="o">}</span>
+<span class="ln">47</span>  <span class="o">};</span>
+<span class="ln">48</span>  <span class="cm">/**
+</span><span class="ln">49</span><span class="cm">   * 连接的双端队列，方面存取互不干扰
+</span><span class="ln">50</span><span class="cm">   */</span>
+<span class="ln">51</span>  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Deque</span><span class="o">&lt;</span><span class="n">RealConnection</span><span class="o">&gt;</span> <span class="n">connections</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayDeque</span><span class="o">&lt;&gt;();</span>
+<span class="ln">52</span>  <span class="kd">final</span> <span class="n">RouteDatabase</span> <span class="n">routeDatabase</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RouteDatabase</span><span class="o">();</span>
+<span class="ln">53</span>  <span class="kt">boolean</span> <span class="n">cleanupRunning</span><span class="o">;</span>
+<span class="ln">54</span>  <span class="c1">//
+</span><span class="ln">55</span><span class="c1"></span>  <span class="c1">//public ConnectionPool() {
+</span><span class="ln">56</span><span class="c1"></span>  <span class="c1">//    this(5, 5, TimeUnit.MINUTES);
+</span><span class="ln">57</span><span class="c1"></span>  <span class="c1">//  }
+</span><span class="ln">58</span><span class="c1"></span>  <span class="kd">public</span> <span class="nf">RealConnectionPool</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxIdleConnections</span><span class="o">,</span> <span class="kt">long</span> <span class="n">keepAliveDuration</span><span class="o">,</span> <span class="n">TimeUnit</span> <span class="n">timeUnit</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">59</span>    <span class="k">this</span><span class="o">.</span><span class="na">maxIdleConnections</span> <span class="o">=</span> <span class="n">maxIdleConnections</span><span class="o">;</span>
+<span class="ln">60</span>    <span class="k">this</span><span class="o">.</span><span class="na">keepAliveDurationNs</span> <span class="o">=</span> <span class="n">timeUnit</span><span class="o">.</span><span class="na">toNanos</span><span class="o">(</span><span class="n">keepAliveDuration</span><span class="o">);</span>
+<span class="ln">61</span>    <span class="c1">// Put a floor on the keep alive duration, otherwise cleanup will spin loop.
+</span><span class="ln">62</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">keepAliveDuration</span> <span class="o">&lt;=</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">63</span>      <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;keepAliveDuration &lt;= 0: &#34;</span> <span class="o">+</span> <span class="n">keepAliveDuration</span><span class="o">);</span>
+<span class="ln">64</span>    <span class="o">}</span>
+<span class="ln">65</span>  <span class="o">}</span>
+<span class="ln">66</span> <span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="n">RealConnection</span> <span class="n">connection</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">67</span>    <span class="k">assert</span> <span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">holdsLock</span><span class="o">(</span><span class="k">this</span><span class="o">));</span>
+<span class="ln">68</span>    <span class="c1">//检查是否在清理连接中中，保证每次只有一个线程进行清理操作
+</span><span class="ln">69</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(!</span><span class="n">cleanupRunning</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">70</span>      <span class="n">cleanupRunning</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">71</span>      <span class="c1">//启动清理操作
+</span><span class="ln">72</span><span class="c1"></span>      <span class="n">executor</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">cleanupRunnable</span><span class="o">);</span>
+<span class="ln">73</span>    <span class="o">}</span>
+<span class="ln">74</span>    <span class="c1">// 将新建的连接插入到双端队列中
+</span><span class="ln">75</span><span class="c1"></span>    <span class="n">connections</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+<span class="ln">76</span>  <span class="o">}</span>
+</code></pre></div><p>连接池的代码较多，主要就是复用连接，创建连接，保存连接，移除连接的操作。</p>
+</div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/">Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp6-callserverinterceptor/">Android源码一步一步分析系列之OkHttp(6)——CallServerInterceptor
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/">Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor
+</a></li><li><a href="https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/">Android源码一步一步分析系列之OkHttp(3)——BridgeInterceptor
+</a></li><li><a href="https://helixs.github.io/posts/2020-04-07-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E7%9F%A9%E9%98%B5/">每日一篇leetcode之-矩阵旋转
+</a></li><li><a href="https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp2-retryandfollowupinterceptor/">Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor
+</a></li><li><a href="https://helixs.github.io/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/">Android源码一步一步分析系列之OkHttp(1)——揭开面纱
+</a></li></ul>
+  </section></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="card row text-center profile component">
+  <div class="card-body">
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="https://helixs.github.io/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">分类</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="badge bg-primary text-white rounded post-taxonomy" title="数据库">
+            数据库
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/series">专栏</a>
+        </h2>
+        <div><a href="https://helixs.github.io/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">标签</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="https://helixs.github.io/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 Helixs. All Rights Reserved.
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

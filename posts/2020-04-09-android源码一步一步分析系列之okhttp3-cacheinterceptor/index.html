@@ -1,0 +1,703 @@
+<!doctype html><html lang="zh-cn"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor">
+<meta itemprop="description" content="CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本"><meta itemprop="datePublished" content="2020-04-09T05:16:19+00:00" />
+<meta itemprop="dateModified" content="2020-04-09T05:16:19+00:00" />
+<meta itemprop="wordCount" content="1818">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor" />
+<meta property="og:description" content="CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2020-04-09-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-cacheinterceptor/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-09T05:16:19+00:00" />
+<meta property="article:modified_time" content="2020-04-09T05:16:19+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor"/>
+<meta name="twitter:description" content="CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=Android%e6%ba%90%e7%a0%81%e4%b8%80%e6%ad%a5%e4%b8%80%e6%ad%a5%e5%88%86%e6%9e%90%e7%b3%bb%e5%88%97%e4%b9%8bOkHttp%284%29%e2%80%94%e2%80%94CacheInterceptor&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-09-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp3-cacheinterceptor%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2020-04-09-android%25E6%25BA%2590%25E7%25A0%2581%25E4%25B8%2580%25E6%25AD%25A5%25E4%25B8%2580%25E6%25AD%25A5%25E5%2588%2586%25E6%259E%2590%25E7%25B3%25BB%25E5%2588%2597%25E4%25B9%258Bokhttp3-cacheinterceptor%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">设置</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="棕色"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="青色"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="绿色"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="橙色"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="粉色"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="紫色"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="红色"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="https://helixs.github.io/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Android源码一步一步分析系列之OkHttp(4)——CacheInterceptor
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2020-04-09
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>4 分钟阅读
+  </span><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge rounded-pill text-white bg-primary post-taxonomy">源码分析</a></div>
+<div class="post-content mb-3"><p>CacheInterceptor主要是处理缓存的拦截器，其实他不是自己的一些什么缓存机制。基本上还是根据http的缓存协议基础上，进行缓存本地化的改造操作。</p>
+<p>我们要了解缓存就必须理解Http缓存协议&ndash;<a href="https://www.cnblogs.com/chenqf/p/6386163.html" target="_blank" rel="noopener noreferrer">彻底弄懂HTTP缓存机制及原理</a>
+</p>
+<p>如果大家对缓存协议不清楚，最好看一下上面的内容，Okhttp缓存就是根据它的协议进行开发的，没有太大的改造。</p>
+<p><strong>CacheInterceptor流程</strong></p>
+<blockquote>
+<ul>
+<li>1.读取候选缓存；</li>
+<li>2.创建缓存策略（根据头信息，判断强制缓存，对比缓存等策略)；</li>
+<li>3.根据策略，不使用网络，缓存又没有直接报错；</li>
+<li>4.根据策略，不使用网络，有缓存就直接返回；</li>
+<li>5.前面个都没有返回，读取网络结果（跑下一个拦截器）；</li>
+<li>6.接收到的网络结果，如果是code 304, 使用缓存，返回缓存结果（对比缓存）</li>
+<li>7.读取网络结果；</li>
+<li>8.对数据进行缓存；</li>
+<li>9.返回网络读取的结果。</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln">  1</span><span class="cm">/*
+</span><span class="ln">  2</span><span class="cm"> *  Licensed to the Apache Software Foundation (ASF) under one or more
+</span><span class="ln">  3</span><span class="cm"> *  contributor license agreements.  See the NOTICE file distributed with
+</span><span class="ln">  4</span><span class="cm"> *  this work for additional information regarding copyright ownership.
+</span><span class="ln">  5</span><span class="cm"> *  The ASF licenses this file to You under the Apache License, Version 2.0
+</span><span class="ln">  6</span><span class="cm"> *  (the &#34;License&#34;); you may not use this file except in compliance with
+</span><span class="ln">  7</span><span class="cm"> *  the License.  You may obtain a copy of the License at
+</span><span class="ln">  8</span><span class="cm"> *
+</span><span class="ln">  9</span><span class="cm"> *     http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ln"> 10</span><span class="cm"> *
+</span><span class="ln"> 11</span><span class="cm"> *  Unless required by applicable law or agreed to in writing, software
+</span><span class="ln"> 12</span><span class="cm"> *  distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+</span><span class="ln"> 13</span><span class="cm"> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ln"> 14</span><span class="cm"> *  See the License for the specific language governing permissions and
+</span><span class="ln"> 15</span><span class="cm"> *  limitations under the License.
+</span><span class="ln"> 16</span><span class="cm"> */</span>
+<span class="ln"> 17</span><span class="kn">package</span> <span class="nn">com.rta.rts.login.ui</span><span class="o">;</span>
+<span class="ln"> 18</span><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="ln"> 19</span><span class="kn">import</span> <span class="nn">javax.annotation.Nullable</span><span class="o">;</span>
+<span class="ln"> 20</span><span class="kn">import</span> <span class="nn">okhttp3.Headers</span><span class="o">;</span>
+<span class="ln"> 21</span><span class="kn">import</span> <span class="nn">okhttp3.Interceptor</span><span class="o">;</span>
+<span class="ln"> 22</span><span class="kn">import</span> <span class="nn">okhttp3.Protocol</span><span class="o">;</span>
+<span class="ln"> 23</span><span class="kn">import</span> <span class="nn">okhttp3.Request</span><span class="o">;</span>
+<span class="ln"> 24</span><span class="kn">import</span> <span class="nn">okhttp3.Response</span><span class="o">;</span>
+<span class="ln"> 25</span><span class="kn">import</span> <span class="nn">okhttp3.internal.Internal</span><span class="o">;</span>
+<span class="ln"> 26</span><span class="kn">import</span> <span class="nn">okhttp3.internal.Util</span><span class="o">;</span>
+<span class="ln"> 27</span><span class="kn">import</span> <span class="nn">okhttp3.internal.cache.CacheRequest</span><span class="o">;</span>
+<span class="ln"> 28</span><span class="kn">import</span> <span class="nn">okhttp3.internal.cache.CacheStrategy</span><span class="o">;</span>
+<span class="ln"> 29</span><span class="kn">import</span> <span class="nn">okhttp3.internal.cache.InternalCache</span><span class="o">;</span>
+<span class="ln"> 30</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http.ExchangeCodec</span><span class="o">;</span>
+<span class="ln"> 31</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http.HttpHeaders</span><span class="o">;</span>
+<span class="ln"> 32</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http.HttpMethod</span><span class="o">;</span>
+<span class="ln"> 33</span><span class="kn">import</span> <span class="nn">okhttp3.internal.http.RealResponseBody</span><span class="o">;</span>
+<span class="ln"> 34</span><span class="kn">import</span> <span class="nn">okio.Buffer</span><span class="o">;</span>
+<span class="ln"> 35</span><span class="kn">import</span> <span class="nn">okio.BufferedSink</span><span class="o">;</span>
+<span class="ln"> 36</span><span class="kn">import</span> <span class="nn">okio.BufferedSource</span><span class="o">;</span>
+<span class="ln"> 37</span><span class="kn">import</span> <span class="nn">okio.Okio</span><span class="o">;</span>
+<span class="ln"> 38</span><span class="kn">import</span> <span class="nn">okio.Sink</span><span class="o">;</span>
+<span class="ln"> 39</span><span class="kn">import</span> <span class="nn">okio.Source</span><span class="o">;</span>
+<span class="ln"> 40</span><span class="kn">import</span> <span class="nn">okio.Timeout</span><span class="o">;</span>
+<span class="ln"> 41</span><span class="kn">import static</span> <span class="nn">java.net.HttpURLConnection.HTTP_NOT_MODIFIED</span><span class="o">;</span>
+<span class="ln"> 42</span><span class="kn">import static</span> <span class="nn">java.util.concurrent.TimeUnit.MILLISECONDS</span><span class="o">;</span>
+<span class="ln"> 43</span><span class="kn">import static</span> <span class="nn">okhttp3.internal.Util.closeQuietly</span><span class="o">;</span>
+<span class="ln"> 44</span><span class="kn">import static</span> <span class="nn">okhttp3.internal.Util.discard</span><span class="o">;</span>
+<span class="ln"> 45</span><span class="cm">/** Serves requests from the cache and writes responses to the cache. */</span>
+<span class="ln"> 46</span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">CacheInterceptor</span> <span class="kd">implements</span> <span class="n">Interceptor</span> <span class="o">{</span>
+<span class="ln"> 47</span>  <span class="kd">final</span> <span class="nd">@Nullable</span> <span class="n">InternalCache</span> <span class="n">cache</span><span class="o">;</span>
+<span class="ln"> 48</span>  <span class="kd">public</span> <span class="nf">CacheInterceptor</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">InternalCache</span> <span class="n">cache</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 49</span>    <span class="k">this</span><span class="o">.</span><span class="na">cache</span> <span class="o">=</span> <span class="n">cache</span><span class="o">;</span>
+<span class="ln"> 50</span>  <span class="o">}</span>
+<span class="ln"> 51</span>  <span class="nd">@Override</span> <span class="kd">public</span> <span class="n">Response</span> <span class="nf">intercept</span><span class="o">(</span><span class="n">Chain</span> <span class="n">chain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln"> 52</span>    <span class="c1">//1. 读取候选缓存；
+</span><span class="ln"> 53</span><span class="c1"></span>    <span class="c1">//根据request得到cache中缓存的response
+</span><span class="ln"> 54</span><span class="c1"></span>    <span class="n">Response</span> <span class="n">cacheCandidate</span> <span class="o">=</span> <span class="n">cache</span> <span class="o">!=</span> <span class="kc">null</span>
+<span class="ln"> 55</span>        <span class="o">?</span> <span class="n">cache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">chain</span><span class="o">.</span><span class="na">request</span><span class="o">())</span>
+<span class="ln"> 56</span>        <span class="o">:</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 57</span>    <span class="kt">long</span> <span class="n">now</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+<span class="ln"> 58</span>    <span class="c1">//2. 创建缓存策略（强制缓存，对比缓存等策略)；
+</span><span class="ln"> 59</span><span class="c1"></span>    <span class="c1">//request判断缓存的策略，是否要使用了网络，缓存或两者都使用
+</span><span class="ln"> 60</span><span class="c1"></span>    <span class="n">CacheStrategy</span> <span class="n">strategy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CacheStrategy</span><span class="o">.</span><span class="na">Factory</span><span class="o">(</span><span class="n">now</span><span class="o">,</span> <span class="n">chain</span><span class="o">.</span><span class="na">request</span><span class="o">(),</span> <span class="n">cacheCandidate</span><span class="o">).</span><span class="na">get</span><span class="o">();</span>
+<span class="ln"> 61</span>    <span class="n">Request</span> <span class="n">networkRequest</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="na">networkRequest</span><span class="o">;</span>
+<span class="ln"> 62</span>    <span class="n">Response</span> <span class="n">cacheResponse</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="na">cacheResponse</span><span class="o">;</span>
+<span class="ln"> 63</span>    <span class="k">if</span> <span class="o">(</span><span class="n">cache</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 64</span>      <span class="n">cache</span><span class="o">.</span><span class="na">trackResponse</span><span class="o">(</span><span class="n">strategy</span><span class="o">);</span>
+<span class="ln"> 65</span>    <span class="o">}</span>
+<span class="ln"> 66</span>    <span class="k">if</span> <span class="o">(</span><span class="n">cacheCandidate</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">cacheResponse</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 67</span>      <span class="n">closeQuietly</span><span class="o">(</span><span class="n">cacheCandidate</span><span class="o">.</span><span class="na">body</span><span class="o">());</span> <span class="c1">// The cache candidate wasn&#39;t applicable. Close it.
+</span><span class="ln"> 68</span><span class="c1"></span>    <span class="o">}</span>
+<span class="ln"> 69</span>    <span class="c1">// If we&#39;re forbidden from using the network and the cache is insufficient, fail.
+</span><span class="ln"> 70</span><span class="c1"></span>    <span class="c1">//3根据策略，不使用网络，缓存又没有直接报错；
+</span><span class="ln"> 71</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">networkRequest</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">cacheResponse</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 72</span>      <span class="k">return</span> <span class="k">new</span> <span class="n">Response</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+<span class="ln"> 73</span>          <span class="o">.</span><span class="na">request</span><span class="o">(</span><span class="n">chain</span><span class="o">.</span><span class="na">request</span><span class="o">())</span>
+<span class="ln"> 74</span>          <span class="o">.</span><span class="na">protocol</span><span class="o">(</span><span class="n">Protocol</span><span class="o">.</span><span class="na">HTTP_1_1</span><span class="o">)</span>
+<span class="ln"> 75</span>          <span class="o">.</span><span class="na">code</span><span class="o">(</span><span class="n">504</span><span class="o">)</span>
+<span class="ln"> 76</span>          <span class="o">.</span><span class="na">message</span><span class="o">(</span><span class="s">&#34;Unsatisfiable Request (only-if-cached)&#34;</span><span class="o">)</span>
+<span class="ln"> 77</span>          <span class="o">.</span><span class="na">body</span><span class="o">(</span><span class="n">Util</span><span class="o">.</span><span class="na">EMPTY_RESPONSE</span><span class="o">)</span>
+<span class="ln"> 78</span>          <span class="o">.</span><span class="na">sentRequestAtMillis</span><span class="o">(-</span><span class="n">1L</span><span class="o">)</span>
+<span class="ln"> 79</span>          <span class="o">.</span><span class="na">receivedResponseAtMillis</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">())</span>
+<span class="ln"> 80</span>          <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="ln"> 81</span>    <span class="o">}</span>
+<span class="ln"> 82</span>    <span class="c1">// If we don&#39;t need the network, we&#39;re done.
+</span><span class="ln"> 83</span><span class="c1"></span>    <span class="c1">// 4. 根据策略，不使用网络，有缓存就直接返回；
+</span><span class="ln"> 84</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">networkRequest</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 85</span>      <span class="k">return</span> <span class="n">cacheResponse</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+<span class="ln"> 86</span>          <span class="o">.</span><span class="na">cacheResponse</span><span class="o">(</span><span class="n">stripBody</span><span class="o">(</span><span class="n">cacheResponse</span><span class="o">))</span>
+<span class="ln"> 87</span>          <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="ln"> 88</span>    <span class="o">}</span>
+<span class="ln"> 89</span>    <span class="n">Response</span> <span class="n">networkResponse</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln"> 90</span>    <span class="k">try</span> <span class="o">{</span>
+<span class="ln"> 91</span>      <span class="c1">// 5. 前面个都没有返回，读取网络结果（跑下一个拦截器）；
+</span><span class="ln"> 92</span><span class="c1"></span>      <span class="c1">//
+</span><span class="ln"> 93</span><span class="c1"></span>      <span class="n">networkResponse</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="na">proceed</span><span class="o">(</span><span class="n">networkRequest</span><span class="o">);</span>
+<span class="ln"> 94</span>    <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+<span class="ln"> 95</span>      <span class="c1">// If we&#39;re crashing on I/O or otherwise, don&#39;t leak the cache body.
+</span><span class="ln"> 96</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">networkResponse</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">cacheCandidate</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 97</span>        <span class="n">closeQuietly</span><span class="o">(</span><span class="n">cacheCandidate</span><span class="o">.</span><span class="na">body</span><span class="o">());</span>
+<span class="ln"> 98</span>      <span class="o">}</span>
+<span class="ln"> 99</span>    <span class="o">}</span>
+<span class="ln">100</span>    <span class="c1">//6. 接收到的网络结果，如果是code 304, 使用缓存，返回缓存结果（对比缓存）
+</span><span class="ln">101</span><span class="c1"></span>    <span class="c1">// If we have a cache response too, then we&#39;re doing a conditional get.
+</span><span class="ln">102</span><span class="c1"></span>    <span class="c1">//// 如果本地已经存在cacheResponse，那么让它和网络得到的networkResponse做比较，决定是否来更新缓存的cacheResponse
+</span><span class="ln">103</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">cacheResponse</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">104</span>      <span class="k">if</span> <span class="o">(</span><span class="n">networkResponse</span><span class="o">.</span><span class="na">code</span><span class="o">()</span> <span class="o">==</span> <span class="n">HTTP_NOT_MODIFIED</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">105</span>        <span class="n">Response</span> <span class="n">response</span> <span class="o">=</span> <span class="n">cacheResponse</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+<span class="ln">106</span>            <span class="o">.</span><span class="na">headers</span><span class="o">(</span><span class="n">combine</span><span class="o">(</span><span class="n">cacheResponse</span><span class="o">.</span><span class="na">headers</span><span class="o">(),</span> <span class="n">networkResponse</span><span class="o">.</span><span class="na">headers</span><span class="o">()))</span>
+<span class="ln">107</span>            <span class="o">.</span><span class="na">sentRequestAtMillis</span><span class="o">(</span><span class="n">networkResponse</span><span class="o">.</span><span class="na">sentRequestAtMillis</span><span class="o">())</span>
+<span class="ln">108</span>            <span class="o">.</span><span class="na">receivedResponseAtMillis</span><span class="o">(</span><span class="n">networkResponse</span><span class="o">.</span><span class="na">receivedResponseAtMillis</span><span class="o">())</span>
+<span class="ln">109</span>            <span class="o">.</span><span class="na">cacheResponse</span><span class="o">(</span><span class="n">stripBody</span><span class="o">(</span><span class="n">cacheResponse</span><span class="o">))</span>
+<span class="ln">110</span>            <span class="o">.</span><span class="na">networkResponse</span><span class="o">(</span><span class="n">stripBody</span><span class="o">(</span><span class="n">networkResponse</span><span class="o">))</span>
+<span class="ln">111</span>            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="ln">112</span>        <span class="n">networkResponse</span><span class="o">.</span><span class="na">body</span><span class="o">().</span><span class="na">close</span><span class="o">();</span>
+<span class="ln">113</span>        <span class="c1">// Update the cache after combining headers but before stripping the
+</span><span class="ln">114</span><span class="c1"></span>        <span class="c1">// Content-Encoding header (as performed by initContentStream()).
+</span><span class="ln">115</span><span class="c1"></span>        <span class="n">cache</span><span class="o">.</span><span class="na">trackConditionalCacheHit</span><span class="o">();</span>
+<span class="ln">116</span>        <span class="n">cache</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">cacheResponse</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
+<span class="ln">117</span>        <span class="k">return</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">118</span>      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln">119</span>        <span class="n">closeQuietly</span><span class="o">(</span><span class="n">cacheResponse</span><span class="o">.</span><span class="na">body</span><span class="o">());</span>
+<span class="ln">120</span>      <span class="o">}</span>
+<span class="ln">121</span>    <span class="o">}</span>
+<span class="ln">122</span>    <span class="c1">//7. 读取网络结果；
+</span><span class="ln">123</span><span class="c1"></span>    <span class="n">Response</span> <span class="n">response</span> <span class="o">=</span> <span class="n">networkResponse</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+<span class="ln">124</span>        <span class="o">.</span><span class="na">cacheResponse</span><span class="o">(</span><span class="n">stripBody</span><span class="o">(</span><span class="n">cacheResponse</span><span class="o">))</span>
+<span class="ln">125</span>        <span class="o">.</span><span class="na">networkResponse</span><span class="o">(</span><span class="n">stripBody</span><span class="o">(</span><span class="n">networkResponse</span><span class="o">))</span>
+<span class="ln">126</span>        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="ln">127</span>    <span class="c1">//8. 对数据进行缓存；
+</span><span class="ln">128</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">cache</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">129</span>      <span class="k">if</span> <span class="o">(</span><span class="n">HttpHeaders</span><span class="o">.</span><span class="na">hasBody</span><span class="o">(</span><span class="n">response</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">CacheStrategy</span><span class="o">.</span><span class="na">isCacheable</span><span class="o">(</span><span class="n">response</span><span class="o">,</span> <span class="n">networkRequest</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">130</span>        <span class="c1">// Offer this request to the cache.
+</span><span class="ln">131</span><span class="c1"></span>        <span class="c1">//// 缓存未经缓存过的response
+</span><span class="ln">132</span><span class="c1"></span>        <span class="n">CacheRequest</span> <span class="n">cacheRequest</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+<span class="ln">133</span>        <span class="k">return</span> <span class="n">cacheWritingResponse</span><span class="o">(</span><span class="n">cacheRequest</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
+<span class="ln">134</span>      <span class="o">}</span>
+<span class="ln">135</span>      <span class="c1">//9. 返回网络读取的结果。
+</span><span class="ln">136</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">HttpMethod</span><span class="o">.</span><span class="na">invalidatesCache</span><span class="o">(</span><span class="n">networkRequest</span><span class="o">.</span><span class="na">method</span><span class="o">()))</span> <span class="o">{</span>
+<span class="ln">137</span>        <span class="k">try</span> <span class="o">{</span>
+<span class="ln">138</span>          <span class="n">cache</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">networkRequest</span><span class="o">);</span>
+<span class="ln">139</span>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ignored</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">140</span>          <span class="c1">// The cache cannot be written.
+</span><span class="ln">141</span><span class="c1"></span>        <span class="o">}</span>
+<span class="ln">142</span>      <span class="o">}</span>
+<span class="ln">143</span>    <span class="o">}</span>
+<span class="ln">144</span>    <span class="k">return</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">145</span>  <span class="o">}</span>
+<span class="ln">146</span>  <span class="kd">private</span> <span class="kd">static</span> <span class="n">Response</span> <span class="nf">stripBody</span><span class="o">(</span><span class="n">Response</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">147</span>    <span class="k">return</span> <span class="n">response</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">response</span><span class="o">.</span><span class="na">body</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span>
+<span class="ln">148</span>        <span class="o">?</span> <span class="n">response</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">().</span><span class="na">body</span><span class="o">(</span><span class="kc">null</span><span class="o">).</span><span class="na">build</span><span class="o">()</span>
+<span class="ln">149</span>        <span class="o">:</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">150</span>  <span class="o">}</span>
+<span class="ln">151</span>  <span class="cm">/**
+</span><span class="ln">152</span><span class="cm">   * Returns a new source that writes bytes to {@code cacheRequest} as they are read by the source
+</span><span class="ln">153</span><span class="cm">   * consumer. This is careful to discard bytes left over when the stream is closed; otherwise we
+</span><span class="ln">154</span><span class="cm">   * may never exhaust the source stream and therefore not complete the cached response.
+</span><span class="ln">155</span><span class="cm">   */</span>
+<span class="ln">156</span>  <span class="kd">private</span> <span class="n">Response</span> <span class="nf">cacheWritingResponse</span><span class="o">(</span><span class="kd">final</span> <span class="n">CacheRequest</span> <span class="n">cacheRequest</span><span class="o">,</span> <span class="n">Response</span> <span class="n">response</span><span class="o">)</span>
+<span class="ln">157</span>      <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln">158</span>    <span class="c1">// Some apps return a null body; for compatibility we treat that like a null cache request.
+</span><span class="ln">159</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">cacheRequest</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">160</span>    <span class="n">Sink</span> <span class="n">cacheBodyUnbuffered</span> <span class="o">=</span> <span class="n">cacheRequest</span><span class="o">.</span><span class="na">body</span><span class="o">();</span>
+<span class="ln">161</span>    <span class="k">if</span> <span class="o">(</span><span class="n">cacheBodyUnbuffered</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">response</span><span class="o">;</span>
+<span class="ln">162</span>    <span class="kd">final</span> <span class="n">BufferedSource</span> <span class="n">source</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">body</span><span class="o">().</span><span class="na">source</span><span class="o">();</span>
+<span class="ln">163</span>    <span class="kd">final</span> <span class="n">BufferedSink</span> <span class="n">cacheBody</span> <span class="o">=</span> <span class="n">Okio</span><span class="o">.</span><span class="na">buffer</span><span class="o">(</span><span class="n">cacheBodyUnbuffered</span><span class="o">);</span>
+<span class="ln">164</span>    <span class="n">Source</span> <span class="n">cacheWritingSource</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Source</span><span class="o">()</span> <span class="o">{</span>
+<span class="ln">165</span>      <span class="kt">boolean</span> <span class="n">cacheRequestClosed</span><span class="o">;</span>
+<span class="ln">166</span>      <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">long</span> <span class="nf">read</span><span class="o">(</span><span class="n">Buffer</span> <span class="n">sink</span><span class="o">,</span> <span class="kt">long</span> <span class="n">byteCount</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln">167</span>        <span class="kt">long</span> <span class="n">bytesRead</span><span class="o">;</span>
+<span class="ln">168</span>        <span class="k">try</span> <span class="o">{</span>
+<span class="ln">169</span>          <span class="n">bytesRead</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">sink</span><span class="o">,</span> <span class="n">byteCount</span><span class="o">);</span>
+<span class="ln">170</span>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">171</span>          <span class="k">if</span> <span class="o">(!</span><span class="n">cacheRequestClosed</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">172</span>            <span class="n">cacheRequestClosed</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">173</span>            <span class="n">cacheRequest</span><span class="o">.</span><span class="na">abort</span><span class="o">();</span> <span class="c1">// Failed to write a complete cache response.
+</span><span class="ln">174</span><span class="c1"></span>          <span class="o">}</span>
+<span class="ln">175</span>          <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
+<span class="ln">176</span>        <span class="o">}</span>
+<span class="ln">177</span>        <span class="k">if</span> <span class="o">(</span><span class="n">bytesRead</span> <span class="o">==</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">178</span>          <span class="k">if</span> <span class="o">(!</span><span class="n">cacheRequestClosed</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">179</span>            <span class="n">cacheRequestClosed</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">180</span>            <span class="n">cacheBody</span><span class="o">.</span><span class="na">close</span><span class="o">();</span> <span class="c1">// The cache response is complete!
+</span><span class="ln">181</span><span class="c1"></span>          <span class="o">}</span>
+<span class="ln">182</span>          <span class="k">return</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
+<span class="ln">183</span>        <span class="o">}</span>
+<span class="ln">184</span>        <span class="n">sink</span><span class="o">.</span><span class="na">copyTo</span><span class="o">(</span><span class="n">cacheBody</span><span class="o">.</span><span class="na">buffer</span><span class="o">(),</span> <span class="n">sink</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">-</span> <span class="n">bytesRead</span><span class="o">,</span> <span class="n">bytesRead</span><span class="o">);</span>
+<span class="ln">185</span>        <span class="n">cacheBody</span><span class="o">.</span><span class="na">emitCompleteSegments</span><span class="o">();</span>
+<span class="ln">186</span>        <span class="k">return</span> <span class="n">bytesRead</span><span class="o">;</span>
+<span class="ln">187</span>      <span class="o">}</span>
+<span class="ln">188</span>      <span class="nd">@Override</span> <span class="kd">public</span> <span class="n">Timeout</span> <span class="nf">timeout</span><span class="o">()</span> <span class="o">{</span>
+<span class="ln">189</span>        <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="na">timeout</span><span class="o">();</span>
+<span class="ln">190</span>      <span class="o">}</span>
+<span class="ln">191</span>      <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="ln">192</span>        <span class="k">if</span> <span class="o">(!</span><span class="n">cacheRequestClosed</span>
+<span class="ln">193</span>            <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">discard</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">ExchangeCodec</span><span class="o">.</span><span class="na">DISCARD_STREAM_TIMEOUT_MILLIS</span><span class="o">,</span> <span class="n">MILLISECONDS</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">194</span>          <span class="n">cacheRequestClosed</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="ln">195</span>          <span class="n">cacheRequest</span><span class="o">.</span><span class="na">abort</span><span class="o">();</span>
+<span class="ln">196</span>        <span class="o">}</span>
+<span class="ln">197</span>        <span class="n">source</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+<span class="ln">198</span>      <span class="o">}</span>
+<span class="ln">199</span>    <span class="o">};</span>
+<span class="ln">200</span>    <span class="n">String</span> <span class="n">contentType</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">header</span><span class="o">(</span><span class="s">&#34;Content-Type&#34;</span><span class="o">);</span>
+<span class="ln">201</span>    <span class="kt">long</span> <span class="n">contentLength</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">body</span><span class="o">().</span><span class="na">contentLength</span><span class="o">();</span>
+<span class="ln">202</span>    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+<span class="ln">203</span>        <span class="o">.</span><span class="na">body</span><span class="o">(</span><span class="k">new</span> <span class="n">RealResponseBody</span><span class="o">(</span><span class="n">contentType</span><span class="o">,</span> <span class="n">contentLength</span><span class="o">,</span> <span class="n">Okio</span><span class="o">.</span><span class="na">buffer</span><span class="o">(</span><span class="n">cacheWritingSource</span><span class="o">)))</span>
+<span class="ln">204</span>        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="ln">205</span>  <span class="o">}</span>
+<span class="ln">206</span>  <span class="cm">/** Combines cached headers with a network headers as defined by RFC 7234, 4.3.4. */</span>
+<span class="ln">207</span>  <span class="kd">private</span> <span class="kd">static</span> <span class="n">Headers</span> <span class="nf">combine</span><span class="o">(</span><span class="n">Headers</span> <span class="n">cachedHeaders</span><span class="o">,</span> <span class="n">Headers</span> <span class="n">networkHeaders</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">208</span>    <span class="n">Headers</span><span class="o">.</span><span class="na">Builder</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Headers</span><span class="o">.</span><span class="na">Builder</span><span class="o">();</span>
+<span class="ln">209</span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">cachedHeaders</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">210</span>      <span class="n">String</span> <span class="n">fieldName</span> <span class="o">=</span> <span class="n">cachedHeaders</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="ln">211</span>      <span class="n">String</span> <span class="n">value</span> <span class="o">=</span> <span class="n">cachedHeaders</span><span class="o">.</span><span class="na">value</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="ln">212</span>      <span class="k">if</span> <span class="o">(</span><span class="s">&#34;Warning&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">value</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">&#34;1&#34;</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">213</span>        <span class="k">continue</span><span class="o">;</span> <span class="c1">// Drop 100-level freshness warnings.
+</span><span class="ln">214</span><span class="c1"></span>      <span class="o">}</span>
+<span class="ln">215</span>      <span class="k">if</span> <span class="o">(</span><span class="n">isContentSpecificHeader</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">216</span>          <span class="o">||</span> <span class="o">!</span><span class="n">isEndToEnd</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">217</span>          <span class="o">||</span> <span class="n">networkHeaders</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">218</span>        <span class="n">Internal</span><span class="o">.</span><span class="na">instance</span><span class="o">.</span><span class="na">addLenient</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">fieldName</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+<span class="ln">219</span>      <span class="o">}</span>
+<span class="ln">220</span>    <span class="o">}</span>
+<span class="ln">221</span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">networkHeaders</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">222</span>      <span class="n">String</span> <span class="n">fieldName</span> <span class="o">=</span> <span class="n">networkHeaders</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="ln">223</span>      <span class="k">if</span> <span class="o">(!</span><span class="n">isContentSpecificHeader</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">isEndToEnd</span><span class="o">(</span><span class="n">fieldName</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">224</span>        <span class="n">Internal</span><span class="o">.</span><span class="na">instance</span><span class="o">.</span><span class="na">addLenient</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">fieldName</span><span class="o">,</span> <span class="n">networkHeaders</span><span class="o">.</span><span class="na">value</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+<span class="ln">225</span>      <span class="o">}</span>
+<span class="ln">226</span>    <span class="o">}</span>
+<span class="ln">227</span>    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="ln">228</span>  <span class="o">}</span>
+<span class="ln">229</span>  <span class="cm">/**
+</span><span class="ln">230</span><span class="cm">   * Returns true if {@code fieldName} is an end-to-end HTTP header, as defined by RFC 2616,
+</span><span class="ln">231</span><span class="cm">   * 13.5.1.
+</span><span class="ln">232</span><span class="cm">   */</span>
+<span class="ln">233</span>  <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isEndToEnd</span><span class="o">(</span><span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">234</span>    <span class="k">return</span> <span class="o">!</span><span class="s">&#34;Connection&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">235</span>        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&#34;Keep-Alive&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">236</span>        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&#34;Proxy-Authenticate&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">237</span>        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&#34;Proxy-Authorization&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">238</span>        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&#34;TE&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">239</span>        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&#34;Trailers&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">240</span>        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&#34;Transfer-Encoding&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">241</span>        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&#34;Upgrade&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+<span class="ln">242</span>  <span class="o">}</span>
+<span class="ln">243</span>  <span class="cm">/**
+</span><span class="ln">244</span><span class="cm">   * Returns true if {@code fieldName} is content specific and therefore should always be used
+</span><span class="ln">245</span><span class="cm">   * from cached headers.
+</span><span class="ln">246</span><span class="cm">   */</span>
+<span class="ln">247</span>  <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isContentSpecificHeader</span><span class="o">(</span><span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">248</span>    <span class="k">return</span> <span class="s">&#34;Content-Length&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">249</span>        <span class="o">||</span> <span class="s">&#34;Content-Encoding&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">)</span>
+<span class="ln">250</span>        <span class="o">||</span> <span class="s">&#34;Content-Type&#34;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+<span class="ln">251</span>  <span class="o">}</span>
+<span class="ln">252</span><span class="o">}</span>
+</code></pre></div></div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/">Android源码一步一步分析系列之OkHttp(3)——BridgeInterceptor
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2020-04-10-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp5-connectinterceptor/">Android源码一步一步分析系列之OkHttp(5)——ConnectInterceptor
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp3-bridgeinterceptor/">Android源码一步一步分析系列之OkHttp(3)——BridgeInterceptor
+</a></li><li><a href="https://helixs.github.io/posts/2020-04-07-%E6%AF%8F%E6%97%A5%E4%B8%80%E7%AF%87leetcode%E4%B9%8B-%E7%9F%A9%E9%98%B5/">每日一篇leetcode之-矩阵旋转
+</a></li><li><a href="https://helixs.github.io/posts/2020-04-07-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp2-retryandfollowupinterceptor/">Android源码一步一步分析系列之OkHttp(2)——RetryAndFollowUpInterceptor
+</a></li><li><a href="https://helixs.github.io/posts/2020-04-02-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bokhttp1-%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1/">Android源码一步一步分析系列之OkHttp(1)——揭开面纱
+</a></li><li><a href="https://helixs.github.io/posts/2020-03-30-android-saf%E5%82%A8%E5%AD%98%E8%AE%BF%E9%97%AE%E6%A1%86%E6%9E%B6/">Android SAF储存访问框架
+</a></li></ul>
+  </section></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="card row text-center profile component">
+  <div class="card-body">
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="https://helixs.github.io/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">分类</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="badge bg-primary text-white rounded post-taxonomy" title="数据库">
+            数据库
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/series">专栏</a>
+        </h2>
+        <div><a href="https://helixs.github.io/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">标签</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="https://helixs.github.io/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 Helixs. All Rights Reserved.
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

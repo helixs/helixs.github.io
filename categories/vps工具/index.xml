@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vps工具 on Hugo Bootstrap</title>
+    <link>https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/</link>
+    <description>Recent content in vps工具 on Hugo Bootstrap</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} Helixs. All Rights Reserved.</copyright>
+    <lastBuildDate>Fri, 17 May 2019 02:05:50 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>centos7安装sha*dow***s-libev</title>
+      <link>https://helixs.github.io/posts/linux/2019-05-17-centos7%E5%AE%89%E8%A3%85shadows-libev/</link>
+      <pubDate>Fri, 17 May 2019 02:05:50 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/linux/2019-05-17-centos7%E5%AE%89%E8%A3%85shadows-libev/</guid>
+      <description>基于总所周知的原因，获取开发者资料也很是麻烦，顺便做个记录，怕以后忘记。下面所有的xxxxx 替换为 shdowocks libev的版本呢比较的轻量级，用doc</description>
+    </item>
+    
+    <item>
+      <title>centos开启bbr</title>
+      <link>https://helixs.github.io/posts/linux/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</link>
+      <pubDate>Wed, 16 Jan 2019 06:29:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/linux/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/</guid>
+      <description>什么是BBR： TCP BBR是谷歌出品的TCP拥塞控制算法。BBR目的是要尽量跑满带宽，并且尽量不要有排队的情况。BBR可以起到单边加速TCP连接</description>
+    </item>
+    
+    <item>
+      <title>centos7 aria2 安装配置</title>
+      <link>https://helixs.github.io/posts/linux/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</link>
+      <pubDate>Wed, 21 Nov 2018 07:45:05 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/linux/2018-11-21-aria2%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</guid>
+      <description>下载并编译aria2 最新版本 1wget https://github.com/aria2/aria2/releases/download/release-1.34.0/aria2-1.34.0.tar.gz 2tar -zxvf aria2-1.34.0.tar.gz 3cd aria2-1.34.0 4 #安装GNU编译器套件 5yum install gcc* 6./configure 7make 8make install 9cd src 10cd src cp aria2c /usr/bin 新建aria2.conf配置文件 1vim /etc/aria2/aria2.conf 1# 文件的保</description>
+    </item>
+    
+  </channel>
+</rss>

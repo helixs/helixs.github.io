@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kotlin on Hugo Bootstrap</title>
+    <link>https://helixs.github.io/categories/kotlin/</link>
+    <description>Recent content in kotlin on Hugo Bootstrap</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} Helixs. All Rights Reserved.</copyright>
+    <lastBuildDate>Wed, 11 Mar 2020 01:53:58 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/kotlin/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android调用DownloadManager下载文件及安装apk，兼容6、7、8&#43;</title>
+      <link>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</link>
+      <pubDate>Wed, 11 Mar 2020 01:53:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-03-11-android%E8%B0%83%E7%94%A8downloadmanager%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%8F%8A%E5%AE%89%E8%A3%85apk%E5%85%BC%E5%AE%B9678/</guid>
+      <description>我们的app经常有需求下载文件等，还有就是下载安装。 1、下载文件的方式 1,很多三方框架都有文件上传下载功能，可以借助三方框架(比如Volle</description>
+    </item>
+    
+    <item>
+      <title>kotlin特性之inline内联函数</title>
+      <link>https://helixs.github.io/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Wed, 11 Sep 2019 07:15:28 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</guid>
+      <description>inline内联函数可以说是kotlin的一个高级特性了，不过在C++其实早就实现了，而java不支持内联函数，不过在jvm运行的时候会有一</description>
+    </item>
+    
+  </channel>
+</rss>

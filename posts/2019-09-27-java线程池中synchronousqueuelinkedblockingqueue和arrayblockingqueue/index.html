@@ -1,0 +1,731 @@
+<!doctype html><html lang="zh-cn"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue">
+<meta itemprop="description" content="作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯"><meta itemprop="datePublished" content="2019-09-27T06:30:21+00:00" />
+<meta itemprop="dateModified" content="2019-09-27T06:30:21+00:00" />
+<meta itemprop="wordCount" content="5051">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue" />
+<meta property="og:description" content="作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/2019-09-27-java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%ADsynchronousqueuelinkedblockingqueue%E5%92%8Carrayblockingqueue/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-09-27T06:30:21+00:00" />
+<meta property="article:modified_time" content="2019-09-27T06:30:21+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue"/>
+<meta name="twitter:description" content="作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=Java%e7%ba%bf%e7%a8%8b%e6%b1%a0%e4%b8%adSynchronousQueue%e3%80%81LinkedBlockingQueue%e5%92%8cArrayBlockingQueue&url=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-09-27-java%25E7%25BA%25BF%25E7%25A8%258B%25E6%25B1%25A0%25E4%25B8%25ADsynchronousqueuelinkedblockingqueue%25E5%2592%258Carrayblockingqueue%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2f2019-09-27-java%25E7%25BA%25BF%25E7%25A8%258B%25E6%25B1%25A0%25E4%25B8%25ADsynchronousqueuelinkedblockingqueue%25E5%2592%258Carrayblockingqueue%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">设置</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="棕色"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="青色"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="绿色"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="橙色"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="粉色"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="紫色"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="红色"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="https://helixs.github.io/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    <a class="action" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+  <i class="fas fa-fw fa-list-alt"></i>
+</a>
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Java线程池中SynchronousQueue、LinkedBlockingQueue和ArrayBlockingQueue
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2019-09-27
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>11 分钟阅读
+  </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a><a href="https://helixs.github.io/categories/java/" class="badge rounded-pill text-white bg-primary post-taxonomy">java</a></div>
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><p>作为一个普通的Android开发者来说，平常布布控件和各种框架的情况下，接触线程的地方少之又少，更别提线程池了。以前基础差，做项目的时候牵扯到异步操作的时候呢都是直接Thread+handler根本没考虑后果，做完事就行。面试的时候就是被按在地上一顿摩擦。</p>
+<p>在alibaba开发手册上，这样写到：</p>
+<blockquote>
+<p><em>【强制】新建线程时，必须通过线程池提供（AsyncTask 或者ThreadPoolExecutor或者其他形式自定义的线程池），不允许在应用中自行显式创建线程。 <strong>说明</strong>：使用线程池的好处是减少在创建和销毁线程上所花的时间以及系统资源的开销，解决资源不足的问题。如果不使用线程池，有可能造成系统创建大量同类线程而导致消耗完内存或者“过度切换”的问题。另外创建匿名线程不便于后续的资源使用分析，对性能分析等会造成困扰。</em></p>
+</blockquote>
+<p>所以我们在进阶开发的时候特别涉及到大量数据操作的时候很有必要使用线程池来管理我们的线程任务。</p>
+<h4 id="线程池创建">线程池创建</h4>
+<p>Android中常用的线程池都是通过对<strong>ThreadPoolExecutor</strong>进行不同配置来实现的，下面是它的构造方法</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="cm">/**
+</span><span class="ln"> 2</span><span class="cm">     * Creates a new {@code ThreadPoolExecutor} with the given initial
+</span><span class="ln"> 3</span><span class="cm">     * parameters.
+</span><span class="ln"> 4</span><span class="cm">     *
+</span><span class="ln"> 5</span><span class="cm">     * @param corePoolSize the number of threads to keep in the pool, even
+</span><span class="ln"> 6</span><span class="cm">     *        if they are idle, unless {@code allowCoreThreadTimeOut} is set
+</span><span class="ln"> 7</span><span class="cm">     * @param maximumPoolSize the maximum number of threads to allow in the
+</span><span class="ln"> 8</span><span class="cm">     *        pool
+</span><span class="ln"> 9</span><span class="cm">     * @param keepAliveTime when the number of threads is greater than
+</span><span class="ln">10</span><span class="cm">     *        the core, this is the maximum time that excess idle threads
+</span><span class="ln">11</span><span class="cm">     *        will wait for new tasks before terminating.
+</span><span class="ln">12</span><span class="cm">     * @param unit the time unit for the {@code keepAliveTime} argument
+</span><span class="ln">13</span><span class="cm">     * @param workQueue the queue to use for holding tasks before they are
+</span><span class="ln">14</span><span class="cm">     *        executed.  This queue will hold only the {@code Runnable}
+</span><span class="ln">15</span><span class="cm">     *        tasks submitted by the {@code execute} method.
+</span><span class="ln">16</span><span class="cm">     * @param threadFactory the factory to use when the executor
+</span><span class="ln">17</span><span class="cm">     *        creates a new thread
+</span><span class="ln">18</span><span class="cm">     * @param handler the handler to use when execution is blocked
+</span><span class="ln">19</span><span class="cm">     *        because the thread bounds and queue capacities are reached
+</span><span class="ln">20</span><span class="cm">     * @throws IllegalArgumentException if one of the following holds:&lt;br&gt;
+</span><span class="ln">21</span><span class="cm">     *         {@code corePoolSize &lt; 0}&lt;br&gt;
+</span><span class="ln">22</span><span class="cm">     *         {@code keepAliveTime &lt; 0}&lt;br&gt;
+</span><span class="ln">23</span><span class="cm">     *         {@code maximumPoolSize &lt;= 0}&lt;br&gt;
+</span><span class="ln">24</span><span class="cm">     *         {@code maximumPoolSize &lt; corePoolSize}
+</span><span class="ln">25</span><span class="cm">     * @throws NullPointerException if {@code workQueue}
+</span><span class="ln">26</span><span class="cm">     *         or {@code threadFactory} or {@code handler} is null
+</span><span class="ln">27</span><span class="cm">     */</span>
+<span class="ln">28</span>    <span class="kd">public</span> <span class="nf">ThreadPoolExecutor</span><span class="o">(</span><span class="kt">int</span> <span class="n">corePoolSize</span><span class="o">,</span>
+<span class="ln">29</span>                              <span class="kt">int</span> <span class="n">maximumPoolSize</span><span class="o">,</span>
+<span class="ln">30</span>                              <span class="kt">long</span> <span class="n">keepAliveTime</span><span class="o">,</span>
+<span class="ln">31</span>                              <span class="n">TimeUnit</span> <span class="n">unit</span><span class="o">,</span>
+<span class="ln">32</span>                              <span class="n">BlockingQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;</span> <span class="n">workQueue</span><span class="o">,</span>
+<span class="ln">33</span>                              <span class="n">ThreadFactory</span> <span class="n">threadFactory</span><span class="o">,</span>
+<span class="ln">34</span>                              <span class="n">RejectedExecutionHandler</span> <span class="n">handler</span><span class="o">)</span>
+</code></pre></div><ul>
+<li><code>corePoolSize</code> 线程池中核心线程的数量</li>
+<li><code>maximumPoolSize</code>  线程池中最大线程数量（其中包括了核心线程）</li>
+<li><code>keepAliveTime</code> 当线程数大于核心时，这是多余的空闲线程在终止之前等待新任务的最长时间，也就是非核心线程的超时时长，当系统中非核心线程闲置时间超过keepAliveTime之后，则会被回收。如果ThreadPoolExecutor的allowCoreThreadTimeOut属性设置为true，则该参数也表示核心线程的超时时长</li>
+<li><code>unit</code> keepAliveTime 的时间单位多数情况下按照秒和毫秒来做</li>
+<li><code>workQueue</code> BlockingQueue的实现类 在执行任务之前用于保留任务的队列。该队列将仅保存由ThreadPoolExecutor.execute方法提交的 Runnable任务。这也是我们这片文章的重点内容</li>
+<li><code>threadFactory</code> 线程池在创建线程的工厂类，如果不传入默认会有一个Executors.defaultThreadFactory()</li>
+<li><code>handler</code> 拒绝策略，当线程无法执行新任务时（一般是由于线程池中的线程数量已经达到最大数或者线程池关闭导致的），默认情况下，当线程池无法处理新线程时，会抛出一个RejectedExecutionException。</li>
+</ul>
+<p>了解到了它的构造方法后我们来捋一捋，看一下<strong>ThreadPoolExecutor.execute</strong>方法</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="cm">/**
+</span><span class="ln"> 2</span><span class="cm">     * Executes the given task sometime in the future.  The task
+</span><span class="ln"> 3</span><span class="cm">     * may execute in a new thread or in an existing pooled thread.
+</span><span class="ln"> 4</span><span class="cm">     *
+</span><span class="ln"> 5</span><span class="cm">     * If the task cannot be submitted for execution, either because this
+</span><span class="ln"> 6</span><span class="cm">     * executor has been shutdown or because its capacity has been reached,
+</span><span class="ln"> 7</span><span class="cm">     * the task is handled by the current {@code RejectedExecutionHandler}.
+</span><span class="ln"> 8</span><span class="cm">     *
+</span><span class="ln"> 9</span><span class="cm">     * @param command the task to execute
+</span><span class="ln">10</span><span class="cm">     * @throws RejectedExecutionException at discretion of
+</span><span class="ln">11</span><span class="cm">     *         {@code RejectedExecutionHandler}, if the task
+</span><span class="ln">12</span><span class="cm">     *         cannot be accepted for execution
+</span><span class="ln">13</span><span class="cm">     * @throws NullPointerException if {@code command} is null
+</span><span class="ln">14</span><span class="cm">     */</span>
+<span class="ln">15</span>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">command</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">16</span>        <span class="k">if</span> <span class="o">(</span><span class="n">command</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+<span class="ln">17</span>            <span class="k">throw</span> <span class="k">new</span> <span class="n">NullPointerException</span><span class="o">();</span>
+<span class="ln">18</span>        <span class="cm">/*
+</span><span class="ln">19</span><span class="cm">         * Proceed in 3 steps:
+</span><span class="ln">20</span><span class="cm">         *
+</span><span class="ln">21</span><span class="cm">         * 1. If fewer than corePoolSize threads are running, try to
+</span><span class="ln">22</span><span class="cm">         * start a new thread with the given command as its first
+</span><span class="ln">23</span><span class="cm">         * task.  The call to addWorker atomically checks runState and
+</span><span class="ln">24</span><span class="cm">         * workerCount, and so prevents false alarms that would add
+</span><span class="ln">25</span><span class="cm">         * threads when it shouldn&#39;t, by returning false.
+</span><span class="ln">26</span><span class="cm">         *
+</span><span class="ln">27</span><span class="cm">         * 2. If a task can be successfully queued, then we still need
+</span><span class="ln">28</span><span class="cm">         * to double-check whether we should have added a thread
+</span><span class="ln">29</span><span class="cm">         * (because existing ones died since last checking) or that
+</span><span class="ln">30</span><span class="cm">         * the pool shut down since entry into this method. So we
+</span><span class="ln">31</span><span class="cm">         * recheck state and if necessary roll back the enqueuing if
+</span><span class="ln">32</span><span class="cm">         * stopped, or start a new thread if there are none.
+</span><span class="ln">33</span><span class="cm">         *
+</span><span class="ln">34</span><span class="cm">         * 3. If we cannot queue task, then we try to add a new
+</span><span class="ln">35</span><span class="cm">         * thread.  If it fails, we know we are shut down or saturated
+</span><span class="ln">36</span><span class="cm">         * and so reject the task.
+</span><span class="ln">37</span><span class="cm">         */</span>
+<span class="ln">38</span>        <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ctl</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+<span class="ln">39</span>        <span class="k">if</span> <span class="o">(</span><span class="n">workerCountOf</span><span class="o">(</span><span class="n">c</span><span class="o">)</span> <span class="o">&lt;</span> <span class="n">corePoolSize</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">40</span>            <span class="k">if</span> <span class="o">(</span><span class="n">addWorker</span><span class="o">(</span><span class="n">command</span><span class="o">,</span> <span class="kc">true</span><span class="o">))</span>
+<span class="ln">41</span>                <span class="k">return</span><span class="o">;</span>
+<span class="ln">42</span>            <span class="n">c</span> <span class="o">=</span> <span class="n">ctl</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+<span class="ln">43</span>        <span class="o">}</span>
+<span class="ln">44</span>        <span class="k">if</span> <span class="o">(</span><span class="n">isRunning</span><span class="o">(</span><span class="n">c</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">workQueue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">command</span><span class="o">))</span> <span class="o">{</span>
+<span class="ln">45</span>            <span class="kt">int</span> <span class="n">recheck</span> <span class="o">=</span> <span class="n">ctl</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+<span class="ln">46</span>            <span class="k">if</span> <span class="o">(!</span> <span class="n">isRunning</span><span class="o">(</span><span class="n">recheck</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">remove</span><span class="o">(</span><span class="n">command</span><span class="o">))</span>
+<span class="ln">47</span>                <span class="n">reject</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+<span class="ln">48</span>            <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">workerCountOf</span><span class="o">(</span><span class="n">recheck</span><span class="o">)</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span>
+<span class="ln">49</span>                <span class="n">addWorker</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+<span class="ln">50</span>        <span class="o">}</span>
+<span class="ln">51</span>        <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">addWorker</span><span class="o">(</span><span class="n">command</span><span class="o">,</span> <span class="kc">false</span><span class="o">))</span>
+<span class="ln">52</span>            <span class="n">reject</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+<span class="ln">53</span>    <span class="o">}</span>
+</code></pre></div><p>ctl是AtomicInteger类型，(里面保存了当前线程池中有效线程数量count和当前线程池运行的状态runState，count的增减同步，保证每次get的时候数量是最新的，所谓的原子性。每次我们都只用get的值，里面是用位运算符关联两个值的。位运算我一脸懵逼反正它保存了两个值了)。如果当前运行的线程的数量小于核心线程数量(就是我们在构造方法传入的corePoolSize)，那么就正常添加并执行任务。如果没有添加成功，就继续检查当前线程池的运行状态，如果还是在运行中，那么尝试通过blockingQueue的<!-- raw HTML omitted -->offer<!-- raw HTML omitted -->方法(记住只有offer方法，后面讲的那么这个线程池没用上)把Runnable放到任务队列中（后续核心线程如果有任务完成，那么就从这个队列中使用take方法取出Runnable放入到核心线程去执行任务）。如果加入成功到队列中，检查线程池状态，如果线程池在运行，那么就删除添加的Runnable，如果一切成功就抛出RejectedExecutionException。后面都看得懂就不解释了。</p>
+<p>过程如下</p>
+<ul>
+<li>
+<ol>
+<li>execute一个线程之后，如果线程池中的线程数未达到核心线程数，则会立马启用一个核心线程去执行。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>execute一个线程之后，如果线程池中的线程数已经达到核心线程数，且workQueue未满，则将新线程放入workQueue中等待执行。</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>execute一个线程之后，如果线程池中的线程数已经达到核心线程数但未超过非核心线程数，且workQueue已满，则开启一个非核心线程来执行任务。</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>execute一个线程之后，如果线程池中的线程数已经超过非核心线程数，则拒绝执行该任务。</li>
+</ol>
+</li>
+</ul>
+<h5 id="blockingqueue"><strong>BlockingQueue</strong></h5>
+<p>下面引入网上对BlockingQueue的主要方法的解释</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>抛出异常</th>
+<th>特殊值</th>
+<th>阻塞</th>
+<th>超时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>插入</td>
+<td>add(e)</td>
+<td>offer(e)</td>
+<td>put(e)</td>
+<td>offer(e,time,unit)</td>
+</tr>
+<tr>
+<td>移除</td>
+<td>remove()</td>
+<td>poll()</td>
+<td>take()</td>
+<td>poll(time, unit)</td>
+</tr>
+<tr>
+<td>检查</td>
+<td>element()</td>
+<td>peek()</td>
+<td>不可用</td>
+<td>不可用</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>add(anObject)</code>: 把anObject加到BlockingQueue里,即如果BlockingQueue可以容纳,则返回true,否则IllegalStateException(“Deque full”);</li>
+<li><code>offer(anObject)</code>: 表示如果可能的话,将anObject加到BlockingQueue里,即如果BlockingQueue可以容纳,则返回true,否则返回false.</li>
+<li><code> put(anObject)</code>:把anObject加到BlockingQueue里,如果BlockQueue没有空间,则调用此方法的线程被阻断直到BlockingQueue里面有空间再继续.</li>
+<li><code>poll(time)</code>:取走BlockingQueue里排在首位的对象,若不能立即取出,则可以等time参数规定的时间,取不到时返回null</li>
+<li><code>take()</code>:取走BlockingQueue里排在首位的对象,若BlockingQueue为空,阻断进入等待状态直到Blocking有新的对象被加入为止</li>
+</ul>
+<p>其中：<code>BlockingQueue</code> 不接受 <code>null</code> 元素。试图<code>add</code>、<code>put</code>或<code>offer</code>一个<code>null</code>元素时，某些实现会抛出<code>NullPointerException</code>。<code>null</code> 被用作指示<code>poll</code>操作失败的警戒值。</p>
+<p>它是一个特殊的队列，当我们从<code>BlockingQueue</code>中取数据时，如果<code>BlockingQueue</code>是空的，则取数据的操作会进入到阻塞状态，当<code>BlockingQueue</code>中有了新数据时，这个取数据的操作又会被重新唤醒。同理，如果<code>BlockingQueue</code>中的数据已经满了，往<code>BlockingQueue</code>中存数据的操作又会进入阻塞状态，直到<code>BlockingQueue</code>中又有新的空间，存数据的操作又会被冲洗唤醒。<code>BlockingQueue</code>有多种不同的实现类，下面我举几个例子来说一下：</p>
+<ul>
+<li>
+<p><strong>ArrayBlockingQueue</strong>：这个表示一个规定了大小的<code>BlockingQueue</code>，<code>ArrayBlockingQueue</code>的构造函数接受一个int类型的数据，该数据表示<code>BlockingQueue</code>的大小，存储在<code>ArrayBlockingQueue</code>中的元素按照FIFO（先进先出）的方式来进行存取。一个由数组支持的有界阻塞队列。在读写操作上都需要锁住整个容器，内部还保存着两个整形变量，分别标识着队列的头部和尾部在数组中的位置。</p>
+</li>
+<li>
+<p><strong>LinkedBlockingQueue</strong>：这个表示一个大小不确定的<code>BlockingQueue</code>，在<code>LinkedBlockingQueue</code>的构造方法中可以传一个int类型的数据，这样创建出来的<code>LinkedBlockingQueue</code>是有大小的，也可以不传，不传的话，<code>LinkedBlockingQueue</code>的大小就为<code>Integer.MAX_VALUE</code>。数据的队列是按照链表的形式排列的，一个node指定下一个node。</p>
+</li>
+<li>
+<p><strong>PriorityBlockingQueue</strong>：这个队列和<code>LinkedBlockingQueue</code>类似，不同的是<code>PriorityBlockingQueue</code>中的元素不是按照FIFO来排序的，而是按照元素的<code>Comparator</code>来决定存取顺序的（这个功能也反映了存入<code>PriorityBlockingQueue</code>中的数据必须实现了<code>Comparator</code>接口）。</p>
+</li>
+<li>
+<p><strong>SynchronousQueue</strong>：这个是同步Queue，属于线程安全的<code>BlockingQueue</code>的一种，在<code>SynchronousQueue</code>中，生产者线程的插入操作必须要等待消费者线程的移除操作，Synchronous内部没有数据缓存空间，因此我们无法对<code>SynchronousQueue</code>进行读取或者遍历其中的数据，元素只有在你试图取走的时候才有可能存在。我们可以理解为生产者和消费者互相等待，等到对方之后然后再一起离开。所以无论怎么样，队列里面只能最多有一个短暂的元素。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>queue</th>
+<th>阻塞与否</th>
+<th>是否有界</th>
+<th>线程安全保障</th>
+<th>适用场景</th>
+<th>注意事项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ArrayBlockingQueue</td>
+<td>阻塞</td>
+<td>有界</td>
+<td>一把全局锁</td>
+<td>生产消费模型，平衡两边处理速度</td>
+<td>用于存储队列元素的存储空间是预先分配的，使用过程中内存开销较小（无须动态申请存储空间）</td>
+</tr>
+<tr>
+<td>LinkedBlockingQueue</td>
+<td>阻塞</td>
+<td>可配置</td>
+<td>存取采用2把锁</td>
+<td>生产消费模型，平衡两边处理速度</td>
+<td>无界的时候注意内存溢出问题，用于存储队列元素的存储空间是在其使用过程中动态分配的，因此它可能会增加JVM垃圾回收的负担。</td>
+</tr>
+</tbody>
+</table>
+<h6 id="内存方面">内存方面</h6>
+<ul>
+<li>ArrayBlockingQueue<br>
+用于存储队列元素的存储空间是预先分配的，使用过程中内存开销较小（无须动态申请存储空间）</li>
+<li>LinkedBlockingQueue<br>
+用于存储队列元素的存储空间是在其使用过程中动态分配的，因此它可能会增加JVM垃圾回收的负担。</li>
+</ul>
+<h6 id="有界无界">有界无界</h6>
+<ul>
+<li>ArrayBlockingQueue<br>
+有界，适合已知最大存储容量的场景</li>
+<li>LinkedBlockingQueue<br>
+可有界可以无界</li>
+</ul>
+<h5 id="executors">Executors</h5>
+<p>我们找到Executors的创建线程池的默认工具类</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln"> 1</span><span class="c1">//创建固定线程数量，并且如果线程池一直存在，核心线程会一直保持，后面的任务可以无限添加到队列中
+</span><span class="ln"> 2</span><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">ExecutorService</span> <span class="nf">newFixedThreadPool</span><span class="o">(</span><span class="kt">int</span> <span class="n">nThreads</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 3</span>    <span class="k">return</span> <span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="o">(</span><span class="n">nThreads</span><span class="o">,</span> <span class="n">nThreads</span><span class="o">,</span> <span class="n">0L</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">,</span> <span class="k">new</span> <span class="n">LinkedBlockingQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;());</span>
+<span class="ln"> 4</span><span class="o">}</span>
+<span class="ln"> 5</span><span class="c1">//创建单个固定线层数量，和上面的一样
+</span><span class="ln"> 6</span><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">ExecutorService</span> <span class="nf">newSingleThreadExecutor</span><span class="o">()</span> <span class="o">{</span>
+<span class="ln"> 7</span>    <span class="k">return</span> <span class="k">new</span> <span class="n">FinalizableDelegatedExecutorService</span><span class="o">(</span><span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">0L</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">,</span> <span class="k">new</span> <span class="n">LinkedBlockingQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;()));</span>
+<span class="ln"> 8</span><span class="o">}</span>
+<span class="ln"> 9</span><span class="c1">//尽可能多的创建新的线程来创建任务，队列中不存放任务，消费者和生产者互相等待。线程消费完成后会等待60秒，如果有新的任务加入就启用，如果1分钟内没有用就
+</span><span class="ln">10</span><span class="c1">//去掉。
+</span><span class="ln">11</span><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">ExecutorService</span> <span class="nf">newCachedThreadPool</span><span class="o">()</span> <span class="o">{</span>
+<span class="ln">12</span>    <span class="k">return</span> <span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">,</span> <span class="n">60L</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">,</span> <span class="k">new</span> <span class="n">SynchronousQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;());</span>
+<span class="ln">13</span><span class="o">}</span>
+<span class="ln">14</span><span class="c1">//分别使用schedule延迟启动任务、scheduleAtFixedRate延迟定时执行任务、scheduleWithFixedDelay第一次延迟initialDelay秒，以后每次延迟delay秒执行一个任务。
+</span><span class="ln">15</span><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">ScheduledExecutorService</span> <span class="nf">newScheduledThreadPool</span><span class="o">(</span><span class="kt">int</span> <span class="n">corePoolSize</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">16</span>    <span class="k">return</span> <span class="k">new</span> <span class="n">ScheduledThreadPoolExecutor</span><span class="o">(</span><span class="n">corePoolSize</span><span class="o">);</span>
+<span class="ln">17</span><span class="o">}</span>
+</code></pre></div><p>其中这4个静态方法是用的最多的，在Alibaba开发手册上讲到</p>
+<p><em>【强制】线程池不允许使用Executors 去创建，而是通过ThreadPoolExecutor 的方</em><br>
+<em>式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。</em><br>
+<em>说明：</em></p>
+<p><em>Executors 返回的线程池对象的弊端如下：</em></p>
+<ol>
+<li><em>FixedThreadPool 和SingleThreadPool ： 允许的请求队列长度为</em><br>
+<em>Integer.MAX_VALUE，可能会堆积大量的请求，从而导致OOM；</em></li>
+<li><em>CachedThreadPool 和ScheduledThreadPool ： 允许的创建线程数量为</em><br>
+<em>Integer.MAX_VALUE，可能会创建大量的线程，从而导致OOM。</em></li>
+</ol>
+<p>你厉害听你的就行了。</p>
+<p>Cp一段线程池相关方法：</p>
+<ul>
+<li>
+<p>1.<strong>shutDown()</strong>  关闭线程池，不影响已经提交的任务</p>
+</li>
+<li>
+<p>2.<strong>shutDownNow()</strong> 关闭线程池，并尝试去终止正在执行的线程</p>
+</li>
+<li>
+<p>3.<strong>allowCoreThreadTimeOut(boolean value)</strong> 允许核心线程闲置超时时被回收</p>
+</li>
+<li>
+<p>4.<strong>submit()</strong> 一般情况下我们使用execute来提交任务，但是有时候可能也会用到submit，使用submit的好处是submit有返回值。使用submit时我们可以通过实现Callable接口来实现异步任务。在call方法中执行异步任务，返回值即为该任务的返回值。Future是返回结果，返回它的isDone属性表示异步任务执行成功！future的get方法是阻塞的，如果已经执行完毕则不会。</p>
+</li>
+</ul>
+</div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/">Kotlin特性之inline内联函数
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/2019-10-18-%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95%E4%B9%8Bkmp%E5%8F%8Anext%E6%95%B0%E7%BB%84/">匹配算法之KMP及Next数组
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/2019-09-11-kotlin%E7%89%B9%E6%80%A7%E4%B9%8Binline%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/">Kotlin特性之inline内联函数
+</a></li><li><a href="https://helixs.github.io/posts/2019-09-02-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BC%98%E5%8C%96/">冒泡排序的概念和优化
+</a></li><li><a href="https://helixs.github.io/posts/2019-08-20-flutter-sliverappbar/">Flutter SliverAppBar
+</a></li><li><a href="https://helixs.github.io/posts/2019-07-30-java-gc%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/">Java GC简单认识
+</a></li><li><a href="https://helixs.github.io/posts/2019-07-29-java-gc%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/">Jvm运行时内存分配
+</a></li></ul>
+  </section></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="card row text-center profile component">
+  <div class="card-body">
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="https://helixs.github.io/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">分类</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="badge bg-primary text-white rounded post-taxonomy" title="数据库">
+            数据库
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/series">专栏</a>
+        </h2>
+        <div><a href="https://helixs.github.io/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">标签</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="https://helixs.github.io/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 Helixs. All Rights Reserved.
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>未分类 on Hugo Bootstrap</title>
+    <link>https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/</link>
+    <description>Recent content in 未分类 on Hugo Bootstrap</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} Helixs. All Rights Reserved.</copyright>
+    <lastBuildDate>Fri, 18 Oct 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>匹配算法之KMP及Next数组</title>
+      <link>https://helixs.github.io/posts/2019-10-18-%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95%E4%B9%8Bkmp%E5%8F%8Anext%E6%95%B0%E7%BB%84/</link>
+      <pubDate>Fri, 18 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-10-18-%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95%E4%B9%8Bkmp%E5%8F%8Anext%E6%95%B0%E7%BB%84/</guid>
+      <description>KMP算法 Knuth-Morris-Pratt(克努斯-莫里斯-普拉特)字符串查找算法。 可在一个主文本字符串S内查找一个词W的出现位置。此算</description>
+    </item>
+    
+    <item>
+      <title>android沉浸状态栏</title>
+      <link>https://helixs.github.io/posts/android/2019-03-27-android%E6%B2%89%E6%B5%B8%E7%8A%B6%E6%80%81%E6%A0%8F/</link>
+      <pubDate>Wed, 27 Mar 2019 07:37:48 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/android/2019-03-27-android%E6%B2%89%E6%B5%B8%E7%8A%B6%E6%80%81%E6%A0%8F/</guid>
+      <description>在介绍这个方便的轮子之前，我们先一起来回顾一下实现沉浸式状态栏的一般套路。 在Android上，关于对StatusBar（状态栏）的操作，一直</description>
+    </item>
+    
+    <item>
+      <title>androidButton设置minHeight和minWidth无效的问题</title>
+      <link>https://helixs.github.io/posts/android/2019-03-11-androidbutton%E8%AE%BE%E7%BD%AEminheight%E5%92%8Cminwidth%E6%97%A0%E6%95%88%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 11 Mar 2019 03:46:00 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/android/2019-03-11-androidbutton%E8%AE%BE%E7%BD%AEminheight%E5%92%8Cminwidth%E6%97%A0%E6%95%88%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>今天在代码中设置button的minheight，发现没有效果。结果发现代码中设置minHeight实际上对应的是text的绘制最小区域，要</description>
+    </item>
+    
+    <item>
+      <title>实现在gridLayoutManager中宽高一致的item</title>
+      <link>https://helixs.github.io/posts/android/2019-03-06-%E5%AE%9E%E7%8E%B0%E5%9C%A8gridlayoutmanager%E4%B8%AD%E5%AE%BD%E9%AB%98%E4%B8%80%E8%87%B4%E7%9A%84item/</link>
+      <pubDate>Wed, 06 Mar 2019 09:34:07 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/android/2019-03-06-%E5%AE%9E%E7%8E%B0%E5%9C%A8gridlayoutmanager%E4%B8%AD%E5%AE%BD%E9%AB%98%E4%B8%80%E8%87%B4%E7%9A%84item/</guid>
+      <description>1public class SquareCardView extends CardView { 2 3 private Configuration mConfig; 4 5 public SquareCardView(@NonNull Context context) { 6 this(context, null, 0); 7 } 8 9 public SquareCardView(@NonNull Context context, @Nullable AttributeSet attrs) { 10 this(context, attrs, 0); 11 } 12 13 public SquareCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) { 14 super(context, attrs, defStyleAttr); 15 this.mConfig = getResources().getConfiguration(); 16 } 17 18 @Override 19 protected void onMeasure(int widthMeasureSpec,</description>
+    </item>
+    
+    <item>
+      <title>自定义View绘制等相关介绍地址</title>
+      <link>https://helixs.github.io/posts/2019-02-26-paint-xfermode-/</link>
+      <pubDate>Tue, 26 Feb 2019 03:07:37 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-02-26-paint-xfermode-/</guid>
+      <description>Android图像处理——Paint之Xfermode https://blog.csdn.net/allen315410/article/details/45077165</description>
+    </item>
+    
+    <item>
+      <title>android应用内截图</title>
+      <link>https://helixs.github.io/posts/android/2019-02-25-android%E5%BA%94%E7%94%A8%E5%86%85%E6%88%AA%E5%9B%BE/</link>
+      <pubDate>Mon, 25 Feb 2019 02:33:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/android/2019-02-25-android%E5%BA%94%E7%94%A8%E5%86%85%E6%88%AA%E5%9B%BE/</guid>
+      <description>1 2 3package com.ex; 4 5import android.app.Activity; 6import android.content.Context; 7import android.content.res.Resources; 8import android.graphics.Bitmap; 9import android.graphics.Canvas; 10import android.graphics.Color; 11import android.graphics.Matrix; 12import android.graphics.Paint; 13import android.graphics.Point; 14import android.graphics.Rect; 15import android.graphics.drawable.ColorDrawable; 16import android.graphics.drawable.Drawable; 17import android.os.Build; 18import android.util.DisplayMetrics; 19import android.util.Log; 20import android.view.View; 21import android.view.ViewGroup; 22import android.view.Window; 23import android.view.WindowManager; 24import android.widget.ListAdapter; 25import android.widget.ListView; 26 27import java.util.ArrayList; 28import java.util.List; 29 30import androidx.annotation.ColorInt; 31import androidx.collection.LruCache; 32import androidx.recyclerview.widget.RecyclerView; 33 34/** 35* 获取屏幕的宽高度</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>编程生活 on Hugo Bootstrap</title>
+    <link>https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/</link>
+    <description>Recent content in 编程生活 on Hugo Bootstrap</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} Helixs. All Rights Reserved.</copyright>
+    <lastBuildDate>Tue, 27 Apr 2021 02:12:57 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Flutter Web使用的一些心得和一些问题</title>
+      <link>https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 27 Apr 2021 02:12:57 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</guid>
+      <description>公司这段时间新建了一个网站项目，因为是新项目，选择技术栈来说是比较值得探讨的问题，因为前端缺人，本身我们组又是移动应用开发为主，虽然前端也会</description>
+    </item>
+    
+    <item>
+      <title>Mariadb安装设置root密码</title>
+      <link>https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/</link>
+      <pubDate>Fri, 02 Apr 2021 07:02:08 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/</guid>
+      <description>1$ sudo apt install mariadb-server 2#root权限 3$ sudo mysql_secure_installation 4 5NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB 6 SERVERS IN PRODUCTION USE! PLEASE READ EACH STEP CAREFULLY! 7 8In order to log into MariaDB to secure it, we&amp;#39;ll need the current 9password for the root user. If you&amp;#39;ve just installed MariaDB, and 10you haven&amp;#39;t set the root password</description>
+    </item>
+    
+    <item>
+      <title>LeetCode之在数组中计算某个两个数和等于目标值</title>
+      <link>https://helixs.github.io/posts/2021-03-26-leetcode%E4%B9%8B%E5%9C%A8%E6%95%B0%E7%BB%84%E4%B8%AD%E8%AE%A1%E7%AE%97%E6%9F%90%E4%B8%AA%E4%B8%A4%E4%B8%AA%E6%95%B0%E5%92%8C%E7%AD%89%E4%BA%8E%E7%9B%AE%E6%A0%87%E5%80%BC/</link>
+      <pubDate>Fri, 26 Mar 2021 06:33:01 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2021-03-26-leetcode%E4%B9%8B%E5%9C%A8%E6%95%B0%E7%BB%84%E4%B8%AD%E8%AE%A1%E7%AE%97%E6%9F%90%E4%B8%AA%E4%B8%A4%E4%B8%AA%E6%95%B0%E5%92%8C%E7%AD%89%E4%BA%8E%E7%9B%AE%E6%A0%87%E5%80%BC/</guid>
+      <description>1给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 的那 两个 整数，并返回它们的数组下标。 2你可以假设每种输入只会对</description>
+    </item>
+    
+    <item>
+      <title>AndroidStudio通过Gradle查看第三方依赖关系</title>
+      <link>https://helixs.github.io/posts/2021-02-19-androidstudio%E9%80%9A%E8%BF%87gradle%E6%9F%A5%E7%9C%8B%E7%AC%AC%E4%B8%89%E6%96%B9%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/</link>
+      <pubDate>Fri, 19 Feb 2021 07:27:02 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2021-02-19-androidstudio%E9%80%9A%E8%BF%87gradle%E6%9F%A5%E7%9C%8B%E7%AC%AC%E4%B8%89%E6%96%B9%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/</guid>
+      <description>进行Android开发我们经常遇到一些依赖冲突，以及库版本号不一致导致出现各种问题。往往就下面这张图只是看到了你所有的依赖项，并不知道这些依</description>
+    </item>
+    
+    <item>
+      <title>Android源码一步一步分析系列之Retrofit</title>
+      <link>https://helixs.github.io/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</link>
+      <pubDate>Sun, 26 Apr 2020 05:36:46 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-04-26-android%E6%BA%90%E7%A0%81%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E4%B9%8Bretrofit/</guid>
+      <description>Retrofit 是原Square 大神JakeWharton 面向Android和Java平台的http客户端。 那么我们常用的Retrofit+Okhttp的</description>
+    </item>
+    
+    <item>
+      <title>Android MaterialButton的一些问题</title>
+      <link>https://helixs.github.io/posts/2019-11-28-android-materialbutton%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Thu, 28 Nov 2019 03:34:18 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-11-28-android-materialbutton%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</guid>
+      <description>MaterialButton和MaterialCardView的都新增了边框属性，我们没必要为了一个边框写那么多shape，一旦多了谁着得住</description>
+    </item>
+    
+    <item>
+      <title>Java GC简单认识</title>
+      <link>https://helixs.github.io/posts/2019-07-30-java-gc%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
+      <pubDate>Tue, 30 Jul 2019 04:00:27 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-07-30-java-gc%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
+      <description>哪些对象会被回收？ 对于寄存器、栈和本地方法区，他们都是跟随着当前线程走的，线程走完也就消亡了，所以不许要GC去触碰它。 而GC的主要对象是Ja</description>
+    </item>
+    
+    <item>
+      <title>jvm运行时内存分配</title>
+      <link>https://helixs.github.io/posts/2019-07-29-java-gc%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</link>
+      <pubDate>Mon, 29 Jul 2019 10:03:17 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-07-29-java-gc%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86/</guid>
+      <description>前几日，我去外面试了试面试。找找新工作看看有没有合适的。前面基本上很顺利，没有什么特别的难度和问题，本以为可以满怀信心的入职，结果被泼了一盆</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux常用配置 on Hugo Bootstrap</title>
+    <link>https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/</link>
+    <description>Recent content in linux常用配置 on Hugo Bootstrap</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} Helixs. All Rights Reserved.</copyright>
+    <lastBuildDate>Sat, 29 Feb 2020 11:21:58 +0000</lastBuildDate><atom:link href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ubuntu开机错误 couldn’t find an input interrupt /dev/sda1 contains a file system with errors</title>
+      <link>https://helixs.github.io/posts/2020-02-29-ubuntu%E5%BC%80%E6%9C%BA%E9%94%99%E8%AF%AF-couldnt-find-an-input-interrupt-dev-sda1-contains-a-file-system-with-errors/</link>
+      <pubDate>Sat, 29 Feb 2020 11:21:58 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2020-02-29-ubuntu%E5%BC%80%E6%9C%BA%E9%94%99%E8%AF%AF-couldnt-find-an-input-interrupt-dev-sda1-contains-a-file-system-with-errors/</guid>
+      <description>更新系统软件后，非正常关机，出现了 1couldn&amp;#39;t find an input interrupt 2dev/sda1 contains a file system with errors, check forced. 3Inodes that were part of a corrupted orphan linked list found. 4 5/dev/sda1: UNEXPECTED INCONSISTENCY: RUN fsck MANUALLY. 6 (i.e., without -a or -p options) 7fsck exited with status code 4 8The root filesystem on /dev/sda1 requires a manual</description>
+    </item>
+    
+    <item>
+      <title>通过openssl获取证书摘要信息</title>
+      <link>https://helixs.github.io/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</link>
+      <pubDate>Tue, 23 Jul 2019 07:42:30 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-07-23-%E9%80%9A%E8%BF%87openssl%E8%8E%B7%E5%8F%96%E8%AF%81%E4%B9%A6%E6%91%98%E8%A6%81%E4%BF%A1%E6%81%AF/</guid>
+      <description>转载请注明出处 我们做app开发的时候，往往需要对应用信息安全做考虑。通过charles fiddler抓取http包是很随意的事情，https</description>
+    </item>
+    
+    <item>
+      <title>Bash Shell常用快捷键</title>
+      <link>https://helixs.github.io/posts/2019-06-11-bash-shell%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <pubDate>Tue, 11 Jun 2019 09:06:49 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/2019-06-11-bash-shell%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description>编辑命令 Ctrl + a ：移到命令行首 Ctrl + e ：移到命令行尾 Ctrl + f ：按字符前移（右向） Ctrl + b ：按字符后移（左向） Alt + f ：按单词前移（右向） Alt + b ：按单词</description>
+    </item>
+    
+    <item>
+      <title>卸载阿里云监控服务</title>
+      <link>https://helixs.github.io/posts/linux/2019-03-06-%E5%8D%B8%E8%BD%BD%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Wed, 06 Mar 2019 05:28:28 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/linux/2019-03-06-%E5%8D%B8%E8%BD%BD%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1/</guid>
+      <description>卸载阿里云盾监控： 1wget http://update.aegis.aliyun.com/download/uninstall.sh 2chmod +x uninstall.sh 3sudo ./uninstall.sh 4wget http://update.aegis.aliyun.com/download/quartz_uninstall.sh 5chmod +x quartz_uninstall.sh 6sudo ./quartz_uninstall.sh 删除残留： 1sudo pkill aliyun-service 2sudo rm -fr /etc/init.d/agentwatch /usr/sbin/aliyun-service 3sudo rm -rf /usr/local/aegis* 屏蔽云盾 IP，用包过滤屏蔽如下IP： 1iptables -I INPUT -s 140.205.201.0/28 -j DROP 2iptables -I INPUT -s 140.205.201.16/29</description>
+    </item>
+    
+    <item>
+      <title>centos7 防火墙端口配置和SSH端口配置</title>
+      <link>https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</link>
+      <pubDate>Tue, 30 Oct 2018 21:36:03 +0000</pubDate>
+      
+      <guid>https://helixs.github.io/posts/linux/2018-10-31-centos7-%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%92%8Cssh%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE-/</guid>
+      <description>防火墙 启动防火墙 1 systemctl start firewalld 关闭防火墙 1systemctl stop firewalld 查看防火墙状态 1systemctl status firewalld 开机禁用防火墙 1systemctl disable firewalld 开机启用防火墙 1systemctl enable firewalld 开放指定端口 1firewall-cmd --zone=public --add-port=80/tcp --permanent 关闭指定端口 1firewall-cmd --zone=public --remove-port=80/tcp --permanent</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,827 @@
+<!doctype html><html lang="zh-cn"
+  >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>android应用内截图 - Hugo Bootstrap</title><link rel="apple-touch-icon" href="https://helixs.github.io/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="https://helixs.github.io/images/favicons/manifest.json">
+<link rel="icon" href="https://helixs.github.io/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="" /><meta itemprop="name" content="android应用内截图">
+<meta itemprop="description" content="1 2 3package com.ex; 4 5import android.app.Activity; 6import android.content.Context; 7import android.content.res.Resources; 8import android.graphics.Bitmap; 9import android.graphics.Canvas; 10import android.graphics.Color; 11import android.graphics.Matrix; 12import android.graphics.Paint; 13import android.graphics.Point; 14import android.graphics.Rect; 15import android.graphics.drawable.ColorDrawable; 16import android.graphics.drawable.Drawable; 17import android.os.Build; 18import android.util.DisplayMetrics; 19import android.util.Log; 20import android.view.View; 21import android.view.ViewGroup; 22import android.view.Window; 23import android.view.WindowManager; 24import android.widget.ListAdapter; 25import android.widget.ListView; 26 27import java.util.ArrayList; 28import java.util.List; 29 30import androidx.annotation.ColorInt; 31import androidx.collection.LruCache; 32import androidx.recyclerview.widget.RecyclerView; 33 34/** 35* 获取屏幕的宽高度"><meta itemprop="datePublished" content="2019-02-25T02:33:58+00:00" />
+<meta itemprop="dateModified" content="2019-02-25T02:33:58+00:00" />
+<meta itemprop="wordCount" content="1460">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="android应用内截图" />
+<meta property="og:description" content="1 2 3package com.ex; 4 5import android.app.Activity; 6import android.content.Context; 7import android.content.res.Resources; 8import android.graphics.Bitmap; 9import android.graphics.Canvas; 10import android.graphics.Color; 11import android.graphics.Matrix; 12import android.graphics.Paint; 13import android.graphics.Point; 14import android.graphics.Rect; 15import android.graphics.drawable.ColorDrawable; 16import android.graphics.drawable.Drawable; 17import android.os.Build; 18import android.util.DisplayMetrics; 19import android.util.Log; 20import android.view.View; 21import android.view.ViewGroup; 22import android.view.Window; 23import android.view.WindowManager; 24import android.widget.ListAdapter; 25import android.widget.ListView; 26 27import java.util.ArrayList; 28import java.util.List; 29 30import androidx.annotation.ColorInt; 31import androidx.collection.LruCache; 32import androidx.recyclerview.widget.RecyclerView; 33 34/** 35* 获取屏幕的宽高度" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://helixs.github.io/posts/android/2019-02-25-android%E5%BA%94%E7%94%A8%E5%86%85%E6%88%AA%E5%9B%BE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-02-25T02:33:58+00:00" />
+<meta property="article:modified_time" content="2019-02-25T02:33:58+00:00" /><meta property="og:site_name" content="Hugo Bootstrap" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="android应用内截图"/>
+<meta name="twitter:description" content="1 2 3package com.ex; 4 5import android.app.Activity; 6import android.content.Context; 7import android.content.res.Resources; 8import android.graphics.Bitmap; 9import android.graphics.Canvas; 10import android.graphics.Color; 11import android.graphics.Matrix; 12import android.graphics.Paint; 13import android.graphics.Point; 14import android.graphics.Rect; 15import android.graphics.drawable.ColorDrawable; 16import android.graphics.drawable.Drawable; 17import android.os.Build; 18import android.util.DisplayMetrics; 19import android.util.Log; 20import android.view.View; 21import android.view.ViewGroup; 22import android.view.Window; 23import android.view.WindowManager; 24import android.widget.ListAdapter; 25import android.widget.ListView; 26 27import java.util.ArrayList; 28import java.util.List; 29 30import androidx.annotation.ColorInt; 31import androidx.collection.LruCache; 32import androidx.recyclerview.widget.RecyclerView; 33 34/** 35* 获取屏幕的宽高度"/>
+<meta name="twitter:site" content="@yourtwitterusername"/>
+<link rel="preload" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://helixs.github.io/css/bundle.min.89b15c76d23b1055e418eed718cb78886010e537918653f0a43661ed56307392.css" integrity="sha256-ibFcdtI7EFXkGO7XGMt4iGAQ5TeRhlPwpDZh7VYwc5I=" crossorigin="anonymous"></noscript></head>
+  <body><script src="https://helixs.github.io/js/bootstrap.min.b5d86dd3a5f60c90be38a252bb65fc1a2732f32e71dc12c051720f0c7aef3cde.js" integrity="sha256-tdht06X2DJC&#43;OKJSu2X8Gicy8y5x3BLAUXIPDHrvPN4=" crossorigin="anonymous"></script><header><nav class="navbar top-app-bar top-app-bar-expand-lg fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button><a class="navbar-brand me-3" href="https://helixs.github.io/"><img class="logo" alt="Logo" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+西门吹风
+    </a>
+    <button class="navbar-social-share" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSocialShare"
+  aria-controls="offcanvasSocialShare" aria-label="Toggle social share">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<div class="offcanvas offcanvas-bottom surface" tabindex="-1" id="offcanvasSocialShare" aria-labelledby="offcanvasSocialShare">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">Share</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Twitter Share Button"
+      target="_blank" href="https://twitter.com/intent/tweet?title=android%e5%ba%94%e7%94%a8%e5%86%85%e6%88%aa%e5%9b%be&url=https%3a%2f%2fhelixs.github.io%2fposts%2fandroid%2f2019-02-25-android%25E5%25BA%2594%25E7%2594%25A8%25E5%2586%2585%25E6%2588%25AA%25E5%259B%25BE%2f">
+      <i class="fab fa-fw fa-twitter"></i> Twitter
+    </a>
+    <a class="btn btn-sm btn-outline-primary social-share-button" rel="noopener noreferrer" aria-label="Facebook Share Button"
+      target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhelixs.github.io%2fposts%2fandroid%2f2019-02-25-android%25E5%25BA%2594%25E7%2594%25A8%25E5%2586%2585%25E6%2588%25AA%25E5%259B%25BE%2f">
+      <i class="fab fa-fw fa-facebook-f"></i> Facebook
+    </a>
+  </div>
+</div>
+
+    <button class="navbar-settings" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+  aria-controls="offcanvasSettings" aria-label="Toggle settings">
+  <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasSettings">
+  <div class="offcanvas-header">
+    <h3 class="offcanvas-title">设置</h3>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+
+<section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-adjust"></i> 模式</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="modeSwitcher">
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <a id="btnPalette" class="btn btn-sm btn-outline-primary" role="button" aria-label="palettePicker">
+        <i class="fas fa-eye-dropper"></i>
+      </a>
+    </div>
+  </form>
+  <div class="mt-2 d-flex visually-hidden" id="palettePicker"><button type="button" id="palette-blue" aria-label="蓝色"
+        class="btn btn-sm palette" data-palette="blue">
+      </button><button type="button" id="palette-blue-gray" aria-label="蓝灰色"
+        class="btn btn-sm palette" data-palette="blue-gray">
+      </button><button type="button" id="palette-brown" aria-label="棕色"
+        class="btn btn-sm palette" data-palette="brown">
+      </button><button type="button" id="palette-cyan" aria-label="青色"
+        class="btn btn-sm palette" data-palette="cyan">
+      </button><button type="button" id="palette-green" aria-label="绿色"
+        class="btn btn-sm palette" data-palette="green">
+      </button><button type="button" id="palette-indigo" aria-label="靛青色"
+        class="btn btn-sm palette" data-palette="indigo">
+      </button><button type="button" id="palette-orange" aria-label="橙色"
+        class="btn btn-sm palette" data-palette="orange">
+      </button><button type="button" id="palette-pink" aria-label="粉色"
+        class="btn btn-sm palette" data-palette="pink">
+      </button><button type="button" id="palette-purple" aria-label="紫色"
+        class="btn btn-sm palette" data-palette="purple">
+      </button><button type="button" id="palette-red" aria-label="红色"
+        class="btn btn-sm palette" data-palette="red">
+      </button><button type="button" id="palette-teal" aria-label="蓝绿色"
+        class="btn btn-sm palette" data-palette="teal">
+      </button><button type="button" id="palette-yellow" aria-label="黄色"
+        class="btn btn-sm palette" data-palette="yellow">
+      </button></div>
+</section>
+</div>
+</div>
+
+    <div class="collapse navbar-collapse" tabindex="-1" id="navbarSupportedContent" aria-labelledby="navbarSupportedContent">
+      <form class="search-bar my-1" action="https://helixs.github.io/search">
+  <div class="input-group input-group-sm">
+    <span class="btn btn-search disabled position-absolute left-0"><i class="fas fa-fw fa-search"></i></span>
+    <input class="form-control rounded-pill" name="q" type="search" aria-label="Search">
+  </div>
+</form>
+
+      <ul class="navbar-nav ms-auto"><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/archives/">
+            <i class="fas fa-fw fa-file-archive"></i>归档
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/categories/">
+            <i class="fas fa-fw fa-folder"></i>分类
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/tags/">
+            <i class="fas fa-fw fa-tags"></i>标签
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link" href="https://helixs.github.io/series/">
+            <i class="fas fa-fw fa-columns"></i>专栏
+          </a>
+        </li><li class="nav-item dropdown">
+          <a class="nav-link" id="navbarDropdown-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-fw fa-chevron-circle-down"></i>下拉菜单
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-dropdown"><li>
+              <a class="dropdown-item"
+                href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-fw fa-github"></i>Github
+              </a>
+            </li><li>
+              <a class="dropdown-item"
+                href="https://helixs.github.io/zh-cn/series/manual">
+                用户手册
+              </a>
+            </li></ul>
+        </li></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row card component" aria-label="breadcrumb">
+  <div class="card-body">
+    <ol class="breadcrumb "><li class="breadcrumb-item"><a href="https://helixs.github.io/">主页</a></li><li class="breadcrumb-item"><a href="https://helixs.github.io/posts/">文章</a></li><li class="breadcrumb-item active">Android应用内截图</li></ol>
+  </div>
+</nav>    <article class="row card component mb-4 post"><div class="post-panel-wrapper">
+  <div class="d-flex flex-column component rounded post-panel">
+    
+    <a id="sidebarToggler" class="action d-none d-lg-block" role="button">
+  <i class="fas fa-fw fa-expand-alt" data-fa-transform="rotate-45"></i>
+</a>
+  
+    
+
+    <a class="action btn-reward" role="button" data-bs-toggle="modal" data-bs-target="#rewardModal" title="打赏">
+  <i class="fas fa-fw fa-coffee"></i>
+</a>
+    <a class="action" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom"
+  data-bs-trigger="focus" tabindex="0" role="button" aria-label="Copyright" 
+  data-bs-content="&lt;a target=&#34;_blank&#34; rel=&#34;license noopener noreferrer&#34; href=&#34;https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh&#34;&gt;CC BY-NC-ND 4.0 &lt;i class=&#34;fab fa-fw fa-creative-commons&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-by&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nc&#34;&gt;&lt;/i&gt;&lt;i class=&#34;fab fa-fw fa-creative-commons-nd&#34;&gt;&lt;/i&gt;&lt;/a&gt;
+">
+  <i class="fas fa-fw fa-copyright"></i>
+</a>
+    
+    
+  </div>
+</div>
+<div class="card-body">
+        <h1 class="card-title my-3">Android应用内截图
+</h1><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2019-02-25
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>3 分钟阅读
+  </span><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge rounded-pill text-white bg-primary post-taxonomy">未分类</a></div>
+<div class="post-content mb-3"><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="ln">  1</span>
+<span class="ln">  2</span>
+<span class="ln">  3</span><span class="kn">package</span> <span class="nn">com.ex</span><span class="o">;</span>
+<span class="ln">  4</span>
+<span class="ln">  5</span><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+<span class="ln">  6</span><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+<span class="ln">  7</span><span class="kn">import</span> <span class="nn">android.content.res.Resources</span><span class="o">;</span>
+<span class="ln">  8</span><span class="kn">import</span> <span class="nn">android.graphics.Bitmap</span><span class="o">;</span>
+<span class="ln">  9</span><span class="kn">import</span> <span class="nn">android.graphics.Canvas</span><span class="o">;</span>
+<span class="ln"> 10</span><span class="kn">import</span> <span class="nn">android.graphics.Color</span><span class="o">;</span>
+<span class="ln"> 11</span><span class="kn">import</span> <span class="nn">android.graphics.Matrix</span><span class="o">;</span>
+<span class="ln"> 12</span><span class="kn">import</span> <span class="nn">android.graphics.Paint</span><span class="o">;</span>
+<span class="ln"> 13</span><span class="kn">import</span> <span class="nn">android.graphics.Point</span><span class="o">;</span>
+<span class="ln"> 14</span><span class="kn">import</span> <span class="nn">android.graphics.Rect</span><span class="o">;</span>
+<span class="ln"> 15</span><span class="kn">import</span> <span class="nn">android.graphics.drawable.ColorDrawable</span><span class="o">;</span>
+<span class="ln"> 16</span><span class="kn">import</span> <span class="nn">android.graphics.drawable.Drawable</span><span class="o">;</span>
+<span class="ln"> 17</span><span class="kn">import</span> <span class="nn">android.os.Build</span><span class="o">;</span>
+<span class="ln"> 18</span><span class="kn">import</span> <span class="nn">android.util.DisplayMetrics</span><span class="o">;</span>
+<span class="ln"> 19</span><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+<span class="ln"> 20</span><span class="kn">import</span> <span class="nn">android.view.View</span><span class="o">;</span>
+<span class="ln"> 21</span><span class="kn">import</span> <span class="nn">android.view.ViewGroup</span><span class="o">;</span>
+<span class="ln"> 22</span><span class="kn">import</span> <span class="nn">android.view.Window</span><span class="o">;</span>
+<span class="ln"> 23</span><span class="kn">import</span> <span class="nn">android.view.WindowManager</span><span class="o">;</span>
+<span class="ln"> 24</span><span class="kn">import</span> <span class="nn">android.widget.ListAdapter</span><span class="o">;</span>
+<span class="ln"> 25</span><span class="kn">import</span> <span class="nn">android.widget.ListView</span><span class="o">;</span>
+<span class="ln"> 26</span>
+<span class="ln"> 27</span><span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="ln"> 28</span><span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="ln"> 29</span>
+<span class="ln"> 30</span><span class="kn">import</span> <span class="nn">androidx.annotation.ColorInt</span><span class="o">;</span>
+<span class="ln"> 31</span><span class="kn">import</span> <span class="nn">androidx.collection.LruCache</span><span class="o">;</span>
+<span class="ln"> 32</span><span class="kn">import</span> <span class="nn">androidx.recyclerview.widget.RecyclerView</span><span class="o">;</span>
+<span class="ln"> 33</span>
+<span class="ln"> 34</span><span class="cm">/**
+</span><span class="ln"> 35</span><span class="cm"> * 获取屏幕的宽高度
+</span><span class="ln"> 36</span><span class="cm"> *
+</span><span class="ln"> 37</span><span class="cm"> * @author BoBoMEe
+</span><span class="ln"> 38</span><span class="cm"> */</span>
+<span class="ln"> 39</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ScreenUtil</span> <span class="o">{</span>
+<span class="ln"> 40</span>
+<span class="ln"> 41</span>    <span class="cm">/**
+</span><span class="ln"> 42</span><span class="cm">     * shot the current screen ,with the status but the status is trans *
+</span><span class="ln"> 43</span><span class="cm">     *
+</span><span class="ln"> 44</span><span class="cm">     * @param ctx current activity
+</span><span class="ln"> 45</span><span class="cm">     */</span>
+<span class="ln"> 46</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">shotActivity</span><span class="o">(</span><span class="n">Activity</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 47</span>
+<span class="ln"> 48</span>        <span class="n">View</span> <span class="n">view</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getWindow</span><span class="o">().</span><span class="na">getDecorView</span><span class="o">();</span>
+<span class="ln"> 49</span>        <span class="n">view</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="ln"> 50</span>        <span class="n">view</span><span class="o">.</span><span class="na">buildDrawingCache</span><span class="o">();</span>
+<span class="ln"> 51</span>
+<span class="ln"> 52</span>        <span class="n">Bitmap</span> <span class="n">bp</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">getDrawingCache</span><span class="o">(),</span> <span class="n">0</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">view</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span>
+<span class="ln"> 53</span>                <span class="n">view</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">());</span>
+<span class="ln"> 54</span>
+<span class="ln"> 55</span>        <span class="n">view</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+<span class="ln"> 56</span>        <span class="n">view</span><span class="o">.</span><span class="na">destroyDrawingCache</span><span class="o">();</span>
+<span class="ln"> 57</span>
+<span class="ln"> 58</span>        <span class="k">return</span> <span class="n">bp</span><span class="o">;</span>
+<span class="ln"> 59</span>    <span class="o">}</span>
+<span class="ln"> 60</span>
+<span class="ln"> 61</span>    <span class="cm">/**
+</span><span class="ln"> 62</span><span class="cm">     * shot the current screen ,with the status and navigationbar*
+</span><span class="ln"> 63</span><span class="cm">     */</span>
+<span class="ln"> 64</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">ShotActivity$WithoutStatus$WithoutNavigationBar</span><span class="o">(</span><span class="n">Activity</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 65</span>        <span class="kt">int</span> <span class="n">statusH</span> <span class="o">=</span> <span class="n">getStatusH</span><span class="o">(</span><span class="n">ctx</span><span class="o">);</span>
+<span class="ln"> 66</span>        <span class="kt">int</span> <span class="n">navigationBarH</span> <span class="o">=</span> <span class="n">getNavigationBarHeight</span><span class="o">(</span><span class="n">ctx</span><span class="o">);</span>
+<span class="ln"> 67</span>
+<span class="ln"> 68</span>        <span class="n">View</span> <span class="n">view</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getWindow</span><span class="o">().</span><span class="na">getDecorView</span><span class="o">();</span>
+<span class="ln"> 69</span>        <span class="n">view</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="ln"> 70</span>        <span class="n">view</span><span class="o">.</span><span class="na">buildDrawingCache</span><span class="o">();</span>
+<span class="ln"> 71</span>
+<span class="ln"> 72</span>        <span class="n">Bitmap</span> <span class="n">bp</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">getDrawingCache</span><span class="o">(),</span> <span class="n">0</span><span class="o">,</span> <span class="n">statusH</span><span class="o">,</span> <span class="n">view</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span>
+<span class="ln"> 73</span>                <span class="n">view</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">()</span> <span class="o">-</span> <span class="n">statusH</span> <span class="o">-</span> <span class="n">navigationBarH</span><span class="o">);</span>
+<span class="ln"> 74</span>
+<span class="ln"> 75</span>        <span class="n">view</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+<span class="ln"> 76</span>        <span class="n">view</span><span class="o">.</span><span class="na">destroyDrawingCache</span><span class="o">();</span>
+<span class="ln"> 77</span>
+<span class="ln"> 78</span>        <span class="k">return</span> <span class="n">bp</span><span class="o">;</span>
+<span class="ln"> 79</span>    <span class="o">}</span>
+<span class="ln"> 80</span>
+<span class="ln"> 81</span>    <span class="cm">/**
+</span><span class="ln"> 82</span><span class="cm">     * 获得屏幕高度
+</span><span class="ln"> 83</span><span class="cm">     */</span>
+<span class="ln"> 84</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getScreenWidth</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 85</span>        <span class="n">WindowManager</span> <span class="n">wm</span> <span class="o">=</span> <span class="o">(</span><span class="n">WindowManager</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">WINDOW_SERVICE</span><span class="o">);</span>
+<span class="ln"> 86</span>        <span class="n">DisplayMetrics</span> <span class="n">outMetrics</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DisplayMetrics</span><span class="o">();</span>
+<span class="ln"> 87</span>        <span class="n">wm</span><span class="o">.</span><span class="na">getDefaultDisplay</span><span class="o">().</span><span class="na">getMetrics</span><span class="o">(</span><span class="n">outMetrics</span><span class="o">);</span>
+<span class="ln"> 88</span>        <span class="k">return</span> <span class="n">outMetrics</span><span class="o">.</span><span class="na">widthPixels</span><span class="o">;</span>
+<span class="ln"> 89</span>    <span class="o">}</span>
+<span class="ln"> 90</span>
+<span class="ln"> 91</span>    <span class="cm">/**
+</span><span class="ln"> 92</span><span class="cm">     * get the height of screen *
+</span><span class="ln"> 93</span><span class="cm">     */</span>
+<span class="ln"> 94</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getScreenH</span><span class="o">(</span><span class="n">Context</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 95</span>        <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln"> 96</span>        <span class="k">if</span> <span class="o">(</span><span class="n">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">SDK_INT</span> <span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">13</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln"> 97</span>            <span class="n">Point</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">();</span>
+<span class="ln"> 98</span>            <span class="o">((</span><span class="n">WindowManager</span><span class="o">)</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">WINDOW_SERVICE</span><span class="o">)).</span><span class="na">getDefaultDisplay</span><span class="o">().</span><span class="na">getSize</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+<span class="ln"> 99</span>            <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">y</span><span class="o">;</span>
+<span class="ln">100</span>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln">101</span>            <span class="n">h</span> <span class="o">=</span> <span class="o">((</span><span class="n">WindowManager</span><span class="o">)</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">WINDOW_SERVICE</span><span class="o">)).</span><span class="na">getDefaultDisplay</span><span class="o">()</span>
+<span class="ln">102</span>                    <span class="o">.</span><span class="na">getHeight</span><span class="o">();</span>
+<span class="ln">103</span>        <span class="o">}</span>
+<span class="ln">104</span>        <span class="k">return</span> <span class="n">h</span><span class="o">;</span>
+<span class="ln">105</span>    <span class="o">}</span>
+<span class="ln">106</span>
+<span class="ln">107</span>    <span class="cm">/**
+</span><span class="ln">108</span><span class="cm">     * get the width of screen **
+</span><span class="ln">109</span><span class="cm">     */</span>
+<span class="ln">110</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getScreenW</span><span class="o">(</span><span class="n">Context</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">111</span>        <span class="kt">int</span> <span class="n">w</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">112</span>        <span class="k">if</span> <span class="o">(</span><span class="n">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">SDK_INT</span> <span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">13</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">113</span>            <span class="n">Point</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">();</span>
+<span class="ln">114</span>            <span class="o">((</span><span class="n">WindowManager</span><span class="o">)</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">WINDOW_SERVICE</span><span class="o">)).</span><span class="na">getDefaultDisplay</span><span class="o">().</span><span class="na">getSize</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+<span class="ln">115</span>            <span class="n">w</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">x</span><span class="o">;</span>
+<span class="ln">116</span>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln">117</span>            <span class="n">w</span> <span class="o">=</span> <span class="o">((</span><span class="n">WindowManager</span><span class="o">)</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">WINDOW_SERVICE</span><span class="o">)).</span><span class="na">getDefaultDisplay</span><span class="o">()</span>
+<span class="ln">118</span>                    <span class="o">.</span><span class="na">getWidth</span><span class="o">();</span>
+<span class="ln">119</span>        <span class="o">}</span>
+<span class="ln">120</span>        <span class="k">return</span> <span class="n">w</span><span class="o">;</span>
+<span class="ln">121</span>    <span class="o">}</span>
+<span class="ln">122</span>
+<span class="ln">123</span>    <span class="cm">/**
+</span><span class="ln">124</span><span class="cm">     * get the height of status *
+</span><span class="ln">125</span><span class="cm">     */</span>
+<span class="ln">126</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getStatusH</span><span class="o">(</span><span class="n">Activity</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">127</span>        <span class="n">Rect</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Rect</span><span class="o">();</span>
+<span class="ln">128</span>        <span class="n">ctx</span><span class="o">.</span><span class="na">getWindow</span><span class="o">().</span><span class="na">getDecorView</span><span class="o">().</span><span class="na">getWindowVisibleDisplayFrame</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+<span class="ln">129</span>        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="na">top</span><span class="o">;</span>
+<span class="ln">130</span>    <span class="o">}</span>
+<span class="ln">131</span>
+<span class="ln">132</span>    <span class="cm">/**
+</span><span class="ln">133</span><span class="cm">     * get the height of status *
+</span><span class="ln">134</span><span class="cm">     */</span>
+<span class="ln">135</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getStatusHeight</span><span class="o">(</span><span class="n">Context</span> <span class="n">activity</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">136</span>        <span class="kt">int</span> <span class="n">resourceId</span> <span class="o">=</span> <span class="n">activity</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getIdentifier</span><span class="o">(</span><span class="s">&#34;status_bar_height&#34;</span><span class="o">,</span> <span class="s">&#34;dimen&#34;</span><span class="o">,</span> <span class="s">&#34;android&#34;</span><span class="o">);</span>
+<span class="ln">137</span>        <span class="k">return</span> <span class="n">resourceId</span> <span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">0</span> <span class="o">?</span> <span class="n">activity</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getDimensionPixelSize</span><span class="o">(</span><span class="n">resourceId</span><span class="o">)</span> <span class="o">:</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">138</span>    <span class="o">}</span>
+<span class="ln">139</span>
+<span class="ln">140</span>    <span class="cm">/**
+</span><span class="ln">141</span><span class="cm">     * get the height of status *
+</span><span class="ln">142</span><span class="cm">     */</span>
+<span class="ln">143</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getStatusH</span><span class="o">(</span><span class="n">Context</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">144</span>        <span class="kt">int</span> <span class="n">statusHeight</span> <span class="o">=</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
+<span class="ln">145</span>        <span class="k">try</span> <span class="o">{</span>
+<span class="ln">146</span>            <span class="n">Class</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;?&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;com.android.internal.R$dimen&#34;</span><span class="o">);</span>
+<span class="ln">147</span>            <span class="n">Object</span> <span class="n">object</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+<span class="ln">148</span>            <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">clazz</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="s">&#34;status_bar_height&#34;</span><span class="o">).</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+<span class="ln">149</span>            <span class="n">statusHeight</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getDimensionPixelSize</span><span class="o">(</span><span class="n">height</span><span class="o">);</span>
+<span class="ln">150</span>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">151</span>            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="ln">152</span>        <span class="o">}</span>
+<span class="ln">153</span>        <span class="k">return</span> <span class="n">statusHeight</span><span class="o">;</span>
+<span class="ln">154</span>    <span class="o">}</span>
+<span class="ln">155</span>
+<span class="ln">156</span>    <span class="cm">/**
+</span><span class="ln">157</span><span class="cm">     * get the height of title *
+</span><span class="ln">158</span><span class="cm">     */</span>
+<span class="ln">159</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getTitleH</span><span class="o">(</span><span class="n">Activity</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">160</span>        <span class="kt">int</span> <span class="n">contentTop</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getWindow</span><span class="o">().</span><span class="na">findViewById</span><span class="o">(</span><span class="n">Window</span><span class="o">.</span><span class="na">ID_ANDROID_CONTENT</span><span class="o">).</span><span class="na">getTop</span><span class="o">();</span>
+<span class="ln">161</span>        <span class="k">return</span> <span class="n">contentTop</span> <span class="o">-</span> <span class="n">getStatusH</span><span class="o">(</span><span class="n">ctx</span><span class="o">);</span>
+<span class="ln">162</span>    <span class="o">}</span>
+<span class="ln">163</span>
+<span class="ln">164</span>    <span class="cm">/**
+</span><span class="ln">165</span><span class="cm">     * get the height of NavigationBar
+</span><span class="ln">166</span><span class="cm">     */</span>
+<span class="ln">167</span>
+<span class="ln">168</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getNavigationBarHeight</span><span class="o">(</span><span class="n">Activity</span> <span class="n">mActivity</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">169</span>        <span class="n">Resources</span> <span class="n">resources</span> <span class="o">=</span> <span class="n">mActivity</span><span class="o">.</span><span class="na">getResources</span><span class="o">();</span>
+<span class="ln">170</span>        <span class="kt">int</span> <span class="n">resourceId</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="na">getIdentifier</span><span class="o">(</span><span class="s">&#34;navigation_bar_height&#34;</span><span class="o">,</span> <span class="s">&#34;dimen&#34;</span><span class="o">,</span> <span class="s">&#34;android&#34;</span><span class="o">);</span>
+<span class="ln">171</span>        <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="na">getDimensionPixelSize</span><span class="o">(</span><span class="n">resourceId</span><span class="o">);</span>
+<span class="ln">172</span>        <span class="k">return</span> <span class="n">height</span><span class="o">;</span>
+<span class="ln">173</span>    <span class="o">}</span>
+<span class="ln">174</span>
+<span class="ln">175</span>    <span class="cm">/**
+</span><span class="ln">176</span><span class="cm">     * http://stackoverflow.com/questions/12742343/android-get-screenshot-of-all-listview-items
+</span><span class="ln">177</span><span class="cm">     */</span>
+<span class="ln">178</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">shotListView</span><span class="o">(</span><span class="n">ListView</span> <span class="n">listview</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">179</span>
+<span class="ln">180</span>        <span class="n">ListAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="n">listview</span><span class="o">.</span><span class="na">getAdapter</span><span class="o">();</span>
+<span class="ln">181</span>        <span class="kt">int</span> <span class="n">itemscount</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="na">getCount</span><span class="o">();</span>
+<span class="ln">182</span>        <span class="kt">int</span> <span class="n">allitemsheight</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">183</span>        <span class="n">List</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Bitmap</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">bmps</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Bitmap</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;();</span>
+<span class="ln">184</span>
+<span class="ln">185</span>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">itemscount</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">186</span>
+<span class="ln">187</span>            <span class="n">View</span> <span class="n">childView</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="na">getView</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">listview</span><span class="o">);</span>
+<span class="ln">188</span>            <span class="n">childView</span><span class="o">.</span><span class="na">measure</span><span class="o">(</span>
+<span class="ln">189</span>                    <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">makeMeasureSpec</span><span class="o">(</span><span class="n">listview</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(),</span> <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">EXACTLY</span><span class="o">),</span>
+<span class="ln">190</span>                    <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">makeMeasureSpec</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">UNSPECIFIED</span><span class="o">));</span>
+<span class="ln">191</span>
+<span class="ln">192</span>            <span class="n">childView</span><span class="o">.</span><span class="na">layout</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">childView</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span> <span class="n">childView</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">());</span>
+<span class="ln">193</span>            <span class="n">childView</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="ln">194</span>            <span class="n">childView</span><span class="o">.</span><span class="na">buildDrawingCache</span><span class="o">();</span>
+<span class="ln">195</span>            <span class="n">bmps</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">childView</span><span class="o">.</span><span class="na">getDrawingCache</span><span class="o">());</span>
+<span class="ln">196</span>            <span class="n">allitemsheight</span> <span class="o">+=</span> <span class="n">childView</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">();</span>
+<span class="ln">197</span>        <span class="o">}</span>
+<span class="ln">198</span>
+<span class="ln">199</span>        <span class="n">Bitmap</span> <span class="n">bigbitmap</span> <span class="o">=</span>
+<span class="ln">200</span>                <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">listview</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span> <span class="n">allitemsheight</span><span class="o">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">Config</span><span class="o">.</span><span class="na">ARGB_8888</span><span class="o">);</span>
+<span class="ln">201</span>        <span class="n">Canvas</span> <span class="n">bigcanvas</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Canvas</span><span class="o">(</span><span class="n">bigbitmap</span><span class="o">);</span>
+<span class="ln">202</span>
+<span class="ln">203</span>        <span class="n">Paint</span> <span class="n">paint</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Paint</span><span class="o">();</span>
+<span class="ln">204</span>        <span class="kt">int</span> <span class="n">iHeight</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">205</span>
+<span class="ln">206</span>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">bmps</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">207</span>            <span class="n">Bitmap</span> <span class="n">bmp</span> <span class="o">=</span> <span class="n">bmps</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="ln">208</span>            <span class="n">bigcanvas</span><span class="o">.</span><span class="na">drawBitmap</span><span class="o">(</span><span class="n">bmp</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">iHeight</span><span class="o">,</span> <span class="n">paint</span><span class="o">);</span>
+<span class="ln">209</span>            <span class="n">iHeight</span> <span class="o">+=</span> <span class="n">bmp</span><span class="o">.</span><span class="na">getHeight</span><span class="o">();</span>
+<span class="ln">210</span>
+<span class="ln">211</span>            <span class="n">bmp</span><span class="o">.</span><span class="na">recycle</span><span class="o">();</span>
+<span class="ln">212</span>            <span class="n">bmp</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">213</span>        <span class="o">}</span>
+<span class="ln">214</span>
+<span class="ln">215</span>        <span class="k">return</span> <span class="n">bigbitmap</span><span class="o">;</span>
+<span class="ln">216</span>    <span class="o">}</span>
+<span class="ln">217</span>
+<span class="ln">218</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">spliceBitmap</span><span class="o">(</span><span class="n">Bitmap</span> <span class="n">bmp1</span><span class="o">,</span> <span class="n">Bitmap</span> <span class="n">bmp2</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">219</span>        <span class="n">Bitmap</span> <span class="n">retBmp</span><span class="o">;</span>
+<span class="ln">220</span>        <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">bmp1</span><span class="o">.</span><span class="na">getWidth</span><span class="o">();</span>
+<span class="ln">221</span>        <span class="k">if</span> <span class="o">(</span><span class="n">bmp2</span><span class="o">.</span><span class="na">getWidth</span><span class="o">()</span> <span class="o">!=</span> <span class="n">width</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">222</span>            <span class="c1">//以第一张图片的宽度为标准，对第二张图片进行缩放。
+</span><span class="ln">223</span><span class="c1"></span>
+<span class="ln">224</span>            <span class="kt">int</span> <span class="n">h2</span> <span class="o">=</span> <span class="n">bmp2</span><span class="o">.</span><span class="na">getHeight</span><span class="o">()</span> <span class="o">*</span> <span class="n">width</span> <span class="o">/</span> <span class="n">bmp2</span><span class="o">.</span><span class="na">getWidth</span><span class="o">();</span>
+<span class="ln">225</span>            <span class="n">retBmp</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">width</span><span class="o">,</span> <span class="n">bmp1</span><span class="o">.</span><span class="na">getHeight</span><span class="o">()</span> <span class="o">+</span> <span class="n">h2</span><span class="o">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">Config</span><span class="o">.</span><span class="na">ARGB_8888</span><span class="o">);</span>
+<span class="ln">226</span>            <span class="n">Canvas</span> <span class="n">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Canvas</span><span class="o">(</span><span class="n">retBmp</span><span class="o">);</span>
+<span class="ln">227</span>            <span class="n">Bitmap</span> <span class="n">newSizeBmp2</span> <span class="o">=</span> <span class="n">resizeBitmap</span><span class="o">(</span><span class="n">bmp2</span><span class="o">,</span> <span class="n">width</span><span class="o">,</span> <span class="n">h2</span><span class="o">);</span>
+<span class="ln">228</span>            <span class="n">canvas</span><span class="o">.</span><span class="na">drawBitmap</span><span class="o">(</span><span class="n">bmp1</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+<span class="ln">229</span>            <span class="n">canvas</span><span class="o">.</span><span class="na">drawBitmap</span><span class="o">(</span><span class="n">newSizeBmp2</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">bmp1</span><span class="o">.</span><span class="na">getHeight</span><span class="o">(),</span> <span class="kc">null</span><span class="o">);</span>
+<span class="ln">230</span>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="ln">231</span>            <span class="c1">//两张图片宽度相等，则直接拼接。
+</span><span class="ln">232</span><span class="c1"></span>
+<span class="ln">233</span>            <span class="n">retBmp</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">width</span><span class="o">,</span> <span class="n">bmp1</span><span class="o">.</span><span class="na">getHeight</span><span class="o">()</span> <span class="o">+</span> <span class="n">bmp2</span><span class="o">.</span><span class="na">getHeight</span><span class="o">(),</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">Config</span><span class="o">.</span><span class="na">ARGB_8888</span><span class="o">);</span>
+<span class="ln">234</span>            <span class="n">Canvas</span> <span class="n">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Canvas</span><span class="o">(</span><span class="n">retBmp</span><span class="o">);</span>
+<span class="ln">235</span>            <span class="n">canvas</span><span class="o">.</span><span class="na">drawBitmap</span><span class="o">(</span><span class="n">bmp1</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+<span class="ln">236</span>            <span class="n">canvas</span><span class="o">.</span><span class="na">drawBitmap</span><span class="o">(</span><span class="n">bmp2</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">bmp1</span><span class="o">.</span><span class="na">getHeight</span><span class="o">(),</span> <span class="kc">null</span><span class="o">);</span>
+<span class="ln">237</span>        <span class="o">}</span>
+<span class="ln">238</span>
+<span class="ln">239</span>        <span class="k">return</span> <span class="n">retBmp</span><span class="o">;</span>
+<span class="ln">240</span>    <span class="o">}</span>
+<span class="ln">241</span>
+<span class="ln">242</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">resizeBitmap</span><span class="o">(</span><span class="n">Bitmap</span> <span class="n">bitmap</span><span class="o">,</span> <span class="kt">int</span> <span class="n">newWidth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">newHeight</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">243</span>        <span class="kt">float</span> <span class="n">scaleWidth</span> <span class="o">=</span> <span class="o">((</span><span class="kt">float</span><span class="o">)</span> <span class="n">newWidth</span><span class="o">)</span> <span class="o">/</span> <span class="n">bitmap</span><span class="o">.</span><span class="na">getWidth</span><span class="o">();</span>
+<span class="ln">244</span>        <span class="kt">float</span> <span class="n">scaleHeight</span> <span class="o">=</span> <span class="o">((</span><span class="kt">float</span><span class="o">)</span> <span class="n">newHeight</span><span class="o">)</span> <span class="o">/</span> <span class="n">bitmap</span><span class="o">.</span><span class="na">getHeight</span><span class="o">();</span>
+<span class="ln">245</span>        <span class="n">Matrix</span> <span class="n">matrix</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Matrix</span><span class="o">();</span>
+<span class="ln">246</span>        <span class="n">matrix</span><span class="o">.</span><span class="na">postScale</span><span class="o">(</span><span class="n">scaleWidth</span><span class="o">,</span> <span class="n">scaleHeight</span><span class="o">);</span>
+<span class="ln">247</span>        <span class="n">Bitmap</span> <span class="n">bmpScale</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">bitmap</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">bitmap</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(),</span> <span class="n">bitmap</span><span class="o">.</span><span class="na">getHeight</span><span class="o">(),</span> <span class="n">matrix</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+<span class="ln">248</span>        <span class="k">return</span> <span class="n">bmpScale</span><span class="o">;</span>
+<span class="ln">249</span>    <span class="o">}</span>
+<span class="ln">250</span>
+<span class="ln">251</span>    <span class="cm">/**
+</span><span class="ln">252</span><span class="cm">     * https://gist.github.com/PrashamTrivedi/809d2541776c8c141d9a
+</span><span class="ln">253</span><span class="cm">     */</span>
+<span class="ln">254</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">shotRecyclerView</span><span class="o">(</span><span class="n">RecyclerView</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">255</span>        <span class="n">RecyclerView</span><span class="o">.</span><span class="na">Adapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="na">getAdapter</span><span class="o">();</span>
+<span class="ln">256</span>        <span class="n">Bitmap</span> <span class="n">bigBitmap</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">257</span>        <span class="k">if</span> <span class="o">(</span><span class="n">adapter</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">258</span>            <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="na">getItemCount</span><span class="o">();</span>
+<span class="ln">259</span>            <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">260</span>            <span class="n">Paint</span> <span class="n">paint</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Paint</span><span class="o">();</span>
+<span class="ln">261</span>            <span class="kt">int</span> <span class="n">iHeight</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">262</span>            <span class="kd">final</span> <span class="kt">int</span> <span class="n">maxMemory</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">maxMemory</span><span class="o">()</span> <span class="o">/</span> <span class="n">1024</span><span class="o">);</span>
+<span class="ln">263</span>
+<span class="ln">264</span>            <span class="c1">// Use 1/8th of the available memory for this memory cache.
+</span><span class="ln">265</span><span class="c1"></span>            <span class="kd">final</span> <span class="kt">int</span> <span class="n">cacheSize</span> <span class="o">=</span> <span class="n">maxMemory</span> <span class="o">/</span> <span class="n">8</span><span class="o">;</span>
+<span class="ln">266</span>            <span class="n">LruCache</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">String</span><span class="o">,</span> <span class="n">Bitmap</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">bitmaCache</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LruCache</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;(</span><span class="n">cacheSize</span><span class="o">);</span>
+<span class="ln">267</span>            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">268</span>                <span class="n">RecyclerView</span><span class="o">.</span><span class="na">ViewHolder</span> <span class="n">holder</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="na">createViewHolder</span><span class="o">(</span><span class="n">view</span><span class="o">,</span> <span class="n">adapter</span><span class="o">.</span><span class="na">getItemViewType</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+<span class="ln">269</span>                <span class="n">adapter</span><span class="o">.</span><span class="na">onBindViewHolder</span><span class="o">(</span><span class="n">holder</span><span class="o">,</span> <span class="n">i</span><span class="o">);</span>
+<span class="ln">270</span>                <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">measure</span><span class="o">(</span>
+<span class="ln">271</span>                        <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">makeMeasureSpec</span><span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(),</span> <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">EXACTLY</span><span class="o">),</span>
+<span class="ln">272</span>                        <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">makeMeasureSpec</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">UNSPECIFIED</span><span class="o">));</span>
+<span class="ln">273</span>                <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">layout</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span>
+<span class="ln">274</span>                        <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">());</span>
+<span class="ln">275</span>                <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="ln">276</span>                <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">buildDrawingCache</span><span class="o">();</span>
+<span class="ln">277</span>                <span class="n">Bitmap</span> <span class="n">drawingCache</span> <span class="o">=</span> <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">getDrawingCache</span><span class="o">();</span>
+<span class="ln">278</span>                <span class="k">if</span> <span class="o">(</span><span class="n">drawingCache</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">279</span>
+<span class="ln">280</span>                    <span class="n">bitmaCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">),</span> <span class="n">drawingCache</span><span class="o">);</span>
+<span class="ln">281</span>                <span class="o">}</span>
+<span class="ln">282</span>                <span class="n">height</span> <span class="o">+=</span> <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">();</span>
+<span class="ln">283</span>            <span class="o">}</span>
+<span class="ln">284</span>
+<span class="ln">285</span>            <span class="n">bigBitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span> <span class="n">height</span><span class="o">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">Config</span><span class="o">.</span><span class="na">ARGB_8888</span><span class="o">);</span>
+<span class="ln">286</span>            <span class="n">Canvas</span> <span class="n">bigCanvas</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Canvas</span><span class="o">(</span><span class="n">bigBitmap</span><span class="o">);</span>
+<span class="ln">287</span>            <span class="n">Drawable</span> <span class="n">lBackground</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="na">getBackground</span><span class="o">();</span>
+<span class="ln">288</span>            <span class="k">if</span> <span class="o">(</span><span class="n">lBackground</span> <span class="k">instanceof</span> <span class="n">ColorDrawable</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">289</span>                <span class="n">ColorDrawable</span> <span class="n">lColorDrawable</span> <span class="o">=</span> <span class="o">(</span><span class="n">ColorDrawable</span><span class="o">)</span> <span class="n">lBackground</span><span class="o">;</span>
+<span class="ln">290</span>                <span class="kt">int</span> <span class="n">lColor</span> <span class="o">=</span> <span class="n">lColorDrawable</span><span class="o">.</span><span class="na">getColor</span><span class="o">();</span>
+<span class="ln">291</span>                <span class="n">bigCanvas</span><span class="o">.</span><span class="na">drawColor</span><span class="o">(</span><span class="n">lColor</span><span class="o">);</span>
+<span class="ln">292</span>            <span class="o">}</span>
+<span class="ln">293</span>
+<span class="ln">294</span>            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">295</span>                <span class="n">Bitmap</span> <span class="n">bitmap</span> <span class="o">=</span> <span class="n">bitmaCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+<span class="ln">296</span>                <span class="n">bigCanvas</span><span class="o">.</span><span class="na">drawBitmap</span><span class="o">(</span><span class="n">bitmap</span><span class="o">,</span> <span class="n">0f</span><span class="o">,</span> <span class="n">iHeight</span><span class="o">,</span> <span class="n">paint</span><span class="o">);</span>
+<span class="ln">297</span>                <span class="n">iHeight</span> <span class="o">+=</span> <span class="n">bitmap</span><span class="o">.</span><span class="na">getHeight</span><span class="o">();</span>
+<span class="ln">298</span>                <span class="n">bitmap</span><span class="o">.</span><span class="na">recycle</span><span class="o">();</span>
+<span class="ln">299</span>            <span class="o">}</span>
+<span class="ln">300</span>        <span class="o">}</span>
+<span class="ln">301</span>        <span class="k">return</span> <span class="n">bigBitmap</span><span class="o">;</span>
+<span class="ln">302</span>    <span class="o">}</span>
+<span class="ln">303</span>
+<span class="ln">304</span>    <span class="cm">/**
+</span><span class="ln">305</span><span class="cm">     * http://blog.csdn.net/lyy1104/article/details/40048329
+</span><span class="ln">306</span><span class="cm">     */</span>
+<span class="ln">307</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">shotScrollView</span><span class="o">(</span><span class="n">ViewGroup</span> <span class="n">scrollView</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">308</span>        <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">309</span>        <span class="n">Bitmap</span> <span class="n">bitmap</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">310</span>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">scrollView</span><span class="o">.</span><span class="na">getChildCount</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">311</span>            <span class="n">h</span> <span class="o">+=</span> <span class="n">scrollView</span><span class="o">.</span><span class="na">getChildAt</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getHeight</span><span class="o">();</span>
+<span class="ln">312</span>            <span class="n">scrollView</span><span class="o">.</span><span class="na">getChildAt</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">setBackgroundColor</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">parseColor</span><span class="o">(</span><span class="s">&#34;#ffffff&#34;</span><span class="o">));</span>
+<span class="ln">313</span>        <span class="o">}</span>
+<span class="ln">314</span>        <span class="n">bitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">scrollView</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(),</span> <span class="n">h</span><span class="o">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">Config</span><span class="o">.</span><span class="na">RGB_565</span><span class="o">);</span>
+<span class="ln">315</span>        <span class="kd">final</span> <span class="n">Canvas</span> <span class="n">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Canvas</span><span class="o">(</span><span class="n">bitmap</span><span class="o">);</span>
+<span class="ln">316</span>        <span class="n">scrollView</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
+<span class="ln">317</span>        <span class="k">return</span> <span class="n">bitmap</span><span class="o">;</span>
+<span class="ln">318</span>    <span class="o">}</span>
+<span class="ln">319</span>
+<span class="ln">320</span>    <span class="cm">/**
+</span><span class="ln">321</span><span class="cm">     * http://stackoverflow.com/questions/9791714/take-a-screenshot-of-a-whole-view
+</span><span class="ln">322</span><span class="cm">     */</span>
+<span class="ln">323</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">shotView</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">,</span> <span class="kt">int</span> <span class="n">width</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">324</span>        <span class="n">Bitmap</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">width</span><span class="o">,</span> <span class="n">height</span><span class="o">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">Config</span><span class="o">.</span><span class="na">ARGB_8888</span><span class="o">);</span>
+<span class="ln">325</span>        <span class="n">Canvas</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Canvas</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
+<span class="ln">326</span>        <span class="n">v</span><span class="o">.</span><span class="na">layout</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">v</span><span class="o">.</span><span class="na">getLayoutParams</span><span class="o">().</span><span class="na">width</span><span class="o">,</span> <span class="n">v</span><span class="o">.</span><span class="na">getLayoutParams</span><span class="o">().</span><span class="na">height</span><span class="o">);</span>
+<span class="ln">327</span>        <span class="n">v</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+<span class="ln">328</span>        <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
+<span class="ln">329</span>    <span class="o">}</span>
+<span class="ln">330</span>
+<span class="ln">331</span>    <span class="cm">/**
+</span><span class="ln">332</span><span class="cm">     * 获取整个窗口的截图
+</span><span class="ln">333</span><span class="cm">     *
+</span><span class="ln">334</span><span class="cm">     * @param context
+</span><span class="ln">335</span><span class="cm">     * @return
+</span><span class="ln">336</span><span class="cm">     */</span>
+<span class="ln">337</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">captureScreen</span><span class="o">(</span><span class="n">Activity</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">338</span>        <span class="n">View</span> <span class="n">cv</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getWindow</span><span class="o">().</span><span class="na">getDecorView</span><span class="o">();</span>
+<span class="ln">339</span>        <span class="n">cv</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="ln">340</span>        <span class="n">cv</span><span class="o">.</span><span class="na">buildDrawingCache</span><span class="o">();</span>
+<span class="ln">341</span>        <span class="n">Bitmap</span> <span class="n">bmp</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">cv</span><span class="o">.</span><span class="na">getDrawingCache</span><span class="o">());</span>
+<span class="ln">342</span>        <span class="k">if</span> <span class="o">(</span><span class="n">bmp</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">343</span>            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">344</span>        <span class="o">}</span>
+<span class="ln">345</span>        <span class="n">bmp</span><span class="o">.</span><span class="na">setHasAlpha</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+<span class="ln">346</span>        <span class="n">bmp</span><span class="o">.</span><span class="na">prepareToDraw</span><span class="o">();</span>
+<span class="ln">347</span>        <span class="n">cv</span><span class="o">.</span><span class="na">destroyDrawingCache</span><span class="o">();</span>
+<span class="ln">348</span>        <span class="k">return</span> <span class="n">bmp</span><span class="o">;</span>
+<span class="ln">349</span>    <span class="o">}</span>
+<span class="ln">350</span>
+<span class="ln">351</span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Bitmap</span> <span class="nf">captureScreenOfViews</span><span class="o">(</span><span class="n">List</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">View</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">views</span><span class="o">,</span><span class="nd">@ColorInt</span> <span class="kt">int</span> <span class="n">backGroundColor</span><span class="o">){</span>
+<span class="ln">352</span>        <span class="k">if</span> <span class="o">(</span><span class="n">views</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span>
+<span class="ln">353</span>            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="ln">354</span>        <span class="o">}</span>
+<span class="ln">355</span>        <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">356</span>        <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">357</span>        <span class="k">for</span> <span class="o">(</span><span class="n">View</span> <span class="n">view</span> <span class="o">:</span> <span class="n">views</span><span class="o">)</span> <span class="o">{</span>
+<span class="ln">358</span>            <span class="n">height</span> <span class="o">+=</span> <span class="n">view</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">();</span>
+<span class="ln">359</span>            <span class="k">if</span> <span class="o">(</span><span class="n">width</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">()){</span>
+<span class="ln">360</span>                <span class="n">width</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">();</span>
+<span class="ln">361</span>            <span class="o">}</span>
+<span class="ln">362</span>        <span class="o">}</span>
+<span class="ln">363</span>        <span class="n">Bitmap</span> <span class="n">allBit</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">width</span><span class="o">,</span> <span class="n">height</span><span class="o">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">Config</span><span class="o">.</span><span class="na">ARGB_8888</span><span class="o">);</span>
+<span class="ln">364</span>        <span class="n">Canvas</span> <span class="n">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Canvas</span><span class="o">(</span><span class="n">allBit</span><span class="o">);</span>
+<span class="ln">365</span>        <span class="n">canvas</span><span class="o">.</span><span class="na">drawColor</span><span class="o">(</span><span class="n">backGroundColor</span><span class="o">);</span>
+<span class="ln">366</span>        <span class="n">Paint</span> <span class="n">paint</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Paint</span><span class="o">();</span>
+<span class="ln">367</span>        <span class="kt">int</span> <span class="n">heights</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="ln">368</span>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">views</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+<span class="ln">369</span>            <span class="n">View</span> <span class="n">view</span> <span class="o">=</span><span class="n">views</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="ln">370</span>            <span class="k">if</span> <span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">()&amp;</span><span class="n">lt</span><span class="o">;=</span><span class="n">0</span><span class="o">){</span>
+<span class="ln">371</span>                <span class="k">continue</span><span class="o">;</span>
+<span class="ln">372</span>            <span class="o">}</span>
+<span class="ln">373</span>            <span class="n">view</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="ln">374</span>            <span class="n">view</span><span class="o">.</span><span class="na">buildDrawingCache</span><span class="o">();</span>
+<span class="ln">375</span>            <span class="n">view</span><span class="o">.</span><span class="na">measure</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">makeMeasureSpec</span><span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(),</span>
+<span class="ln">376</span>                    <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">EXACTLY</span><span class="o">),</span> <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">makeMeasureSpec</span><span class="o">(</span>
+<span class="ln">377</span>                    <span class="n">view</span><span class="o">.</span><span class="na">getHeight</span><span class="o">(),</span> <span class="n">View</span><span class="o">.</span><span class="na">MeasureSpec</span><span class="o">.</span><span class="na">EXACTLY</span><span class="o">));</span>
+<span class="ln">378</span>            <span class="n">view</span><span class="o">.</span><span class="na">layout</span><span class="o">((</span><span class="kt">int</span><span class="o">)</span> <span class="n">view</span><span class="o">.</span><span class="na">getX</span><span class="o">(),</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">view</span><span class="o">.</span><span class="na">getY</span><span class="o">(),</span>
+<span class="ln">379</span>                    <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">view</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="n">view</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span>
+<span class="ln">380</span>                    <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">view</span><span class="o">.</span><span class="na">getY</span><span class="o">()</span> <span class="o">+</span> <span class="n">view</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">());</span>
+<span class="ln">381</span>            <span class="n">Bitmap</span> <span class="n">drawingCache</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="na">createBitmap</span><span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">getDrawingCache</span><span class="o">(),</span><span class="n">0</span><span class="o">,</span><span class="n">0</span><span class="o">,</span><span class="n">view</span><span class="o">.</span><span class="na">getMeasuredWidth</span><span class="o">(),</span><span class="n">view</span><span class="o">.</span><span class="na">getMeasuredHeight</span><span class="o">());</span>
+<span class="ln">382</span>            <span class="kt">float</span> <span class="n">left</span> <span class="o">=</span> <span class="n">0f</span><span class="o">;</span>
+<span class="ln">383</span>            <span class="k">if</span> <span class="o">(</span><span class="n">width</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span><span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">()){</span>
+<span class="ln">384</span>                <span class="n">left</span><span class="o">+=(</span><span class="n">width</span><span class="o">-</span><span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">())/</span><span class="n">2f</span><span class="o">;</span>
+<span class="ln">385</span>            <span class="o">}</span>
+<span class="ln">386</span>           
+<span class="ln">387</span>            <span class="n">canvas</span><span class="o">.</span><span class="na">drawBitmap</span><span class="o">(</span><span class="n">drawingCache</span><span class="o">,</span><span class="n">left</span><span class="o">,</span><span class="n">heights</span><span class="o">,</span><span class="n">paint</span><span class="o">);</span>
+<span class="ln">388</span>            <span class="n">view</span><span class="o">.</span><span class="na">setDrawingCacheEnabled</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+<span class="ln">389</span>            <span class="n">view</span><span class="o">.</span><span class="na">destroyDrawingCache</span><span class="o">();</span>
+<span class="ln">390</span>            <span class="n">heights</span><span class="o">+=</span><span class="n">view</span><span class="o">.</span><span class="na">getHeight</span><span class="o">();</span>
+<span class="ln">391</span>        <span class="o">}</span>
+<span class="ln">392</span>        <span class="k">return</span> <span class="n">allBit</span><span class="o">;</span>
+<span class="ln">393</span>    <span class="o">}</span>
+<span class="ln">394</span><span class="o">}</span>
+</code></pre></div></div><div class="modal fade" id="rewardModal" tabindex="-1" aria-labelledby="rewardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content surface">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rewardModalLabel"><i class="fas fa-fw fa-coffee"></i>打赏</h5>
+        <a href="#" data-bs-dismiss="modal" class="btn btn-sm btn-outline-primary" aria-label="Close"><i class="fas fa-times"></i></a>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" role="tablist"><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link active" id="reward-alipay-tab" data-bs-toggle="tab" href="#reward-alipay" role="tab" aria-controls="reward-alipay" aria-selected="true">
+              <i class="fab fa-fw fa-alipay"></i>支付宝
+            </a>
+          </li><li class="nav-item text-nowrap" role="presentation">
+            <a class="nav-link" id="reward-wechat-tab" data-bs-toggle="tab" href="#reward-wechat" role="tab" aria-controls="reward-wechat" aria-selected="true">
+              <i class="fab fa-fw fa-weixin"></i>微信
+            </a>
+          </li></ul>
+        <div class="tab-content" id="rewardTabContent"><div class="tab-pane fade post-reward-content show active" id="reward-alipay" role="tabpanel" aria-labelledby="reward-alipay-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/alipay.png" loading="lazy" />
+          </div><div class="tab-pane fade post-reward-content show" id="reward-wechat" role="tabpanel" aria-labelledby="reward-wechat-tab">
+            <img class="img-fluid post-reward-img" src="https://helixs.github.io/images/reward/wechat.png" loading="lazy" />
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-evenly">
+  <div class="post-nav post-prev"><i class="fas fa-fw fa-chevron-left"></i>
+    <a href="https://helixs.github.io/posts/android/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/">Viewpager&#43;fragment的懒加载
+</a>
+  </div><div class="post-nav post-next">
+    <a href="https://helixs.github.io/posts/android/2019-02-26-android-bitmap%E6%9C%80%E5%85%A8%E9%9D%A2%E8%AF%A6%E8%A7%A3/">Android Bitmap最全面详解
+</a>
+    <i class="fas fa-fw fa-chevron-right"></i>
+  </div></div><section class="related-posts-wrapper">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="https://helixs.github.io/posts/android/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/">Viewpager&#43;fragment的懒加载
+</a></li><li><a href="https://helixs.github.io/posts/android/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/">Android布局之ConstraintLayout的一些特性
+</a></li><li><a href="https://helixs.github.io/posts/linux/2019-01-16-centos%E5%BC%80%E5%90%AFbbr/">Centos开启bbr
+</a></li><li><a href="https://helixs.github.io/posts/android/2019-01-15-idea%E6%98%BE%E7%A4%BAkotlin%E7%9A%84%E6%8E%A8%E6%96%AD%E7%B1%BB%E5%9E%8B/">Idea显示kotlin的推断类型
+</a></li><li><a href="https://helixs.github.io/posts/android/2019-01-14-java%E5%85%B3%E4%BA%8E%E5%88%A4%E6%96%ADemoji%E4%BD%8D%E6%95%B0%E5%92%8C%E6%88%AA%E5%8F%96%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A4%84%E7%90%86/">Java关于判断emoji位数和截取的一些处理
+</a></li></ul>
+  </section></div>
+    </article><div class="card component row post-comments">
+  <div class="card-body"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap-comments"
+  issue-term="pathname"
+  label="comment"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script></div>
+</div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container">
+    
+    <section class="card row text-center profile component">
+  <div class="card-body">
+    <div class="col-12 d-flex align-items-center justify-content-center"><img class="profile-avatar rounded-circle" alt="Helixs" src="https://helixs.github.io/images/logo.png" loading="lazy"
+   width="180" height="180"
+   />
+</div>
+    <div class="col-12 profile-meta"><div class="profile-name">Helixs</div><div class="profile-bio">Android, Flutter, Python</div><div class="profile-location"><i class="fas fa-fw fa-map-marker-alt"></i>China</div><div class="profile-about"><i class="fas fa-fw fa-user"></i><a target="_blank" rel="noopener noreferrer" href="https://github.com/helixs">关于我</a></div><div class="profile-contact"><i class="fas fa-fw fa-question-circle"></i><a href="https://helixs.github.io/contact/">联系我们</a></div></div>
+  </div>
+</section>
+  <section class="featured-posts row card component">
+    <div class="card-body">
+      <h2 class="card-title">精选文章</h2>
+      <ul><li><a href="https://helixs.github.io/posts/markdown-syntax/">Markdown Syntax Guide
+</a></li></ul>
+    </div>
+  </section><section class="recent-posts row card component">
+  <div class="card-body">
+    <h2 class="card-title">最近文章</h2>
+    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
+</a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
+</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
+</a></li></ul>
+  </div>
+</section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/categories">分类</a>
+        </h2>
+        <div><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge bg-primary text-white rounded post-taxonomy" title="Android开发">
+            Android开发
+          </a><a href="https://helixs.github.io/categories/%E7%BC%96%E7%A8%8B%E7%94%9F%E6%B4%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="编程生活">
+            编程生活
+          </a><a href="https://helixs.github.io/categories/leetcode/" class="badge bg-primary text-white rounded post-taxonomy" title="LeetCode">
+            LeetCode
+          </a><a href="https://helixs.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="badge bg-primary text-white rounded post-taxonomy" title="源码分析">
+            源码分析
+          </a><a href="https://helixs.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="badge bg-primary text-white rounded post-taxonomy" title="未分类">
+            未分类
+          </a><a href="https://helixs.github.io/categories/linux%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="badge bg-primary text-white rounded post-taxonomy" title="linux常用配置">
+            linux常用配置
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" class="badge bg-primary text-white rounded post-taxonomy" title="数据结构和算法">
+            数据结构和算法
+          </a><a href="https://helixs.github.io/categories/flutter/" class="badge bg-primary text-white rounded post-taxonomy" title="flutter">
+            flutter
+          </a><a href="https://helixs.github.io/categories/vps%E5%B7%A5%E5%85%B7/" class="badge bg-primary text-white rounded post-taxonomy" title="vps工具">
+            vps工具
+          </a><a href="https://helixs.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="badge bg-primary text-white rounded post-taxonomy" title="数据库">
+            数据库
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/series">专栏</a>
+        </h2>
+        <div><a href="https://helixs.github.io/series/manual/" class="badge bg-primary text-white rounded post-taxonomy" title="Manual">
+            Manual
+          </a></div>
+      </div>
+    </section><section class="taxonomies row card component">
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="https://helixs.github.io/tags">标签</a>
+        </h2>
+        <div><a href="https://helixs.github.io/tags/android/" class="badge bg-primary text-white rounded post-taxonomy" title="android">
+            android
+          </a><a href="https://helixs.github.io/tags/bbr/" class="badge bg-primary text-white rounded post-taxonomy" title="bbr">
+            bbr
+          </a><a href="https://helixs.github.io/tags/centos/" class="badge bg-primary text-white rounded post-taxonomy" title="centos">
+            centos
+          </a><a href="https://helixs.github.io/tags/css/" class="badge bg-primary text-white rounded post-taxonomy" title="CSS">
+            CSS
+          </a><a href="https://helixs.github.io/tags/downloadmanager/" class="badge bg-primary text-white rounded post-taxonomy" title="DownloadManager">
+            DownloadManager
+          </a><a href="https://helixs.github.io/tags/fragment/" class="badge bg-primary text-white rounded post-taxonomy" title="fragment">
+            fragment
+          </a><a href="https://helixs.github.io/tags/gradle/" class="badge bg-primary text-white rounded post-taxonomy" title="gradle">
+            gradle
+          </a><a href="https://helixs.github.io/tags/html/" class="badge bg-primary text-white rounded post-taxonomy" title="HTML">
+            HTML
+          </a><a href="https://helixs.github.io/tags/markdown/" class="badge bg-primary text-white rounded post-taxonomy" title="Markdown">
+            Markdown
+          </a><a href="https://helixs.github.io/tags/matrialbutton/" class="badge bg-primary text-white rounded post-taxonomy" title="matrialButton">
+            matrialButton
+          </a></div>
+      </div>
+    </section>
+    
+  </div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><a class="nav-link social-link" target="_blank" href="https://space.bilibili.com/yourbilibiliuserid" title="bilibili" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bilibili"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://bitbucket.org/yourbitbucketworkspaceid" title="Bitbucket" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-bitbucket"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://discord.com/invite/yourdiscordinvitecode" title="Discord" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discord"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourforum.tld" title="Discourse" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-discourse"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://hub.docker.com/u/yourdockerhubusername" title="Docker Hub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-docker"></i>
+      </a><a class="nav-link social-link" href="mailto:user@domain.tld" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/yourfacebookusername" title="Facebook" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-f"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://facebook.com/groups/yourfacebookgroupname" title="Facebook Group" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-facebook-square"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://github.com/yourgithubusername" title="GitHub" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://gitlab.com/yourgitlabusername" title="GitLab" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-gitlab"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.instagram.com/yourinstagramusername" title="Instagram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-instagram"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://kaggle.com/yourkaggleusername" title="Kaggle" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-kaggle"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.last.fm/user/yourlastfmusername" title="Last.fm" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-lastfm"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://linkedin.com/yourlinkedinusername" title="LinkedIn" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-linkedin-in"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://medium.com/@yourmediumusername" title="Medium" rel="noopener noreferrer">
+        <i class="fab fa-fw fa-2x fa-medium-m"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.pinterest.com/yourpinterestusername" title="Pinterest" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-pinterest"></i>
+      </a><a class="nav-link social-link" target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=yourqqnumber&amp;site=qq&amp;menu=yes" title="QQ" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-qq"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.quora.com/profile/yourquorausername" title="Quora" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-quora"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.reddit.com/user/yourredditusername" title="Reddit" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-reddit"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://stackoverflow.com/users/yourstackoverflowuserid" title="Stack Overflow" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-stack-overflow"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://t.me/yourtelegramusername" title="Telegram" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-telegram-plane"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.tiktok.com/@yourtiktokusername" title="TikTok" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tiktok"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://yourtumblrusername.tumblr.com" title="Tumblr" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-tumblr"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://twitter.com/yourtwitterusername" title="Twitter" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-twitter"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://weibo.com/yourweibousername" title="Weibo" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-weibo"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.youtube.com/channel/youryoutubechannelid" title="Youtube" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-youtube"></i>
+      </a><a class="nav-link social-link" target="_blank" href="https://www.zhihu.com/people/yourzhihuusername" title="Zhihu" rel="noopener noreferrer">
+        <i class="fa-fw fa-2x fab fa-zhihu"></i>
+      </a></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 Helixs. All Rights Reserved.
+</div>
+<div class="powered-by mb-2">
+  Powered by <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> and the <a href="https://github.com/razonyang/hugo-theme-bootstrap" target="_blank" rel="noopener noreferrer">Bootstrap</a> theme.
+</div></footer>
+<script src="https://helixs.github.io/js/bundle.min.c239d20348986c1e4276d9e85953f4e281ec3b6ed6dafe05a5e64002622759e5.js" integrity="sha256-wjnSA0iYbB5CdtnoWVP04oHsO27W2v4FpeZAAmInWeU=" crossorigin="anonymous" defer></script><script defer src="https://helixs.github.io/js/viewer.min.9f39f897757e616b3f6faf1d7955ea42a180a4e71d898e80f1c13d45e59b9abb.js" integrity="sha256-nzn4l3V&#43;YWs/b68deVXqQqGApOcdiY6A8cE9ReWbmrs=" crossorigin="anonymous"></script>
+</body>
+</html>
