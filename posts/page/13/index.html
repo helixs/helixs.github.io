@@ -187,6 +187,19 @@
   </div>
 </nav><div class="posts mb-4"><article class="row card post component">
       <div class="card-body">
+        <h2 class="card-title post-title"><a href="https://helixs.github.io/posts/android/2019-02-15-viewpagerfragment%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD/">Viewpager&#43;fragment的懒加载
+</a></h2><div class="post-meta"><span class="post-date" title="created on">
+    <i class="fas fa-fw fa-calendar-alt"></i>2019-02-15
+  </span><span class="post-reading-time" title="reading time">
+    <i class="fas fa-fw fa-coffee"></i>3 分钟阅读
+  </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a><a href="https://helixs.github.io/tags/fragment/" class="badge rounded-pill text-white bg-primary post-taxonomy">fragment</a></div>
+<div class="post-summary">
+          
+          使用 FragmentPagerAdapter 时，ViewPager 中的所有 Fragment 实例常驻内存，当 Fragment 变得不可见时仅仅是视图结构的销毁，即调用了 onDestroyView 方法。由于 FragmentPagerAdapter 内存消耗较大，所以适合少量静
+        </div>
+      </div>
+    </article><article class="row card post component">
+      <div class="card-body">
         <h2 class="card-title post-title"><a href="https://helixs.github.io/posts/android/2019-01-22-android%E5%B8%83%E5%B1%80%E4%B9%8Bconstraintlayout%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%80%A7/">Android布局之ConstraintLayout的一些特性
 </a></h2><div class="post-meta"><span class="post-date" title="created on">
     <i class="fas fa-fw fa-calendar-alt"></i>2019-01-22
@@ -237,19 +250,6 @@
           今天android项目里有个需求，一个textview中要显示最多8个字符，英文算一个，中文算两个。满满以为直接用一下这种方法判断了 1public static String getDisplay(String
         </div>
       </div>
-    </article><article class="row card post component">
-      <div class="card-body">
-        <h2 class="card-title post-title"><a href="https://helixs.github.io/posts/android/2018-12-26-android%E9%A1%B9%E7%9B%AE%E5%BC%95%E5%85%A5kotlin%E5%8C%85%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98/">Android项目引入kotlin包冲突问题
-</a></h2><div class="post-meta"><span class="post-date" title="created on">
-    <i class="fas fa-fw fa-calendar-alt"></i>2018-12-26
-  </span><span class="post-reading-time" title="reading time">
-    <i class="fas fa-fw fa-coffee"></i>1 分钟阅读
-  </span><a href="https://helixs.github.io/categories/android%E5%BC%80%E5%8F%91/" class="badge rounded-pill text-white bg-primary post-taxonomy">Android开发</a></div>
-<div class="post-summary">
-          
-          今天在android项目中导入了kotlin的支持，可是怎么运行也运行不起来 Program type already present: javax.annotation.CheckReturnValue 等等 包冲突了，检查不同的library的版本，然后清空
-        </div>
-      </div>
     </article></div><div class="row table-responsive mb-3">
     <ul class="pagination pagination-default">
       <li class="page-item">
@@ -257,9 +257,6 @@
       </li>
       <li class="page-item">
         <a href="/posts/page/12/" aria-label="Previous" class="page-link" role="button"><span aria-hidden="true">&laquo;</span></a>
-      </li>
-      <li class="page-item">
-        <a href="/posts/page/10/" aria-label="Page 10" class="page-link" role="button">10</a>
       </li>
       <li class="page-item">
         <a href="/posts/page/11/" aria-label="Page 11" class="page-link" role="button">11</a>
@@ -274,10 +271,13 @@
         <a href="/posts/page/14/" aria-label="Page 14" class="page-link" role="button">14</a>
       </li>
       <li class="page-item">
+        <a href="/posts/page/15/" aria-label="Page 15" class="page-link" role="button">15</a>
+      </li>
+      <li class="page-item">
         <a href="/posts/page/14/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
       </li>
       <li class="page-item">
-        <a href="/posts/page/14/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+        <a href="/posts/page/15/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
       </li>
     </ul></div>
 </div>
@@ -303,11 +303,11 @@
   </section><section class="recent-posts row card component">
   <div class="card-body">
     <h2 class="card-title">最近文章</h2>
-    <ul><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
+    <ul><li><a href="https://helixs.github.io/posts/2021-11-22-android%E9%9D%A2%E8%AF%95%E9%A2%98/">Android面试题
+</a></li><li><a href="https://helixs.github.io/posts/android/paint/maskfilter/">MaskFilter
 </a></li><li><a href="https://helixs.github.io/posts/2021-04-27-flutter-web%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E5%92%8C%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">Flutter Web使用的一些心得和一些问题
 </a></li><li><a href="https://helixs.github.io/posts/2021-04-19-%E7%BE%8E%E5%9B%BD%E5%8F%91%E5%8A%A8%E4%BC%8A%E6%8B%89%E5%85%8B%E6%88%98%E4%BA%89%E7%9A%84%E4%B8%80%E7%A7%8D%E7%8C%9C%E6%83%B3/">美国发动伊拉克战争的一种猜想
 </a></li><li><a href="https://helixs.github.io/posts/2021-04-02-mariadb%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81/">Mariadb安装设置root密码
-</a></li><li><a href="https://helixs.github.io/posts/2021-03-30-linkedhashmap%E5%9B%BE%E8%A7%A3/">LinkedHashMap图解
 </a></li></ul>
   </div>
 </section><section class="taxonomies row card component">
